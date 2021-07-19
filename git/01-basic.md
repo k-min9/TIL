@@ -1,9 +1,8 @@
-git basic
+# git basic
 
 
 
-'''
-
+```
 $git unit
 
 $git add .
@@ -17,6 +16,5 @@ $git push origin master
 $git log
 
 $git status
-
-'''
+```
 
