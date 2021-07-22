@@ -1,1 +1,5 @@
-print(9%1)
+import math
+
+list = [2,4,6]
+
+print(math.gcd(*list))
