@@ -11,7 +11,39 @@ D : 아래로 x칸 이동
 생각 : 그니까 BFS 없이 풀어보자.
 '''
 
+F, S, G, U, D = map(int, input().split())
+
+from collections import deque
+answer = [0] * (F + 1) #visited를 겸한다.
+
+def bfs(start):
+    q = deque([start])
+    answer[start] = 1 # visited 안쓰는 대신에 모든 값이 1 증가한다.
+    while q:
+        v = q.popleft()
+        # 위로
+        floor = v + U
+        if floor <= F and not answer[floor]:
+            q.append(floor)
+            answer[floor] = answer[v] + 1
+        # 아래로
+        floor = v - D
+        if floor > 0 and not answer[floor]:
+            q.append(floor)
+            answer[floor] = answer[v] + 1
+
+bfs(S)
+if not answer[G]:
+    print('use the stairs')
+else:
+    print(answer[G] - 1) #visited 안 쓴 댓가
+
+
+
+
+
 '''
+1차 도전 : 시간 초과
 F, S, G, U, D = map(int, input().split())
 
 #이동 거리
@@ -61,9 +93,7 @@ else:
 
 '''
 1차 감상: 네 시간 초과.
-층이 100만층 파이썬 연산횟수 1초 2천만이면
+층이 최대 100만층 파이썬 연산횟수 1초 2천만이면
 U : 104009 D : 11 이런거에 약할거 같았음 ㄲㄲ
-시키는대로 BFS 씁시다.
+시키는대로 BFS 씁시다. 하는김에 아까 했던 것도 반성점 살려서 ㄱㄱ
 '''
-
-F, S, G, U, D = map(int, input().split())
