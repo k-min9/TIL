@@ -1,5 +1,4 @@
-import math
+b = [1]
+a = b.extend([1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-list = [2,4,6]
-
-print(math.gcd(*list))
+print(a)
