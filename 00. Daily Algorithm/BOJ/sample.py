@@ -1,3 +1,3 @@
-b = 'RDD'
-b = b[0:len(b)-1]
+b = list([0])
+
 print(b)
