@@ -22,7 +22,9 @@ seq = list(map(int,input().split())) #수열
 dp1 = [1]*N #LIS적용
 dp2 = [1]*N #리버스 하고 LIS적용
 
+#오름차순
 dp1 = getDP_LIS(N, seq, dp1)
+#내림차순
 seq.reverse()
 dp2 = getDP_LIS(N, seq, dp2)
 dp2.reverse()
@@ -34,3 +36,8 @@ for i in range(N):
 
 
 print(max(answer)-1)
+
+'''
+원래라면 내림차수 함수 따로 만들어야 함, 
+근데 이렇게만 해도 구동법 알고, 애초에 아는 문제니까 점검만 하고 넘어감.
+'''
