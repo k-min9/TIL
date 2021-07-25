@@ -36,7 +36,7 @@ def my_bisect_right(a, x, lo=0, hi=None):
     hi = len(a)
     while lo < hi:
         mid = (lo+hi)//2
-        if x >= a[mid]: hi = mid
+        if x > a[mid]: hi = mid
         else: lo = mid+1
     return len(a) - lo
 
@@ -58,7 +58,8 @@ for x in seq:
         A[idx]=x #갱신
 
 routedIdx = len(A)-1
-#del(A)
+del(A)
+del(seq)
 
 #루트 sum 기록 dp
 dp2 = [[0] for _ in range(routedIdx + 1)] #count=>sum
@@ -84,10 +85,40 @@ while dp1:
         #print('dp2', dp2)
         count3 = dp2[x[1]][-1] # 같은 행의 마지막 sum
         sum = 1 + count3
+    sum = sum % 1000000007
     dp2[x[1]].append(sum)
 
 print(routedIdx, dp2[-1][-1] % 1000000007)
 
+'''
++@ 버전 : 
+dp1 아예 안 쓴 버전, 틀렸습니다. 한번 떴지만 아마 수정했으면 이쪽도 넘어갔을 거라고 생각함.
+이쪽은 가독성 떨어진다고 생각함, 굳이 이럴 필요도 없고
+A = [-1000000001]
+dp2 = [[0,1]] #루트 sum 기록 dp
+dp3 = [[1000000001]] #이진 탐색용 기록 dp
+
+routeIdx = 0
+for i in range(N):
+    if A[-1] < seq[i]: # 마지막 숫자 비교
+        #추가
+        routeIdx = routeIdx + 1
+        A.append(seq[i])        
+        dp3.append([1000000001,seq[i]])# 앞에 1000000001 안 붙이면 갱신때 append가 일 안함
+        bisectNum = my_bisect_right(dp3[routeIdx-1], seq[i])   
+        sum = (dp2[routeIdx-1][-1] - dp2[routeIdx-1][bisectNum]) % 1000000007
+        dp2.append([0,sum])
+    else:
+        #갱신
+        idx = bisect_left(A, seq[i])
+        A[idx] = seq[i]
+        dp3[idx].append(seq[i])
+        bisectNum = my_bisect_right(dp3[idx-1],seq[i])
+        sum = (dp2[idx-1][-1] - dp2[idx-1][bisectNum] + dp2[idx][-1]) % 1000000007 #count1-count2+count3
+        dp2[idx].append(sum % 1000000007) #+count3
+
+print(routeIdx,dp2[routeIdx][-1])
+'''
 
 '''
 N-1차 도전 : 변경 안될 정보인 dp1 내용물 덱으로 변경. del(A)추가
@@ -154,16 +185,9 @@ for x in dp1:
 
 print(routedIdx, dp2[-1][-1][1] % 1000000007)
 '''
-
 '''
 X차 도전 : 내림차순에서는 bisect 안먹힌다는걸 배웠다. 진짜 비싼 교훈.
 '''
-
-
-
-
-
-
 '''
 routeIdx = len(A)-1
 num = [[] for _ in range(routeIdx + 1)]
