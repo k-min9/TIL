@@ -63,9 +63,10 @@ else:
     # 밑에서 긁어가면서 조합해보기
     answer = 1
     energy = X
+    distance.sort()
     while(distance):
         d = 2 * heappop(distance)
-        if energy > d:
+        if energy >= d:
             energy = energy - d
         else:
             answer = answer + 1
