@@ -1,5 +1,4 @@
-a = 'hello'
+a = 1000
+b = 1000
 
-b = '#'.join(a)
-b = '#' + '#'.join(a) + '#'
-print(b)
+print(a==b)
