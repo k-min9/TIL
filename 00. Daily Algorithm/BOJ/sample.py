@@ -1,5 +1,5 @@
-list2 = [2, 3]
+a = 'hello'
 
-list2 = list(map(lambda x: x+1, list2))
-
-print(list2) 
+b = '#'.join(a)
+b = '#' + '#'.join(a) + '#'
+print(b)
