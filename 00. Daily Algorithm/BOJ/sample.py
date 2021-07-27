@@ -1,5 +1,5 @@
-now = (2,3)
+list2 = [2, 3]
 
-now = (now[0]+2, now[1]+3)
+list2 = list(map(lambda x: x+1, list2))
 
-print(now)
+print(list2) 
