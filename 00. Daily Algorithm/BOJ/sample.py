@@ -1,4 +1,9 @@
-a = 1000
-b = 1000
+# 기본 전처리
+import sys
+input = sys.stdin.readline
 
-print(a==b)
+result = 1
+while result:
+    A, B = map(int, input().split())
+    result = A + B
+    print(result)
