@@ -1,6 +1,11 @@
 # 기본 전처리
 import sys
 input = sys.stdin.readline
+print = sys.stdout.write
+
+# 재귀 한계 늘리기(pypy용. 메모리 설정 2000)
+# import sys
+sys.setrecursionlimit(2000)
 
 #힙
 from heapq import heappop, heappush
