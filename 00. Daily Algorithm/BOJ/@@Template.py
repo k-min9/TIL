@@ -7,6 +7,10 @@ print = sys.stdout.write
 # import sys
 sys.setrecursionlimit(2000)
 
+# 재귀 한계 늘리기(pypy용. 메모리 설정 2000)
+# import sys
+sys.setrecursionlimit(2000)
+
 #힙
 from heapq import heappop, heappush
 heapExample = []
