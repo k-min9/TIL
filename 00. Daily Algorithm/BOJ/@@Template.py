@@ -11,6 +11,10 @@ sys.setrecursionlimit(2000)
 # import sys
 sys.setrecursionlimit(2000)
 
+# 현재 데이터 보기 pprint 당근 없어도 됨
+from pprint import pprint
+pprint(locals())
+
 #힙
 from heapq import heappop, heappush
 heapExample = []
