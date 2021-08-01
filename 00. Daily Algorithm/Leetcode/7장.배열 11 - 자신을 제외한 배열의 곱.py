@@ -1,5 +1,5 @@
 # https://leetcode.com/problems/product-of-array-except-self
-# 풀이 1: 왼쪽에서 쭉 곱해 적고, 상황에 맞는 오른쪽을 곱해서 반환한다.
+# 풀이 1: 왼쪽에서 쭉 곱해 적고, 상황에 맞는 오른쪽을 곱해서 반환한다. 작은 DP 문제
 
 
 def productExceptSelf(self, nums: list[int]) -> list[int]:
