@@ -16,5 +16,7 @@ $git push origin master
 $git log
 
 $git status
+
+$git pull origin master
 ```
 
