@@ -1,11 +1,10 @@
 '''
 자신의 공부 시간에 한계가 있다. 라는 말이 너무 울리는데...
-dp로 배낭문제
+dp로 배낭문제긴 한데, 기본 틀을 구글로 리버스 엔지니어링하고 예시 뜯어보기 했다.
 '''
 
 import sys
 input = sys.stdin.readline
-from pprint import pprint
 
 # 최대 공부시간, 과목 수
 N, K = map(int,input().split())
@@ -33,5 +32,23 @@ for i in range(1,K+1):
             dp[i][j] = max(priors[i-1] + dp[i-1][j-times[i-1]], dp[i-1][j])
             #print('3', i, j, dp[i][j])
 
-pprint(dp)
+#print(dp)
 print(dp[K][N])
+
+'''
+??? Python 시간 초과 튕기고 PyPy 써야되는데요 ???
+
+
+-- 안튕기게 적는 법 -- 
+for i in range(1, k + 1):
+    a, b = map(int, input().split())
+    for j in range(1, n + 1):
+        if j < b:
+            dp[i][j] = dp[i - 1][j]
+        else:
+            dp[i][j] = max(dp[i - 1][j - b] + a, dp[i - 1][j])
+
+print(dp[-1][n])
+
+>>>> 오우야...
+'''
