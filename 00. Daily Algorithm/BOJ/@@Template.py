@@ -7,10 +7,6 @@ print = sys.stdout.write
 # import sys
 sys.setrecursionlimit(2000)
 
-# 재귀 한계 늘리기(pypy용. 메모리 설정 2000)
-# import sys
-sys.setrecursionlimit(2000)
-
 # 현재 데이터 보기 pprint 당근 없어도 됨
 from pprint import pprint
 pprint(locals())
