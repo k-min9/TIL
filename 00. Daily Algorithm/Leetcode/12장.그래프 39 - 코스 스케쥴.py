@@ -32,8 +32,14 @@ def canFinish(self, numCourses: int, prerequisites: list[list[int]]) -> bool:
         return True
     
     # 순환 구조 판별 본문
-    for x in list(graph):
+    for x in list(graph): 
         if not dfs(x):
             return False
         
     return True
+
+'''
+<for x in list(graph):> 이 부분 list 안 붙이면 딕셔너리 순회 중 변경 오류가 발생 
+이유는 없는 dic을 찾을 경우, defaultdict가 기본값을 생성하여 변경이 발생하기 때문
+그래서 graph 앞에 list를 붙임
+'''

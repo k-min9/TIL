@@ -1,18 +1,18 @@
-# https://leetcode.com/problems/top-k-frequent-elements
-# 풀이 1: counter를 이용한 음수 순 추출
+# https://leetcode.com/problems/combination-sum
+# 풀이 X: itertool은 중복조합도 지원합니다!
 
-def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-    freqs = collections.Counter(nums)
-    freqs_heap = []
-    
-    # 힙에 음수 삽입
-    for f in freqs:
-        heapq.heappush(freqs_heap, (-freqs[f], f))
-        
-    # 여기서 most_common 쓰면 필요없지 않나
-    answer = list()
-    
-    for _ in range(k):
-        answer.append(heapq.heappop(freqs_heap)[1])
-        
+import itertools
+
+def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
+    comb_list = []
+    candidates.sort()
+    for i in range(1, target//candidates[0]+1):
+        comb_list += list(map(list,itertools.combinations_with_replacement(candidates,i)))
+            
+    answer = []
+    for c in comb_list:
+        if sum(c) == target:
+            answer.append(c)
+            print(answer)
+            
     return answer
