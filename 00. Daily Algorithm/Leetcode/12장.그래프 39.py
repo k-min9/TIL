@@ -1,10 +1,7 @@
 # https://leetcode.com/problems/top-k-frequent-elements
 # 풀이 1: counter를 이용한 음수 순 추출
 
-import collections
-import heapq
-
-def topKFrequent(self, nums: list[int], k: int) -> list[int]:
+def topKFrequent(self, nums: List[int], k: int) -> List[int]:
     freqs = collections.Counter(nums)
     freqs_heap = []
     
