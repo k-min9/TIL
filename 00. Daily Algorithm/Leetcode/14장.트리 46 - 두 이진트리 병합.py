@@ -7,7 +7,6 @@ class TreeNode:
         self.left = left
         self.right = right
 
-
 def mergeTrees(self, t1: Optional[TreeNode], t2: Optional[TreeNode]) -> Optional[TreeNode]:
     if t1 and t2:
         node = TreeNode(t1.val + t2.val)
@@ -15,3 +14,7 @@ def mergeTrees(self, t1: Optional[TreeNode], t2: Optional[TreeNode]) -> Optional
         node.right = self.mergeTrees(t1.right, t2.right)
         return node
     return t1 or t2
+
+'''
+트리 병합이 내용물 잇는건줄 알았더니 그냥 더하기 였어 하..........
+'''

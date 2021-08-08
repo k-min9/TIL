@@ -1,6 +1,12 @@
 # https://leetcode.com/problems/longest-univalue-path/
 # 풀이 : 43과 유사한 문제, DFS로 풀이
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
 class Solution:
     result = 0
     
