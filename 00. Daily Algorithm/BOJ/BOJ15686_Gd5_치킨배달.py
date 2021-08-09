@@ -31,7 +31,7 @@ for i in range(N):
 #print('c', chickens)
 
 # 각 배치당 최소거리의 집합
-answer = 100 * 100 + 1
+answer = 10000
 for chicken in combinations(chickens, M):
     # 도시의 치킨거리
     sums = 0
@@ -50,5 +50,6 @@ for chicken in combinations(chickens, M):
 print(answer)
 
 '''
-도시의 치킨거리를 잘못 이해해서 다 풀어놓고 answer 출력하는데 한참 걸림
+도시의 치킨거리가 치킨거리 합인걸 최대 치킨거리값인걸로 잘못 이해해서 
+다 풀어놓고 answer 출력하는데 한참 걸림
 '''
