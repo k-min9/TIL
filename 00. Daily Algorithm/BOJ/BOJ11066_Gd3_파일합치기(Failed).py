@@ -19,5 +19,5 @@ for _ in range(T):
     print(answer)
     
 '''
-아니네
+아니네, 나중에 시간 나면 DP 하는 걸로
 '''
