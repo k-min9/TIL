@@ -26,7 +26,6 @@ for k in range(26):
         for j in range(26):
             if maps[i][j] > maps[i][k] + maps[k][j]:
                 maps[i][j] = maps[i][k] + maps[k][j]
-                # maps[i][j] = k  # 기록
 
 # 'a is a'
 for i in range(26):
