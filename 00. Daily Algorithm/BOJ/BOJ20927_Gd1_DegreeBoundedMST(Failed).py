@@ -34,6 +34,9 @@ def prim(node):
             # 인접노드 최소 큐에 넣기
             for i in graph[node_b]:
                 heappush(q, i)
+        else:
+            bounds[node_a-1] = bounds[node_a-1] + 1
+            bounds[node_b-1] = bounds[node_b-1] + 1
 
         # 종료    
         if cnt == N:
@@ -49,7 +52,7 @@ tree = [0] * (N+1)
 for _ in range(M):
     a, b, w = map(int, input().split())
     graph[a].append((w, b, a))
-    #graph[b].append((w, a, b))
+    graph[b].append((w, a, b))
 
 answers = prim(1)
 
@@ -59,3 +62,7 @@ else:
     print('YES')
     for answer in answers:
         print(answer[0], answer[1])
+
+'''
+브루트 포스 + 백트래킹이라고 한다. 나는 돌아올 것이다.
+'''
