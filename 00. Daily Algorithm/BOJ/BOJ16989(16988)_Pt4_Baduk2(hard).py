@@ -95,3 +95,7 @@ else:
         max_b = max(dict_2.values())
 
     print(max(max_a, max_b))
+
+'''
+16988 Easy 버전도 이걸로 풀린다.
+'''
