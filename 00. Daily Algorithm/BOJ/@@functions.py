@@ -11,5 +11,9 @@ def floid(maps, i, j, k):
                 if maps[i][j] > maps[i][k] + maps[k][j]:
                     maps[i][j] = maps[i][k] + maps[k][j]
 
+def dijkstra(nodeStart):
+    pass
+
+dijkstra(1)
 dfs()
 floid()
