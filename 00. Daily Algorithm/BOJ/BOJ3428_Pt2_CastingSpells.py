@@ -23,11 +23,13 @@ import sys
 input = sys.stdin.readline
 
 def manacher(string):
-    P = [0] * len(string)  # 예시 설명에 맞게 대문자 쓰도록 하겠다.
+    n = len(string)
+    P = [0] * n  # 예시 설명에 맞게 대문자 쓰도록 하겠다.
     c = 0  # 중심점(center) 초기화
     r = 0  # 시작점에서 가장 먼 반경
+    ans = 0
 
-    for i in range(0, len(string)):
+    for i in range(n):
         #초기 시작점을 쉽게 잡을 수 있다는 거고 밑에서 보다시피 어차피 한계까지 키움
         if r < i :
             P[i] = 0
@@ -35,25 +37,21 @@ def manacher(string):
             P[i] = min(P[(2*c) - i], r - i)
 
         # 이부분은 BOJ16161 LIS 팰린드롬의 Ad-Hoc 버전 풀이 생각하면 이해가 빠르다.
-        while(i-P[i]-1>=0 and i+P[i]+1 < len(string) and string[i-P[i]-1] == string[i+P[i]+1]): 
+        while(i-P[i]-1>=0 and i+P[i]+1 < n and string[i-P[i]-1] == string[i+P[i]+1]): 
             P[i] = P[i] + 1
+            if (string[i]=='#' and P[i]%4==0 and P[i-P[i]//2]>=P[i]//2 ):
+                ans = max(ans, P[i])
 
         if (r < i + P[i]):
             r = i + P[i]
             c = i
-    return P
+    print(P)
+    return ans
 
 # 수열 정보
 N = int(input())
 for _ in range(N):
     string = input().strip()
-    string = '#' + '#'.join(string) + '#'  # 저어도 오늘 이걸 배워서 오늘 쓸 줄 몰랐죠
+    string = '#' + '#'.join(string) + '#' 
 
-    P = manacher(string)
-    print(P)
-
-    power = 0
-    for i in range(len(P)):
-        if P[i] % 4 == 0 and P[i] > power and P[i-(P[i]//2)] == (P[i]//2) and P[i+(P[i]//2)] == (P[i]//2) and i + P[i] >= len(P)-1:
-              power = P[i]
-    print(power)
+    print(manacher(string))
