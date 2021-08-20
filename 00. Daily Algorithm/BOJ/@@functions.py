@@ -17,7 +17,11 @@ def dijkstra(nodeStart):
 def union():
     pass
 
+def divide():
+    pass
+
 dijkstra(1)
 dfs()
 floid()
 union()
+divide()
