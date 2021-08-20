@@ -14,6 +14,10 @@ def floid(maps, i, j, k):
 def dijkstra(nodeStart):
     pass
 
+def union():
+    pass
+
 dijkstra(1)
 dfs()
 floid()
+union()
