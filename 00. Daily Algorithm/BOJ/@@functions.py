@@ -3,6 +3,12 @@
 def dfs():
     pass
 
+def bfs():
+    pass
+
+def dijkstra(nodeStart):
+    pass
+
 def floid(maps, i, j, k):
     # 경유지, 목적지, 기본 이동 코스
     for k in range(26):
@@ -11,17 +17,16 @@ def floid(maps, i, j, k):
                 if maps[i][j] > maps[i][k] + maps[k][j]:
                     maps[i][j] = maps[i][k] + maps[k][j]
 
-def dijkstra(nodeStart):
-    pass
-
 def union():
     pass
 
 def divide():
     pass
 
-dijkstra(1)
+
 dfs()
+bfs()
+dijkstra(1)
 floid()
 union()
 divide()
