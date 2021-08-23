@@ -1,25 +1,15 @@
 package ch11;
 
 
-public class Ch11_07_methodExit {
+//JVM 강제 종료. 일반적으로 exit(0)가 정상 종료를 의미하는 말이라고 한다.
+public class ExitExample {
 	public static void main(String[] args)  {
-		//���� ������ ����
-		System.setSecurityManager(new SecurityManager(){
-			@Override
-			public void checkExit(int status) {
-				if(status != 5) {
-					throw new SecurityException();
-				}
-			}
-		});
-		
 		for(int i=0; i<10; i++) {
-			//i�� ���
 			System.out.println(i);
-			try {
-				//JVM ���� ��û
+			//JVM 강제종료
+			if(i == 5) {
 				System.exit(i);
-			} catch(SecurityException e) { }
+			}
 		}
 	}
 }

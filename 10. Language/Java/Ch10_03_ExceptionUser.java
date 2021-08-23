@@ -5,7 +5,7 @@ public class Ch10_03_ExceptionUser {
 		Account account = new Account();
 		//예금
 		account.deposit(10000);
-		System.out.println("���ݾ�: " + account.getBalance());
+		System.out.println("저축: " + account.getBalance());
 		//비정상적 출금(10000<30000)
 		try {
 			account.withdraw(30000);
