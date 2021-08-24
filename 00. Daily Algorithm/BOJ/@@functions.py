@@ -23,6 +23,9 @@ def union():
 def divide():
     pass
 
+def my_bisect():
+    pass
+
 
 dfs()
 bfs()
@@ -30,3 +33,4 @@ dijkstra(1)
 floid()
 union()
 divide()
+my_bisect()
