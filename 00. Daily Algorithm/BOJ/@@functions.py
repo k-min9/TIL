@@ -38,6 +38,9 @@ def divide():
 def my_bisect():
     pass
 
+def tarjan():
+    pass
+
 
 dfs()
 bfs()
@@ -47,3 +50,4 @@ floid()
 union()
 divide()
 my_bisect()
+tarjan() # SCC 찾기용
