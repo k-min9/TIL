@@ -6,7 +6,12 @@ import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemoryMemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final MemberRepository memberRepository;
@@ -14,12 +19,15 @@ public class OrderServiceImpl implements OrderService {
     //보기에는 단순하고 잘 된것 같지만, DIP와 OCP 위반
     //private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
     //인터페이스만 의존하도록 코드 변경
-    private DiscountPolicy discountPolicy;
+    private final DiscountPolicy discountPolicy;
 
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-        this.memberRepository = memberRepository;
-        this.discountPolicy = discountPolicy;
-    }
+    //생성자 1개면 생략 가능
+//    @Autowired
+//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+//        this.memberRepository = memberRepository;
+//        this.discountPolicy = discountPolicy;
+//    }
+// RequiredArgConstructor 쓰면 final 관련 필드 생성자 만들어줌
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
