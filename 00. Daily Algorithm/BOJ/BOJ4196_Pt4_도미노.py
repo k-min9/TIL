@@ -6,12 +6,6 @@ import sys
 input = sys.stdin.readline
 sys.setrecursionlimit(1000000)
 
-
-import sys
-input = sys.stdin.readline
-sys.setrecursionlimit(1000000)
-
-
 def tarjan(x):
     # 노드에 low와 id 부여
     global cnt

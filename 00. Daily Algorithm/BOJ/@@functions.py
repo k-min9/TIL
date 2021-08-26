@@ -39,6 +39,8 @@ def my_bisect():
     pass
 
 def tarjan():
+    # 종류 : CSS
+    # 추천 문제 : 4013 도미노
     pass
 
 
