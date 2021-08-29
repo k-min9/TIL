@@ -1,8 +1,8 @@
 '''
-2-SAT : 각 변수 중에 true or false 입력시, 전체(f)가 true가 되는 경우의 수가 있는지 확인 하는 문제
-CNF(Conjunctive Normal Form)형태의 식 중 각 절의 최대 변수 수가 2이하이면 2-SAT가 된다.
-학습 자료 : https://blog.naver.com/kks227/220803009418
+여기까지 길었음. 이거 하나 풀려고
+SCC랑 2-SAT 학습하고 왔습니다. 간다!
 '''
+
 import sys
 input = sys.stdin.readline
 sys.setrecursionlimit(1000000)
@@ -43,19 +43,46 @@ def tarjan(x):
     # 여기서 리턴하고 low 배열을 안 씀
     return low
 
+# 개구리 수, 통나무 수
 N, M = map(int, input().split())
+# 주제별 흥미도
+status = [0] + [list(map(int, input().split())) for _ in range(N)]
+# 연꽃의 수요
+demands = [[] for _ in range(N+1)]
+positions = []
+for i in range(N):
+    a, b = map(int, input().split())
+    #첫번째 연꽃이 True 두번째 연꽃이 False
+    demands[a].append(i+1)
+    demands[b].append(-(i+1))
+    # 나중에 2SAT 결과 True면 b, False면 a 가 선택이 된다.
+    positions.append((a, b))
 
-# 노드 원본과 not 노드
+# print(demands)
+
+cnf = []
+for demand in demands:
+    n = len(demand)
+    for i in range(n):
+        for j in range(i+1, n):
+            cnf.append((demand[i], demand[j]))
+
+for i in range(M):
+    # 연꽃 1, 2, 대화주제
+    a, b, t = map(int, input().split())
+    for x in demands[a]:
+        for y in demands[b]:
+            # 취미값이 다를 경우, x가 올라가는 경우, y는 올라가지 못함.
+            if status[abs(x)][t-1] != status[abs(y)][t-1]:
+                cnf.append((x, y))
+
+
 graphs = [[] for _ in range(2*N+1)]
 # 각 절 내용 물을 graph에 주입
-for _ in range(M):
-    a, b = map(int, input().split())
-    # graphs[my_transform(-a)].append(my_transform(b))
-    # graphs[my_transform(-b)].append(my_transform(a))
+for a, b in cnf:
     graphs[-a].append(b%(2*N+1))
     graphs[-b].append(a%(2*N+1))
 
-# print(graphs)
 
 # 타잔 준비물 시작=====================
 # DFS 진행하면서 이곳에 담는다.
@@ -77,26 +104,28 @@ for i in range(1, 2*N+1):
     if ids[i] == 0:
         tarjan(i)
 
-# print(scc_all)
-# print(scc_num)
-
+#print(scc_all)
+#print(scc_num)
 
 # 2. SAT 풀기
 answers = [0]*N
 for i in range(1, N+1):
     # 원본과 not이 같은 곳에 소속됨 = 답이 없음
     if scc_num[i] == scc_num[-i]:
-        print(0)
+        print("NO")
         break
     # 그 외에는 무조건 답이 있음. 
     # scc_num이 큼 = DAG상에서 앞에 있음 = not x가 False = x가 True면 무조건 명제 성립
     elif scc_num[i] < scc_num[-i]:
         answers[i-1] = 1
 else:
-    print(1)
-    print(*answers)
-
+    print("YES")
+    # print(*answers)
+    answers2 = [0]*N
+    for i in range(N):
+        answers2[positions[i][answers[i]] - 1] = i + 1
+    print(*answers2)
 
 '''
-2-SAT 1,2,3 도 이걸로 다 풀림
+네 이거 딱 잡고 플레찍었습니다.
 '''
