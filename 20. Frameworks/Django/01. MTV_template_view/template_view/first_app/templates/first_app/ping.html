@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% comment %} url 들어가는 곳은 죄다 저렇게 처리할 수 있음 {% endcomment %}
+<form action = "{% url 'first_app:pong'%}">
+  <div>
+    <label for = "message"> 메시지 : </label>
+    <input name="message" type = "text" id="message">
+  </div>
+
+  <div>
+    <label for = "name"> sign: </label>
+    <input name = "sign" type = "text" id = "name">
+  </div>
+
+<input type="submit">
+</form>
+
+{% endblock content %}
+
+

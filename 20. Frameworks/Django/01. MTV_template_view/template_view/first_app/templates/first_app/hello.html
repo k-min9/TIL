@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>Hello {{ name|upper }}!</h1>
+  
+  {% if name == 'admin' %}
+    <h2>관리자님 어서오십시오.</h2>
+  {% elif name == 'manager' %}
+    <h2>매니저님 어서오세요.</h2>
+  {% elif name == 'staff' %}
+    <h2>스태프님 하이요.</h2>
+  {% elif name == 'world' %}
+    <h2>끼요옷 나의 월드 맛을 조금만 보거라.</h2>
+  {% else %}
+    <h2>일반인 어서오고.</h2>
+  {% endif %}
+
+{% endblock %}
+ 

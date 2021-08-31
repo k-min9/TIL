@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>이번주 로또 번호</h1>
+  <p>{{ numbers|length }}개의 숫자를 뽑았습니다.</p>
+  <p>{{ numbers|join:",,, " }}</p>
+  <ul>
+    {% for number in numbers %}
+    <li>{{ number }}</li>
+    {% endfor %}
+  </ul>
+{% endblock content %}
