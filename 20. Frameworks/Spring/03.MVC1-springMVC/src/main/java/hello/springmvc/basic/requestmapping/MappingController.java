@@ -44,5 +44,26 @@ public class MappingController {
         return "ok";
     }
 
-    
+    //특정 파라미터 조건 매핑 (특정 파라미터가 있나 없나나)
+    @GetMapping(value = "/mapping-param", params = "mode=debug")
+    public String mappingParam() {
+        log.info("mappingParam");
+        return "ok";
+    }
+
+    //특정 헤더 조건 매핑 (파라미터 대신에 HTTP해더 사용)
+    @GetMapping(value = "/mapping-header", headers = "mode=debug")
+    public String mappingHeader() {
+        log.info("mappingHeader");
+        return "ok";
+    }
+
+    //미디어 타입 조건 매핑 - HTTP 요청(Content-Type 헤더를 기반으로 미디어 타입 매핑)
+    @PostMapping(value = "/mapping-consume", consumes = "application/json")
+    public String mappingConsumes() {
+        log.info("mappingConsumes");
+        return "ok";
+    }
+
+
 }
