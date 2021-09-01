@@ -8,9 +8,40 @@ import sys
 input = sys.stdin.readline
 
 N, M = map(int, input().split())
-boxes = [list(map(int, input.split()))]
+boxes = [list(map(int, input().rstrip())) for _ in range(N)]
 
 answer = 0
 for i in range(1 << N*M):
     sums = 0
-    for i in range(N):
+
+    # 가로(1 훑기)
+    for y in range(N):
+        tmp = 0
+        for x in range(M):
+            idx = y*M + x
+            if i & (1<<idx) != 0:
+                tmp = 10*tmp + boxes[y][x]
+            else:
+                sums += tmp
+                tmp = 0
+        sums += tmp
+    
+    # 세로(0훑기)
+    for x in range(M):
+        tmp = 0
+        for y in range(N):
+            idx = y*M + x
+            if i & (1<<idx) == 0:
+                tmp = 10*tmp + boxes[y][x]
+            else:
+                sums += tmp
+                tmp = 0
+        sums += tmp
+       
+    answer = max(sums, answer)
+
+print(answer)
+
+'''
+그건 그렇고 연습은 잘 했습니다.
+'''
