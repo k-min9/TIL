@@ -8,18 +8,17 @@
   <title>Document</title>
 </head>
 <body>
-  
   <nav>
     <ul>
-      <li><a href="{% url 'articles:index' %}">Home</a></li>
-      <li><a href="{% url 'articles:new' %}">New</a></li>
+      <li><a href="{% url 'board:index' %}">Home</a></li>
+      <li><a href="{% url 'board:new' %}">New</a></li>
     </ul>
   </nav>
-
   <div class="container">
-    {% block content %}{% endblock content %}
+  {% comment %} block 이름 content, 고정값 아님, endblock에 이름 쓸 필요없음. 블록이 여럿있을때 좋은 습관 {% endcomment %}
+    {% block content%}
+    {% endblock content%}
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 </body>
 </html>

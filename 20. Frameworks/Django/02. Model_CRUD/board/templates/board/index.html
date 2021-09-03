@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>index</h1>
+<ul>
+  {% for question in questions%}
+  <li>
+    <a href = {% url 'board:detail' question.pk%}>{{question.title}}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock content %}
+
