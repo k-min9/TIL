@@ -26,6 +26,12 @@
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
         </dependency>
+        <!--이거 없으면 main 실행 자체가 안됨-->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
     </dependencies>
 
 </project>
