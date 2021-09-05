@@ -22,12 +22,12 @@ public class JpaMain {
 
         try {
             //C
-            Member member = new Member();
-            member.setId(2L);
-            member.setName("HelloB");
+//            Member member = new Member();
+//            member.setId(2L);
+//            member.setName("HelloB");
 
             //저장(영속) 같은것이라고 생각하면 됨 (>> 엔티티를 엔티티 영속성 컨테스트라는 곳에 저장한다)
-            em.persist(member);
+//            em.persist(member);
 
             //R:찾기 예제
 //            Member findmember = em.find(Member.class, 1L);
