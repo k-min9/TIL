@@ -54,6 +54,8 @@
 [언어][지원][경력][푸드]
 '''
 
+from bisect import bisect_left
+
 # 상수
 set_query1_A = {0,1,2,3,8,9,10,11,16,17,18,19}
 set_query1_B = {4,5,6,7,12,13,14,15,20,21,22,23}
@@ -67,7 +69,7 @@ def solution(info, query):
     for i in range(n):
         info[i] = info[i].split()
         
-    # 24개 그룹 생성 예정
+    # 24(3*2*2*2)개 그룹 생성 예정
     groups = [[] for _ in range(24)]
     for i in info:
         # 언어 체크(cpp, java, python)
@@ -122,25 +124,66 @@ def solution(info, query):
             query_num = query_num & set_query3_B
                     
         # print('q', query_num)
-        answer = 0
+        tmp = list()
         for num in query_num:
-            for g in groups[num]:
-                if g >= chk[7]:
-                    answer + 1
-        answer.append(answer)
+            tmp.extend(groups[num])
+        tmp.sort()
+        answers.append(len(tmp) - bisect_left(tmp, (int(chk[7]))))
 
     return answers
 
-
-
+print(
 solution(["java backend junior pizza 150","python frontend senior chicken 210","python frontend senior chicken 150","cpp backend senior pizza 260","java backend junior chicken 80","python backend senior chicken 50"],
 ["java and backend and junior and pizza 100","python and frontend and senior and chicken 200","cpp and - and senior and pizza 250","- and backend and senior and - 150","- and - and - and chicken 100","- and - and - and - 150"])
+)
 
 
 '''
-효율성 테스트??????????
+3차 시도 : 효율성 테스트??????????
+
+정답자꺼 뜯어보기
+1. 쿼리부터 접근해서 108개 그룹을 만들어라
+2. 108개 그룹에 pool의 내용물을 채워놔라
+3. 그 다음은 같다.
 '''
 
-from bisect import bisect_left
+def solution(info, query):
+    data = dict()
+    for a in ['cpp', 'java', 'python', '-']:
+        for b in ['backend', 'frontend', '-']:
+            for c in ['junior', 'senior', '-']:
+                for d in ['chicken', 'pizza', '-']:
+                    data.setdefault((a, b, c, d), list())
+    for i in info:
+        i = i.split()
+        for a in [i[0], '-']:
+            for b in [i[1], '-']:
+                for c in [i[2], '-']:
+                    for d in [i[3], '-']:
+                        data[(a, b, c, d)].append(int(i[4]))
 
-bisect_left()
+    for k in data:
+        data[k].sort()
+
+        # print(k, data[k])
+
+    answer = list()
+    for q in query:
+        q = q.split()
+
+        pool = data[(q[0], q[2], q[4], q[6])]
+        find = int(q[7])
+        l = 0
+        r = len(pool)
+        mid = 0
+        while l < r:
+            mid = (r+l)//2
+            if pool[mid] >= find:
+                r = mid
+            else:
+                l = mid+1
+            # print(l, r, mid, answer)
+        # answer.append((pool, find, mid))
+        answer.append(len(pool)-l)
+
+    return answer
