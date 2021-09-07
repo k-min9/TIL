@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ article.title }}</h1>
+<strong>
+  {{ article.created_at }} | {{ article.updated_at }}
+</strong>
+
+<p>{{ article.content }}</p>
+
+<div>
+  <a href="{% url 'articles:index' %}"><button>Back</button></a>
+</div>
+
+<div>
+  <a href="{% url 'articles:update' article.pk %}"><button>Edit</button></a>
+</div>
+
+<form action="{% url 'articles:delete' article.pk %}" method="POST">
+  {% csrf_token %}
+  <button onclick="return confirm('삭제하시겠습니까?')">Delete</button>
+</form>
+{% endblock content %}

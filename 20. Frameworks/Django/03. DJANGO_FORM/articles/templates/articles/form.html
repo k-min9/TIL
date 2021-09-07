@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block content %}
+
+    {% if request.resolver_match.url_name == 'create' %}
+    <h1>Create</h1>
+    {% elif request.resolver_match.url_name == 'update' %}
+    <h1>Update</h1>
+    {% endif %}
+
+    <h2>{{ page_name }}</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <!-- form 은 input 관련해서만 생성 -->
+    {% comment %} {{ form.as_p }} {% endcomment %}
+    {% bootstrap_form form layout='horizontal' %}
+
+    {% buttons submit="제출" reset="재작성" %}{% endbuttons %}
+  </form>
+
+{% endblock %}
