@@ -21,6 +21,11 @@ public class Order {
     @JoinColumn(name = "MEMBER_ID") //외래키 기준
     private Member member;
 
+    // 1:1 관계
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
+
     //역방향 연결 => 주인 OrderItem의 order
     @OneToMany(mappedBy = "order")
     private List<OrderItem> orderItems = new ArrayList<>();

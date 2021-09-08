@@ -1,9 +1,8 @@
 package jpabook.jpashop.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Item {
@@ -14,6 +13,10 @@ public class Item {
     private String name;
     private int price;
     private int stockQuantity;
+
+    @ManyToMany(mappedBy = "items") // 실무에서 저얼때쓰면 안되지만 어떻게 돌아가는지 확인하기 위해서 한번 예시
+    private List<Category> categories = new ArrayList<>();
+
 
     public Long getId() {
         return id;
