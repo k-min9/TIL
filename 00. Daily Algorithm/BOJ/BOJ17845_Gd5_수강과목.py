@@ -32,8 +32,9 @@ for i in range(1,K+1):
             dp[i][j] = max(priors[i-1] + dp[i-1][j-times[i-1]], dp[i-1][j])
             #print('3', i, j, dp[i][j])
 
-#print(dp)
-print(dp[K][N])
+for d in dp:
+    print(*d)
+#print(dp[K][N])
 
 '''
 ??? Python 시간 초과 튕기고 PyPy 써야되는데요 ???
