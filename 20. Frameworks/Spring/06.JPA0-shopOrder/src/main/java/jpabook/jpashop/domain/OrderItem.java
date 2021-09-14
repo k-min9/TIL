@@ -12,14 +12,14 @@ public class OrderItem extends BaseEntity {
 //    @Column(name = "ORDER_ID")
 //    private Long orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // one to one , many to one은 무조건 지연로딩으로 바꿔야한다.
     @JoinColumn(name = "ORDER_ID")
     private Order order;
 
 //    @Column(name = "ITEM_ID")
 //    private Long itemId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // one to one , many to one은 무조건 지연로딩으로 바꿔야한다.
     @JoinColumn(name = "ITEM_ID")
     private Item item;
 

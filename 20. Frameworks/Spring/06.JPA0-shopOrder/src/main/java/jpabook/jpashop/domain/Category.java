@@ -13,7 +13,7 @@ public class Category extends BaseEntity {
     private String name;
 
     // Parent가 되게 흥미로운 구조라는데 일단 자세한 설명은 다음 강의
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // one to one , many to one은 무조건 지연로딩으로 바꿔야한다.
     @JoinColumn(name = "PARENT_ID")
     private Category parent;
 

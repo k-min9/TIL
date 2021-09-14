@@ -17,17 +17,17 @@ public class Order extends BaseEntity{
 //    private Long MemberId;
 
     //MEMBER과 ORDERS의 단방향 연결
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // one to one , many to one은 무조건 지연로딩으로 바꿔야한다.
     @JoinColumn(name = "MEMBER_ID") //외래키 기준
     private Member member;
 
     // 1:1 관계
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // order시 생성되는 delivery에는 아예 영속성전이 ALL
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
     //역방향 연결 => 주인 OrderItem의 order
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
