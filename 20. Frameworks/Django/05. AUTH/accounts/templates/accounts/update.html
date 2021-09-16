@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>회원정보 수정</h1>
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>회원정보수정</button>
+</form>
+{% endblock content %}

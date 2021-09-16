@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% comment %}
+  user => 프로필의 주인
+  request.user => 화면을 보고있는 '나'
+{% endcomment %}
+
+<h1>{{ user.username }}</h1>
+
+<ul>
+  <li>
+    {% if user.email %}
+    {{ user.email }}
+    {% else %}
+    no registered email..
+    {% endif %}
+  </li>
+
+  {% if user == request.user %}
+  <li>
+    <a href="{% url 'accounts:update' %}">
+      <button>회원 정보 변경</button>
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'accounts:change_password' %}">
+      <button>비밀 번호 변경</button>
+    </a>
+  </li>
+  <li>
+    <form action="{% url 'accounts:delete' %}" method="POST">
+      {% csrf_token %}
+      <button>회원 탈퇴</button>
+    </form>
+  </li>
+  {% endif %}
+</ul>
+
+
+{% endblock content %}

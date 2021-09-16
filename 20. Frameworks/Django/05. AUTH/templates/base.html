@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="{% url 'articles:index' %}">Home</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="{% url 'articles:new' %}">New</a></li>
+      <li>
+        <a href="{% url 'accounts:profile' request.user.username %}">
+          {{ request.user.username }}'s profile
+        </a>
+      </li>
+      <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+      {% else %}
+      <li><a href="{% url 'accounts:signup' %}">Signup</a></li>
+      <li><a href="{% url 'accounts:login' %}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  <div class="container">
+    {% block content %}{% endblock content %}
+  </div>
+</body>
+</html>
