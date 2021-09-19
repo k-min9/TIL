@@ -17,7 +17,7 @@ public class JpaMain {
 
         try {
             Member member = new Member();
-            member.setUsername("member1");
+            member.setUsername("회원 강민구");
             member.setAge(10);
             em.persist(member);
 
@@ -65,8 +65,8 @@ public class JpaMain {
                     .getResultList();
 
             System.out.println("페이징 - result.size() = " + result4.size());
-            for (Member member1 : result4) {
-                System.out.println("member1 = " + member1);
+            for (Member member4 : result4) {
+                System.out.println("member4 = " + member4);
             }
 
             // 조인
@@ -90,6 +90,63 @@ public class JpaMain {
                     "else '일반요금'" +
                     "end" +
                     "from Member m";
+
+            // 페치 조인(매우 중요!!!!)
+            Team teamA = new Team();
+            teamA.setName("팀A");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamB.setName("팀B");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.setTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.setTeam(teamB);
+            em.persist(member3);
+
+            em.flush();
+            em.clear();
+
+            //기존 > 처음(SQL), A(SQL), A(1차 캐시), B(SQL) - 총 3회 쿼리 발생
+            //페치 : 1회 SQL로 필요한 데이터를 다 가져옴
+            String queryFetch = "select m from Member m join fetch m.team";
+            List<Member> resultFetch = em.createQuery(queryFetch, Member.class).getResultList();
+
+            for (Member memberFetch : resultFetch) {
+                System.out.println("member = " + memberFetch.getUsername()+", "+memberFetch.getTeam());
+            }
+            //페치는 다대일은 상관없지만, 1대다 같은 경우에는 데이터 뻥튀기가 발생할 수 있어서, 필요시 JPQL DISTINCT로 같은 식별자 제거 가능
+
+            //네임드 쿼리 : 로딩 시점 초기화+파싱+캐시 and 로딩 시점 쿼리 검증
+            List<Member> queryNamedResult = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", "회원 1")
+                    .getResultList();
+
+            for (Member member5 : queryNamedResult) {
+                System.out.println("네임드 쿼리 member = " + member5);
+            }
+
+            //벌크 연산 (executeupdate) : 쿼리 한번에 여러 테이블의 row를 변경
+            em.createQuery("update Member m set m.age = 20").executeUpdate();
+
+            System.out.println("member1.getAge() = " + member1.getAge()); // 영속성 컨텍스트 값인 0으로 나옴 DB는 20이 반영됨
+            System.out.println("member2.getAge() = " + member2.getAge());
+
+            em.clear(); // 벌크 연산전 flush는 실행되지만, 변경된 DB와 영속성컨텍스트의 값이 일치하지 않게 되기 때문에 초기화 해야한다.
+
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("member1의 DB값.getAge() = " + findMember.getAge());
 
 
             ////
