@@ -103,16 +103,67 @@ public class BasicController {
         return "basic/literal";
     }
 
+    //연산값 설정 < > 등 이미 html로 쓰이는 기호 주의, Elvis, No-operation 활용.
+    @GetMapping("/operation")
+    public String operation(Model model) {
+        model.addAttribute("nullData", null);
+        model.addAttribute("data", "Spring!");
+        return "basic/operation";
+    }
+
+    //속성(Attribute) 값 설정
+    @GetMapping("/attribute")
+    public String attribute() {
+        return "basic/attribute";
+    }
+
+    //반복문
+    @GetMapping("/each")
+    public String each(Model model) {
+        addUsers(model);
+        return "basic/each";
+    }
+
+    private void addUsers(Model model) {
+        List<User> list = new ArrayList<>();
+        list.add(new User("UserA", 10));
+        list.add(new User("UserB", 20));
+        list.add(new User("UserC", 30));
+
+        model.addAttribute("users", list);
+    }
+
+    //조건부 평가(th:if/ th:unless/ 조건 만족 안할경우 출력 아예 안함)
+    @GetMapping("/condition")
+    public String condition(Model model) {
+        addUsers(model);
+        return "basic/condition";
+    }
+
+    //주석
+    @GetMapping("/comments")
+    public String comments(Model model) {
+        model.addAttribute("data", "Spring!");
+        return "basic/comments";
+    }
+
+    //블록 : 타임리프 전용 표기법
+    @GetMapping("/block")
+    public String block(Model model) {
+        addUsers(model);
+        return "basic/block";
+    }
 
 
+    //자바 스크립트 인라인(자바스크립트에서 타임리프를 편리하게 사용할 수 있게 도움)
+    @GetMapping("/javascript")
+    public String javascript(Model model) {
 
+        model.addAttribute("user", new User("UserA", 10));
+        addUsers(model);
 
-
-
-
-
-
-
+        return "basic/javascript";
+    }
 
 
 
