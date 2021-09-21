@@ -62,6 +62,30 @@
         </div>
     </div>
 
+    <!-- 라디오 버튼 -->
+    <div>
+        <div>상품 종류</div>
+        <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
+            <input type="radio" th:field="${item.itemType}" th:value="${type.name()}" class="form-check-input" disabled>
+            <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">
+                BOOK
+            </label>
+        </div>
+    </div>
+
+    <!-- 셀렉트 박스 -->
+    <div>
+        <div>배송 방식</div>
+        <select th:field="${item.deliveryCode}" class="form-select" disabled>
+            <!--기본값-->
+            <option value="">==배송 방식 선택==</option>
+            <option th:each="deliveryCode : ${deliveryCodes}" th:value="${deliveryCode.code}"
+                    th:text="${deliveryCode.displayName}">FAST</option>
+        </select>
+    </div>
+
+    <hr class="my-4">
+
     <div class="row">
         <div class="col">
             <button class="w-100 btn btn-primary btn-lg"

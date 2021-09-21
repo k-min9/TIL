@@ -10,4 +10,9 @@ public enum ItemType {
     ItemType(String description) {
         this.description = description;
     }
+
+    //프록시 접근이니까 getter 당연히 필요하고.
+    public String getDescription() {
+        return description;
+    }
 }
