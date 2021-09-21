@@ -18,21 +18,43 @@
         <h2>상품 등록 폼</h2>
     </div>
 
-    <form action="item.html" th:action method="post">
+    <form action="item.html" th:action th:object="${item}" method="post">
         <div>
             <label for="itemName">상품명</label>
-            <input type="text" id="itemName" name="itemName" class="form-control" placeholder="이름을 입력하세요">
+            <input type="text" id="itemName" th:field="*{itemName}" class="form-control" placeholder="이름을 입력하세요">
         </div>
         <div>
             <label for="price">가격</label>
-            <input type="text" id="price" name="price" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" id="price" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요">
         </div>
         <div>
             <label for="quantity">수량</label>
-            <input type="text" id="quantity" name="quantity" class="form-control" placeholder="수량을 입력하세요">
+            <input type="text" id="quantity" th:field="*{quantity}" class="form-control" placeholder="수량을 입력하세요">
         </div>
 
         <hr class="my-4">
+
+        <!--싱글 체크박스 : 주의사항 순정 HTML시 체크박스 선택 안하면 아무 데이터도 안넘어감-->
+        <div>판매 여부</div>
+        <div>
+            <div class="form-check">
+                <input type="checkbox" id="open" th:field="*{open}" class="form-check-input">
+                <label for="open" class="form-check-label">판매 오픈</label>
+            </div>
+        </div>
+
+        <!-- 다중 체크박스 -->
+        <div>
+            <div>등록 지역</div>
+            <!--우선 반복문 / 서울, 부산, 제주-->
+            <div th:each="region : ${regions}" class="form-check form-check-inline">
+                <!--* 보면 알겠지만 필드는 item.regions다, value는 링크드해쉬맵의 key-->
+                <input type="checkbox" th:field="*{regions}" th:value="${region.key}" class="form-check-input">
+                <!--필드의 자동 아이디를 인식해서 가져오는 #ids-->
+                <label th:for="${#ids.prev('regions')}"
+                       th:text="${region.value}" class="form-check-label">서울</label>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col">
