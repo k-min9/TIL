@@ -28,7 +28,7 @@ public class FormatterController {
         return "formatter-view";
     }
 
-    //스프링 제공 
+    //스프링 제공
     @Data
     static class Form {
         @NumberFormat(pattern = "###,###")
