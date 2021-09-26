@@ -325,13 +325,14 @@ def delete(request, pk):
 
 {% block content %}
   <h1>CREATE</h1>
-  <form action="{% url 'community:create' %}" method="POST">
+  <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="작성">
+    <input type="submit" value="제출">
   </form>
   <a href="{% url 'community:index' %}">[back]</a>
 {% endblock content %}
+
 ```
 
 ```
@@ -553,9 +554,9 @@ def index(request):
     return render(request, 'home.html')
 ```
 
-- 기존 base.html의 container을 container-fluid로 바꾸고(양 끝이 꽉 참), home.html 생성
+- 기존 base.html의 container을 container-fluid px-0로 바꾸고(양 끝이 꽉 참), home.html 생성
 
-base.html 상속하더라도 static은 따로 load 해줘야 함
+주의) base.html 상속하더라도 static은 따로 load 해줘야 함
 
 ```
 {% extends 'base.html' %}

@@ -48,7 +48,7 @@
   <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
 
-      <a class="navbar-brand" href="02_home.html">
+      <a class="navbar-brand" href="{% url 'index' %}">
         <img src="{% static './images/logo.png' %}" alt="logo" width="120" height="55">
       </a>
 
@@ -58,10 +58,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <li><a href="02_home.html" class="nav-link active text-decoration-none mx-2 text-end">Home</a></li>
+            <li><a href="{% url 'index' %}" class="nav-link active text-decoration-none mx-2 text-end">Home</a></li>
           </li>
           <li class="nav-item ms-md-auto">
-            <li><a href="03_community.html" class="nav-link text-decoration-none mx-2 text-end">Community</a></li>
+            <li><a href="{% url 'community:index' %}" class="nav-link text-decoration-none mx-2 text-end">Community</a></li>
           </li>
           <li class="nav-item ms-md-auto">
             <li><a href="#" class="nav-link text-decoration-none mx-2 text-end" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</a></li>
@@ -108,7 +108,7 @@
     </div>
   </div>
 
-  <div class="container-fluid">
+  <div class="container-fluid px-0">
   {% block content %}{% endblock content %}
   </div>
   
