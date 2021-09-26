@@ -464,26 +464,32 @@ def logout(request):
 {% endblock content %}
 ```
 
+### 4. Home 페이지, Navbar, footer, Modal 제작
 
-
-### 4. 정리
-
-- base.html에 임시 navbar 활성화
+- base.html에 임시 navbar 비활성화, navbar, footer, Modal 추가
 
 ```
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'community:index' %}">LOGO</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+      <a class="navbar-brand" href="02_home.html">
+        <img src="{% static './images/logo.png' %}" alt="logo" width="120" height="55">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'community:index' %}">Home</a>
+            <li><a href="02_home.html" class="nav-link active text-decoration-none mx-2 text-end">Home</a></li>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'community:create' %}">Create</a>
+          <li class="nav-item ms-md-auto">
+            <li><a href="03_community.html" class="nav-link text-decoration-none mx-2 text-end">Community</a></li>
+          </li>
+          <li class="nav-item ms-md-auto">
+            <li><a href="#" class="nav-link text-decoration-none mx-2 text-end" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</a></li>
           </li>
         </ul>
       </div>
@@ -491,4 +497,160 @@ def logout(request):
   </nav>
 ```
 
-- home.html을 만들어서 처음 킬 경우 무조건 거기로 가게 설정
+```
+  <!-- Footer -->
+  <footer class="d-flex fixed-bottom justify-content-center align-items-center">
+    <p class="my-2 text-dark fw-bold">Django-bootsrtap PJT by 강민구</p>
+  </footer>
+```
+
+```
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="#" class="d-flex flex-column">
+            <div>
+              <label for="username">Username</label><br>
+              <input class="form-control mb-2" id="username" type="text">
+            </div>
+            
+            <div>
+              <label for="password">Password</label><br>
+              <input class="form-control mb-3" id="username" type="password">  
+            </div>
+            <div>
+              <input type="checkbox"> Check me out
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+```
+
+- project의 urls.py에 path 추가 후, views.py를 생성하여 사이트 접속시 무조건 home.html로 들어가게 설정
+
+```
+from . import views
+
+path('', views.index, name='index'),
+```
+
+```
+from django.shortcuts import render
+
+def index(request):
+    return render(request, 'home.html')
+```
+
+- 기존 base.html의 container을 container-fluid로 바꾸고(양 끝이 꽉 참), home.html 생성
+
+base.html 상속하더라도 static은 따로 load 해줘야 함
+
+```
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <header>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{% static './images/header1.jpg' %}" class="d-block w-100" alt="header1">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static './images/header2.jpg' %}" class="d-block w-100" alt="header2">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static './images/header3.jpg' %}" class="d-block w-100" alt="header3">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </header>
+
+  <h1 class="text-center py-5 fw-bold">Boxoffice</h1>
+
+  <article class="container">
+    <div class="row mb-5 g-3">
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie1.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie2.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie3.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie4.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie5.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 d-flex justify-content-center">
+        <div class="card">
+          <img src="{% static './images/movie6.jpg' %}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-text"><strong>Movie Title</strong><br>This is a longer card with supporting text below as...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock content %}
+```
+
