@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     #local apps
-    #'accounts',
+    'accounts',
     'community',
 
     # 3rd party apps

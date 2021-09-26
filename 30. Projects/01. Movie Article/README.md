@@ -178,12 +178,34 @@ class Review(models.Model):
         return self.title
 ```
 
+그 이후에 migrate 하기
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
 - admin.py에 가서 admin 내용 추가
 
 ```
 from .models import Review
 
 admin.site.register(Review)
+```
+
+- forms.py 생성하고, 제약 조건에 맞는 Form 생성
+
+```
+from .models import Review
+from django import forms
+
+class ReviewForm(forms.ModelForm):
+    movie_title = forms.CharField(max_length = 100)
+    title = forms.CharField(max_length = 100)
+
+    class Meta:
+        model = Review
+        fields = '__all__'
 ```
 
 - urls.py를 생성하고, app_name 및 패턴을 선언한다.
@@ -203,3 +225,270 @@ urlpatterns = [
 ]
 ```
 
+- view.py에 각각 urlpattern에 맞는 함수 생성 및 내용 채우기
+
+```
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods, require_safe, require_POST
+from .models import Review
+from .forms import ReviewForm 
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def create(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            article = form.save()
+            return redirect('community:detail', article.pk)
+    else:
+        form = ReviewForm()
+    context = {'form': form, }
+    return render(request, 'community/form.html', context)
+
+
+@require_safe
+def index(request):
+    reviews = Review.objects.order_by('-pk')
+    context = {
+        'reviews': reviews,
+    }
+    return render(request, 'community/index.html', context)
+
+
+@require_safe
+def detail(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    context = {
+        'review': review,
+    }
+    return render(request, 'community/detail.html', context)
+
+@login_required
+@require_http_methods(['GET', 'POST'])
+def update(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            article = form.save()
+            return redirect('community:detail', article.pk)
+    else:
+        form = ReviewForm(instance=review)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'community/form.html', context)
+
+@login_required
+@require_POST
+def delete(request, pk):
+    review = get_object_or_404(Review, pk=pk)
+    review.delete()
+    return redirect('community:index')
+```
+
+- templates>community 폴더 생성 후 detail.html, form.html, index.html 생성
+
+```
+#detail.html
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h2>상세 내용</h2>
+  <h3>{{ review.pk }}번째 글</h3>
+  <hr>
+  <p>글 번호 : {{ review.pk }}</p>
+  <p>영화 제목 : {{ review.movie_title }}</p>
+  <p>글 제목 : {{ review.title }}</p>
+  <p>글 내용 : {{ review.content }}</p>
+  <hr>
+
+  <a href="{% url 'community:update' review.pk %}">[UPDATE]</a>
+  <form action="{% url 'community:delete' review.pk %}" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="DELETE">
+  </form>
+
+  <a href="{% url 'community:index' %}">[back]</a>
+{% endblock content %}
+```
+
+```
+# form.html
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CREATE</h1>
+  <form action="{% url 'community:create' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="작성">
+  </form>
+  <a href="{% url 'community:index' %}">[back]</a>
+{% endblock content %}
+```
+
+```
+# index.html
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Review</h1>
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'community:create' %}">[CREATE]</a>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[새 글을 작성하려면 로그인하세요.]</a>
+  {% endif %}
+  <hr>
+  {% for review in reviews %}
+    <p>글 번호 : {{ review.pk }}</p>
+    <p>영화 제목 : {{ review.movie_title }}</p>
+    <p>글 제목 : {{ review.title }}</p>
+    <p>글 내용 : {{ review.content }}</p>
+    <a href="{% url 'community:detail' review.pk %}">[DETAIL]</a>
+    <hr>
+  {% endfor %}
+{% endblock content %}
+```
+
+
+
+### 3. accounts
+
+community에서 로그인 전제라던가 쓰였으니 accounts 부터 작성해야 했다.
+
+- urls.py를 생성하고, app_name 및 패턴을 선언한다.
+
+```
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+
+urlpatterns = [
+    path('signup/', views.signup, name='signup' ),
+    path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
+]
+```
+
+- view.py에 각각 urlpattern에 맞는 함수 생성 및 내용 채우기
+
+```
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth import get_user, login as auth_login, logout as auth_logout
+
+@require_http_methods(['GET', 'POST'])
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('community:index')
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # 가입 후 자동 로그인
+            auth_login(request, user)
+            return redirect('community:index')
+    else:
+        form = UserCreationForm()
+
+    context = {'form':form,}
+    return render(request, 'accounts/signup.html', context)
+            
+
+def login(request):
+    if request.user.is_authenticated:
+        return redirect('community:index')
+
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return redirect(request.GET.get('next') or 'community:index')
+    else:
+        form = AuthenticationForm()
+    context = {
+        'form':form,
+    }
+    return render(request,'accounts/login.html', context)
+        
+
+def logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request)
+    return redirect('community:index')
+```
+
+- templates>accounts 폴더 생성 후 login.html, signup.html 생성
+
+```
+# login.html
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Login</h1>
+<form method="POST">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button>로그인</button>
+</form>
+
+{% endblock content %}
+```
+
+```
+#signup.html 
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Signup</h1>
+<form method="POST">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button>회원가입</button>
+</form>
+
+{% endblock content %}
+```
+
+
+
+### 4. 정리
+
+- base.html에 임시 navbar 활성화
+
+```
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'community:index' %}">LOGO</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'community:index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'community:create' %}">Create</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+```
+
+- home.html을 만들어서 처음 킬 경우 무조건 거기로 가게 설정
