@@ -53,7 +53,7 @@ python manage.py migrate
 
 ### 1. 프로젝트 설정
 
-일단 추가한 설정에 맞게 settings.py 기본 세팅
+- 일단 추가한 설정에 맞게 settings.py 기본 세팅
 
 ```
 INSTALLED_APPS = [
@@ -84,7 +84,7 @@ LANGUAGE_CODE = 'ko-kr'
 
 
 
-프로젝트의 urls.py에 기본 설정
+- 프로젝트의 urls.py에 기본 설정
 
 ```
 from django.urls import path, include
@@ -97,7 +97,7 @@ urlpatterns = [
 
 
 
-부트스트랩 추가.
+- 부트스트랩 추가하기
 
 방법1) 라이브러리
 
@@ -148,13 +148,58 @@ urlpatterns = [
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 ```
 
+settings.py에
 
+```
+STATICFILES_DIRS = [BASE_DIR / 'static',] 
+```
 
-
-
-
+추가
 
 
 
 ### 2. Community
+
+MTV 순서대로 짜면 된다.
+
+- models.py에 가서 클래스 선언
+
+```
+class Review(models.Model):
+    movie_title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    rank = models.IntegerField()
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+```
+
+- admin.py에 가서 admin 내용 추가
+
+```
+from .models import Review
+
+admin.site.register(Review)
+```
+
+- urls.py를 생성하고, app_name 및 패턴을 선언한다.
+
+```
+from django.urls import path
+from . import views
+
+app_name = 'community'
+
+urlpatterns = [
+    path('create/', views.create, name='create'),
+    path('', views.index, name='index'),
+    path('<int:pk>/', views.detail, name='detail'),
+    path('<int:pk>/update', views.update, name='update'),
+    path('<int:pk>/delete', views.delete, name='delete'),
+]
+```
 
