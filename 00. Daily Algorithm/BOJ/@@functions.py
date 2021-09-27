@@ -6,6 +6,11 @@ def dfs():
 def bfs():
     pass
 
+def backtrack():
+    # 종류 : dfs
+    # 추천 문제 : 1248 맞춰봐, N-Queen
+    pass
+
 def dijkstra(nodeStart):
     pass
 
@@ -46,6 +51,7 @@ def tarjan():
 
 dfs()
 bfs()
+backtrack()
 dijkstra(1)
 bellmanFord()
 floid()
