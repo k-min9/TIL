@@ -1,0 +1,21 @@
+# 설정이 여럿일 경우 application.properties보다 yml이 더 편리
+# 띄어쓰기 칸 수 주의
+
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/jpashop
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create # 애플리케이션 실행시점에 테이블 다 지우고 새로 생성
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug # hibernate가 생상하는 로그를 다 보여줌
+# org.hibernate.type: trace # 쿼리 파라미터 로그 남기기
