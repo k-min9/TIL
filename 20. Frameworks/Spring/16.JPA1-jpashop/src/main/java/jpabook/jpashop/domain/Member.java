@@ -23,4 +23,7 @@ public class Member {
     @OneToMany(mappedBy = "member") //이제부터 member가 관리하고 읽기 전용처럼 쓴다고 생각하면 편하다.
     private List<Order> orders = new ArrayList<>();
 
+    //연관관계 메서드
+
+
 }
