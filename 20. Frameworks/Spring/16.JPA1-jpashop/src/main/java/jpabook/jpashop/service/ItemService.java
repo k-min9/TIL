@@ -28,4 +28,14 @@ public class ItemService {
         return itemRepository.findOne(itemId);
     }
 
+    // 중요!
+    //트랜잭션 커밋 시점에 변경 감지
+    @Transactional
+    public void updateItem(Long itemId, String name, int price, int stockQuantity) {
+        Item item = itemRepository.findOne(itemId);
+        item.setName(name);
+        item.setPrice(price);
+        item.setStockQuantity(stockQuantity);
+        //find하면 준영속 엔티티도 영속성 컨테스트에 들어가기때문에 변경감지 update 관리가 된다.
+    }
 }
