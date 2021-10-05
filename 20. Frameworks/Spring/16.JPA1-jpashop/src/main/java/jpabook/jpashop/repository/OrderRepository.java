@@ -66,4 +66,16 @@ public class OrderRepository {
 
     /// 최종적으로 쿼리 DSL로 해결할 것이다. 여기서는 교육은 없고고 예시로보여드림
 
+
+    // api용 fetch join(기본편에서 배웠다. 우리는 객체가 아닌 객체가 포함된 그림을 넘기는 것이다.)
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                        "select o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
+
+
 }
