@@ -15,6 +15,7 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
+        default_batch_fetch_size: 1000 #1대다 쿼리 뻥튀기 페이징 문제, 최적화 옵션 (MAX는 거의 1000)
 
 logging.level:
   org.hibernate.SQL: debug # hibernate가 생상하는 로그를 다 보여줌

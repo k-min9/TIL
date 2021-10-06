@@ -37,6 +37,12 @@ public class OrderRepository {
 //
 //    }
 
+    // API 연습할때 쓸 쉬운 메서드 하나 추가
+    public List<Order> findAll() {
+        return em.createQuery("select o from Order o", Order.class)
+                .getResultList();
+    }
+
     //Criteria : JPA가 제공하는 동적 쿼리 빌드 (이것도 비권장 = 실무 비적합)
     //이게 무슨 쿼리인지 안떠오르는 가독성 = 유지보수가 힘듬,
     public List<Order> findAllByCriteria(OrderSearch orderSearch) {
@@ -77,5 +83,25 @@ public class OrderRepository {
     }
 
 
+    //일대다 api 용 fetch join 쿼리
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                        //데이터 중복(조인에서 참조값, 레퍼런스까지 다 똑같은 엔티티가 들어감 > JPA의 distinct가 해결해줌)
+                        "select distinct o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d" +
+                                " join fetch o.orderItems oi" +
+                                " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
 
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                        "select o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }
