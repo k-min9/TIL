@@ -34,6 +34,9 @@ def floid(maps, i, j, k):
                 if maps[i][j] > maps[i][k] + maps[k][j]:
                     maps[i][j] = maps[i][k] + maps[k][j]
 
+def prim():
+    pass
+
 def union():
     pass
 
@@ -56,6 +59,7 @@ dijkstra(1)
 bellmanFord()
 floid()
 union()
+prim()
 divide()
 my_bisect()
 tarjan() # SCC 찾기용
