@@ -19,4 +19,3 @@ answer = 0
 for num in map(int, input().split()):
     answer += is_prime[num]
 print(answer)
-print(is_prime[0:20])
