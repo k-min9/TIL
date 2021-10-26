@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 @Repository
 public class MemberJpaRepository {
 
+    // 최신 버전은 그냥 @Autowired 해도 같은 일을 하게 바뀜
     @PersistenceContext
     private EntityManager em;
 
