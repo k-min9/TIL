@@ -89,7 +89,8 @@ public class OrderApiController {
         return result;
     }
 
-
+    /**페치조인으로 성능은 왠만하면 다 해결할 수 있다. 이걸로 안 되서 DTO를 도입할 정도면,
+     * 목적에 맞춘(나중에 변경과 최적화도 힘든) 복잡한 코드를 짜야한다.*/
 
     /** V4. JPA에서 DTO로 바로 조회, 컬렉션 N 조회 (1 + N Query)*/
     @GetMapping("/api/v4/orders")
@@ -103,7 +104,7 @@ public class OrderApiController {
         return orderQueryRepository.findAllByDto_optimization();
     }
 
-    /** V6. orderItem과 order을 join하고, orderitem과 item을 join해서 한번에 쿼리를 끝낸다.
+    /** V6. orderItem과 order을 join하고, orderitem과 item을 join해서 한번에 쿼리를 끝낸다. (페이징 불가)
      * 이걸 위한 flat DTO를 만들어서 사용하고 중복을 정리(1 Query)*/
     @GetMapping("/api/v6/orders")
     public List<OrderQueryDto> ordersV6() {

@@ -1,0 +1,20 @@
+spring:
+  # DB 정보
+  datasource:
+  url: jdbc:h2:tcp://localhost/~/datajpa
+  username: sa
+  password:
+  driver-class-name: org.h2.Driver
+
+  # JPA 세팅용
+  jpa:
+    hibernate:
+      ddl-auto: create # 테스트시 로딩시점에 모든 테이블 DROP후 재생성, 테스트 종료후 결과가 남음
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true  # 테스트시 쿼리가 이쁘게 나옴
+
+logging.level:
+  org.hibernate.SQL: debug  # 테스트시 로그가 남음
+# org.hibernate.type: trace  # 테스트시 파라미터까지 볼 수 있음
