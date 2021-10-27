@@ -45,5 +45,12 @@ public class MemberJpaRepository {
         return em.find(Member.class, id);
     }
 
+    //이름과 나이로 회원 조회를 이렇게 짜는걸 스프링 데이터에서는 어떻게 해야할까?? >> 쿼리 메소드
+    public List<Member> findByUsernameAndAgeGreaterThan(String username, int age) {
+        return em.createQuery("select m from Member m where m.username = :username and m.age > :age")
+                .setParameter("username", username)
+                .setParameter("age", age)
+                .getResultList();
+    }
 
 }
