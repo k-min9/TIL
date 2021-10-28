@@ -38,7 +38,12 @@ public class Member {
         }
     }
 
-    // 이렇게 함수 만들고 setter 비활성화 하는것 추천
+    public Member(String username, int age) {
+        this.username = username;
+        this.age = age;
+    }
+
+// 이렇게 함수 만들고 setter 비활성화 하는것 추천
 //    public void changeUsername(String username){
 //        this.username = username;
 //    }
