@@ -1,12 +1,17 @@
 package study.datajpa.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 //@Repository 스프링데이터JPA Repo는 Repository 생략이 가능하다.
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -16,7 +21,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     //스프링 데이터 JPA는 메소드 이름을 분석해서 JPQL을 생성하고 실행
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 
+    //다양한 반환 타입과 페이징 지원
     List<Member> findTop3HelloBy();
+    List<Member> findListByUsername(String name); //컬렉션
+    Member findMemeberByUsername(String name); //단건
+    Optional<Member> findOptionalByUsername(String name); //단건 Optional
 
     /** 2. Query 이용 단순 조회 */
 
@@ -35,5 +44,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     /** 리스트 파라미터 바인딩 예시 */
     @Query("select m from Member m where m.username in :names") // in 절을 이용해서 예쁘게 만들기
     List<Member> findByNames(@Param("names") List<String> names);
+
+
+    /** 페이징 관련 */
+    // 특별한 반환 타입 : Page(기존 TotalCount 기능 제공), Slice(11,12,13,14,15,더보기 같은 기능 제공)
+    Page<Member> findByAge(int age, Pageable pageable); //count 쿼리 사용
+    Slice<Member> findSliceByAge(int age, Pageable pageable); //count 쿼리 사용
+
+    //카운트 쿼리 분리 예시 (성능 최적화, 예시처럼 카운트에는 조인이 필요 없을 수도 있다.)
+    @Query(value = "select m from Member m left join m.team t",
+            countQuery = "select count(m.username) from Member m")
+    Page<Member> findMemberAllCountBy(Pageable pageable);
+
 
 }

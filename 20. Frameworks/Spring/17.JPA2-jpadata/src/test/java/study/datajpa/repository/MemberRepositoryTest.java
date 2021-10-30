@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
@@ -83,4 +87,76 @@ class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void paging() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        // 0페이지(스프링 데이터는 0부터 시작작)부터 시작해 3개 가져와
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        //when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+        //then
+        List<Member> content = page.getContent();  // 이러면 싹 가져옴
+        long totalElements = page.getTotalElements();
+
+//        for (Member member : content) {
+//            System.out.println("member = " + member);
+//        }
+//        // 반환타입을 Page로 작업시 totalCount 같은것도 알아서 계산해 줌 (알아서 토탈 쿼리 날림)
+//        System.out.println("totalElements = " + totalElements);
+
+        //assertThat으로 test
+        assertThat(content.size()).isEqualTo(3);  // 리스트 안에 갯수
+        assertThat(page.getTotalElements()).isEqualTo(5);  // 총 갯수
+        assertThat(page.getNumber()).isEqualTo(0);  // 페이지 번호 (계산이 필요없는 스프링 데이터의 편의점!)
+        assertThat(page.getTotalPages()).isEqualTo(2);  // 총 페이지 수 (3개+2개로 2페이지 나옴)
+        assertThat(page.isFirst()).isTrue();  // 첫 번째 페이지냐
+        assertThat(page.hasNext()).isTrue();  // 다음 페이지 있냐
+
+    }
+
+    @Test
+    public void pagingSlice() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        // 0페이지(스프링 데이터는 0부터 시작작)부터 시작해 3개 가져와
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        //when
+        Slice<Member> page = memberRepository.findSliceByAge(age, pageRequest);
+
+        //then
+        List<Member> content = page.getContent();  // 이러면 싹 가져옴
+
+        assertThat(content.size()).isEqualTo(3);  // 리스트 안에 갯수
+        //assertThat(page.getTotalElements()).isEqualTo(5);  // 총 갯수
+        assertThat(page.getNumber()).isEqualTo(0);  // 페이지 번호 (계산이 필요없는 스프링 데이터의 편의점!)
+        //assertThat(page.getTotalPages()).isEqualTo(2);  // 총 페이지 수 (3개+2개로 2페이지 나옴)
+        assertThat(page.isFirst()).isTrue();  // 첫 번째 페이지냐
+        assertThat(page.hasNext()).isTrue();  // 다음 페이지 있냐
+
+
+        /** 실무 꿀 팁!!!*/
+        //활용 2편 생각하면 알겠지만 API에서 엔티티를 직접 반환하면 안된다 -> DTO 변환씨의 꿀팁 = map
+        Slice<MemberDto> memberDtos = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
+
+    }
 }
