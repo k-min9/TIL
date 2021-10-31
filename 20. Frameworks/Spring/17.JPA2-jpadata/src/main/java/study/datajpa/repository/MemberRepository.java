@@ -3,13 +3,12 @@ package study.datajpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
+import javax.persistence.QueryHint;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -58,8 +57,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findMemberAllCountBy(Pageable pageable);
 
     // 벌크 쿼리
-    @Modifying
+    @Modifying  // 벌크 쿼리시 발생하는 DB와 영속성 컨텍스트 사이의 괴리를 영속성 컨텍스트 초기화로 없애준다.(em.flush(); em.clear();)
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     int bulkAgePlus(@Param("age") int age);
+
+    // 페치 조인을 스프링 데이터에서 편하게 써보자 >> EntityGraph
+    @Override  // findAll 워낙 많이 쓰니까. 이런식으로 오버라이드 할 수 있다는 표기
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAll();
+
+    //쿼리 힌트 (예시 - 나 이거 읽기만 할거니까 더티 체크(변경 감지)같은거 하지 마 라고 말하여 최적화 하는 방식)
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    Member findReadOnlyByUsername(String username);
 
 }
