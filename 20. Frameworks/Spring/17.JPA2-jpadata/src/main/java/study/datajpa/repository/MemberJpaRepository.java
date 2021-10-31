@@ -68,4 +68,15 @@ public class MemberJpaRepository {
                 .getSingleResult();
     }
 
+    // 벌크성 쿼리 : 전직원의 나이를 +1, 월급을 10% 인상 같은 쿼리는 SQL에서는 매우 쉽게 처리되지만 jpa에서는 이렇게 update해야한다.
+    public int bulkAgePlus(int age) {
+        int resultCount = em.createQuery(
+                        "update Member m set m.age = m.age + 1" +
+                                "where m.age >= :age")
+                .setParameter("age", age)
+                .executeUpdate();
+        return resultCount;
+    }
+
+
 }
