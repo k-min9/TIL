@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 //@Repository 스프링데이터JPA Repo는 Repository 생략이 가능하다.
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     /** 1. 스프링 데이터 제공 함수*/
 
