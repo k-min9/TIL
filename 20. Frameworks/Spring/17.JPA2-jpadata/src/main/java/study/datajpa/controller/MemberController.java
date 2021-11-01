@@ -1,9 +1,12 @@
 package study.datajpa.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.repository.MemberRepository;
 
@@ -28,10 +31,27 @@ public class MemberController {
         return member.getUsername();
     }
 
+    /** controller web 페이징과 소팅 : Page로 반환하면 스프링 데이터가 알아서 해준다. */
+    // members?page=0&size=3&sort=id,desc&sort=username,desc : 0페이지 3개씩 끊어서, id, username순으로 내림 정렬 등에 대응
+    @GetMapping("/members")
+    // 기본 사이즈 조절시 Pageable앞에 @Param 붙이듯이,
+    // @PageableDefault(size = 5, sort = "username") 이런식으로 붙일수 있음
+    public Page<MemberDto> list(Pageable pageable)
+    {
+        Page<Member> page = memberRepository.findAll(pageable);
+        // 당연히 DTO로 반환해야 한다.
+        Page<MemberDto> map = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null));
+        return map;
+    }
+
+
     // 테스트용 기본 값
     @PostConstruct
     public void init() {
         memberRepository.save(new Member("유저A"));
+        for (int i = 0; i< 100; i++) {
+            memberRepository.save(new Member("user"+i, i));
+        }
 
     }
 
