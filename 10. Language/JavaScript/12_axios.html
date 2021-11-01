@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- axios CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const URL = 'https://jsonplaceholder.typicode.com/todos/1/'
+
+    // axios : 브라우저를 위한 promise 기반 클라이언트
+    const myPromise = axios.get(URL)
+
+    // callback hell을 막고, chaining으로 가독성 개선, 모듈화, 순서 보장 등 확보
+    axios.get(URL)
+      .then(response => {
+        return response.data
+      })
+      .then(response => {
+        return response.title
+      })
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+      .finally(function () {
+        console.log('무조건 실행됨')
+      })
+  </script>
+</body>
+</html>

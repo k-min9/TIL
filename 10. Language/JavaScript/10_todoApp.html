@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App</title>
+</head>
+<body>
+  <h1>Todo app</h1>
+  <input type="text">
+  <button>추가</button>
+
+  <ul>
+
+  </ul>
+  <script>
+    const buttonTag = document.querySelector('button')
+    const inputTag = document.querySelector('input')
+    const ulTag = document.querySelector('ul')
+
+    // 버튼 클릭시 추가
+    buttonTag.addEventListener('click', function (event) {
+      const userInput = inputTag.value
+      const liTag = document.createElement('li')
+      liTag.innerText = userInput
+      ulTag.appendChild(liTag)
+      inputTag.value = ''
+    })
+    
+    // 입력창에서 엔터 입력시 추가
+    inputTag.addEventListener('keydown', function (event) {
+      console.log(event)
+      if (event.key === 'Enter') {
+        const userInput = inputTag.value
+        const liTag = document.createElement('li')
+        liTag.innerText = userInput
+        ulTag.appendChild(liTag)
+        inputTag.value = ''
+      }
+    })
+
+    // 공통부분인 함수를 만들고 submit시 이벤트 작동하게 하면 더 깔끔하게 쓸 수 있다.
+    // const form = document.querySelector('form')
+    // const addTodo = function (event) {...}
+    // form.addEventListener('submit', addTodo)
+    
+  </script>
+</body>
+</html>
