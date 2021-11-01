@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter @Setter// setter은 진짜 써도 안써도 상관없는 상황이 아니면 안쓰는게 기본 (changeUsername 참조)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"})  // 객체 출력 명령시 나오는 것
-public class Member {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
