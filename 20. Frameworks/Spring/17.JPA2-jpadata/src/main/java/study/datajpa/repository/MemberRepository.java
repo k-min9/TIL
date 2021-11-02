@@ -70,4 +70,11 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
     Member findReadOnlyByUsername(String username);
 
+    // projections : 엔티티 대신에 DTO 조회를 편하게(전체 엔티티가 아니라 그 중 이름만 조회하고 싶을때)
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);  // 인터페이스 기반
+    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);  // 클래스 기반
+    <T> List<T> findProjectionsGenericByUsername(@Param("username") String username, Class<T> type);  // 제네릭 (동적 projection)
+    // nested 즉 중첩으로 사용하면 필요한건 제대로 가져오지만 나머지 연관 부분을 엔티티 통째로 가져온다던가 하는 최적화가 안 된 상황을 볼 수 있다
+    // 한계를 정리하자면 join 하는 순간 애매해짐
+
 }

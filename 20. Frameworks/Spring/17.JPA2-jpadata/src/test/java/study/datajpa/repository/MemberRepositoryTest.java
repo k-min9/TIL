@@ -15,6 +15,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     public void testMember(){
@@ -175,5 +178,46 @@ class MemberRepositoryTest {
         assertThat(resultCount).isEqualTo(3);
     }
 
+
+    @Test
+    public void projections() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        // 인터페이스 기반 projection
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);  // 만든 구현체가 가져온 프록시가 찍힌다.
+            System.out.println("username = " + usernameOnly.getUsername());  // 실제로 가지고 옴 맙소사.
+        }
+
+        // 클래스 기반 projection
+        List<UsernameOnlyDto> result2 = memberRepository.findProjectionsDtoByUsername("m1");
+
+        for (UsernameOnlyDto usernameOnlyDto : result2) {
+            System.out.println("usernameOnlyDto = " + usernameOnlyDto);
+            System.out.println("usernameDto = " + usernameOnlyDto.getUsername());
+        }
+
+        // 제네릭 projection
+        List<UsernameOnlyDto> result3 = memberRepository.findProjectionsGenericByUsername("m1", UsernameOnlyDto.class);
+
+        for (UsernameOnlyDto usernameOnlyDto : result2) {
+            System.out.println("usernameOnlyDto = " + usernameOnlyDto);
+            System.out.println("usernameDto = " + usernameOnlyDto.getUsername());
+        }
+
+    }
 
 }
