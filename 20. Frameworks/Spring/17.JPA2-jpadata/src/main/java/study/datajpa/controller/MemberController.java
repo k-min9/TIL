@@ -45,8 +45,8 @@ public class MemberController {
     }
 
 
-    // 테스트용 기본 값
-    @PostConstruct
+//    테스트용 기본 값 (다른 예제, 특히 save 관련 방해되니까 비활성화)
+//    @PostConstruct
     public void init() {
         memberRepository.save(new Member("유저A"));
         for (int i = 0; i< 100; i++) {
