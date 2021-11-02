@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="firstPost"></div>
+  <div>
+    <ul id="postList">
+      
+    </ul>
+  </div>
+
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+  <script>
+    const URL = 'https://jsonplaceholder.typicode.com/posts'
+    const postList = document.querySelector('#postList')
+    const firstPost = document.querySelector('#firstPost')
+
+    async function init() {
+      // fetch(URL)
+      //   .then(res => {
+      //     return res.json()
+      //   })
+      //   .then(posts => {
+      //     posts.forEach(post => {
+      //       const liTag = document.createElement('li')
+      //       liTag.innerText = post.title
+      //       postList.appendChild(liTag)
+      //     })
+      //     return posts[0]
+      //   })
+      //   .then(post => {
+      //     fetch(URL + '/' + post.id)
+      //       .then(res => res.json())
+      //       .then(post => {
+      //         firstPost.innerText = post.body
+      //       })
+      //   })
+      //   .catch(err => console.error(err))
+      
+      // 전제 : async과 await 개념은 조금 too much하고 이해하기 힘듬
+      // 위처럼 thenthenthenthenthenthen chaining이 길어지는걸 짧게 만듬
+      try {
+        const res = await fetch(URL)
+        
+        const posts = await res.json()
+        
+        posts.forEach(post => {
+          const liTag = document.createElement('li')
+          liTag.innerText = post.title
+          postList.appendChild(liTag)
+        })
+
+        const first = posts[0]
+        const res2 = await fetch(URL + '/' + first.id)
+        const post1 = await res2.json()
+        firstPost.innerText = post1.body
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    init()
+
+  </script>
+</body>
+</html>
