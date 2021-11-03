@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div>Hello</div>
+    <!-- XSS 주의! 신뢰된 환경 내에서만 사용하고 사용자가 정보 제공하는 곳에서는 절대로 사용하지 마시오-->
+    <div v-html="myHtml"></div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        myHtml: '<b>Hello</b>'
+      }
+    })
+  </script>
+</body>
+</html>

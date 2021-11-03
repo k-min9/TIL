@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .active {
+      color: red;
+    }
+
+    .my-background-color {
+      background-color: yellow;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 속성 바인딩 -->
+    <img v-bind:src="imageSrc" alt="sample img">
+    <!-- v-bind 생략 가능 -->
+    <img :src="imageSrc" alt="sample img">
+
+    <hr>
+
+    <!-- 클래스 바인딩 -->
+    <div :class="{ active: isRed }">클래스 바인딩</div>
+    <!-- 클래스 바인딩 (배열) -->
+    <h2 :class="[activeRed, myBackground]">
+      Hello Vue !!!
+    </h2>
+    <hr>
+
+    <!-- 스타일 바인딩 -->
+    <ul>
+      <li v-for="todo in todos" 
+      :class="{ active: todo.isActive }" 
+      :style="{ fontSize: fontSize + 'px'}" 
+      :key="todo.id">
+        {{ todo }}
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        imageSrc: 'https://picsum.photos/200/300/',
+        isRed: false,
+        activeRed: 'active',
+        myBackground: 'my-background-color',
+        todos: [
+          { id: 1, title: 'todo 1', isActive: true },
+          { id: 2, title: 'todo 2', isActive: false },
+        ],
+        fontSize: 30,
+      }
+    })
+  </script>
+</body>
+
+</html>

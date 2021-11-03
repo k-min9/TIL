@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- lodash CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>  
+  <script>
+    console.log('-----------------1. reverse---------------')
+    //1. reverse - 바닐라 문법 있음
+    // Vanilla
+    const array1 = [1, 2, 3, 4]
+    const reversedArray1 = array1.reverse()
+    console.log(reversedArray1)
+
+    // Lodash
+    const array2 = [1, 2, 3, 4]
+    const reversedArray2 = _.reverse(array2)
+    console.log(reversedArray2) // [4, 3, 2, 1]
+
+    console.log('-----------------2. sort---------------')
+    //2. sort - 바닐라 작동 애매함.
+    // Vanilla 
+    const numbers1 = [10, 1, 3, 7, 4]
+    numbers1.sort() // 1 10 3 4 7로 정렬 됨
+    console.log(numbers1)
+
+    // Lodash
+    const numbers2 = [10, 1, 3, 7, 4]
+    const sortedNumbers2 = _.sortBy(numbers2)
+    console.log(sortedNumbers2)
+
+    console.log('-----------------3-1. range---------------')
+    //3. range - 바닐라로 구현 불가
+    // Lodash
+    const nums1 = _.range(4)
+    const nums2 = _.range(1, 5)
+    const nums3 = _.range(1, 7, 2)
+
+    console.log(nums1) // [0, 1, 2, 3]
+    console.log(nums2) // [1, 2, 3, 4]
+    console.log(nums3) // [1, 3, 5]
+
+    console.log('-----------------3-2. random---------------')
+    //3-2. random - 바닐라로 구현 불가
+    const randomNum1 = _.random(0, 5)
+    const randomNum2 = _.random(5)
+    const randomNum3 = _.random(1.2, 5.2)
+
+    console.log(randomNum1)
+    console.log(randomNum2)
+    console.log(randomNum3)
+    
+
+    console.log('-----------------3-3. sampleSize---------------')
+    //3-3. sampleSize - 바닐라로 구현 불가
+    // 배열 속 10개 중에 랜덤한 6개 가져오기
+    const result = _.sampleSize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 6)
+    console.log(result)
+
+    // 정렬까지
+    const sortedResult = _.sortBy(result)
+    console.log(sortedResult)
+  </script>
+</body>
+</html>

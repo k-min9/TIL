@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="app2">
+    <p>{{ message }}</p>
+    <p>{{ greeting() }}</p>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+    })
+    console.log(app)
+
+    const app2 = new Vue({
+      el: '#app2',
+      data: {
+        message: 'Hello',
+      },
+      methods: {
+        greeting: function () {
+          // data는 내부속성이라 적으면(app2.data.message) 오히려 작동 안한다.
+          // this.message = app2.message = app2.$data.message. 
+          const newMessage = this.message + ' there!'
+          console.log(newMessage)
+          return newMessage  // return이 있어야 출력
+        }
+      }
+    })
+  </script>
+</body>
+</html>

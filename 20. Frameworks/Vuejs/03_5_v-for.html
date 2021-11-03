@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 예시 1 : String -->
+    <h2>String</h2>
+    <!-- v-for은 item in items 문법으로 작성 -->
+    <div v-for="char in myStr">
+      {{ char }}
+    </div>
+
+    <!-- 일반적으로 key값을 같이 쓰는 것을 권장(디버깅, 객체 불변성 보장).
+         순서가 값, 키인거지 키 이름이 index 아니어도 OK -->
+    <div v-for="(char, index) in myStr" :key="index">
+      {{ index }} : {{ char }}
+    </div>
+
+    <hr>
+
+    <!-- 예시 2 : Array -->
+    <h2>Array</h2>
+    <div v-for="fruit in fruits">
+      {{ fruit }}
+    </div>
+
+    <div v-for="(fruit, index) in fruits" :key="`fruit-${index}`">
+      {{ fruit }}
+    </div>
+
+    <div v-for="todo in todos" :key="todo.id">
+      {{ todo.title }} - {{ todo.completed }}
+    </div>
+
+    <!-- 예시 3 : Object -->
+    <h2>Object</h2>
+    <div v-for="value in myObj">
+      {{ value }}
+    </div>
+
+    <div v-for="(value, key) in myObj" :key="key">
+      {{ key }} : {{ value }}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        myStr: 'Hello world!',
+        fruits: ['apple', 'banana', 'coconut'],
+        todos: [
+          { id: 1, title: 'todo1', completed: true },
+          { id: 2, title: 'todo2', completed: false },
+          { id: 3, title: 'todo3', completed: true },
+        ],
+        myObj: {
+          name: 'kim',
+          age: 50,
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

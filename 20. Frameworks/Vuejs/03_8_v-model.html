@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <h2>1. Input 값을 Data로 바로 동기화</h2>
+    <h3>{{ myMessage }}</h3>
+    <input v-model="myMessage" type="text">
+
+    <h2>2. Input 값을 Data로 바로 동기화 (한중일) -> input시 동기화되게 직접 구현 </h2>
+    <h3>{{ myMessage2 }}</h3>
+    <input v-on:input="onInputChange" type="text">
+
+    <h2>3. Checkbox</h2>
+    <input type="checkbox" id="checkbox" v-model="isChecked">
+    <label for="checkbox">{{ isChecked }}</label>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        myMessage: '',
+        myMessage2: '',
+        isChecked: true,
+      },
+      // 한중일은 입력 방식이 달라서 동기화가 잘 이루어지지 않음 = 직접 구현
+      methods: {
+        onInputChange: function (event) {
+          // console.log(event) :  event 어디에 원하는 값이 어디있는지 모르니 호출해서 직접 확인
+          this.myMessage2 = event.target.value
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

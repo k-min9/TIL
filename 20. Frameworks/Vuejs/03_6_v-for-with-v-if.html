@@ -1,0 +1,67 @@
+<!-- v-for은 v-if와 같은 element에서 사용하면 안 됨 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- bad 1 : v-for, v-if 나란히 ㄴㄴ -->
+    <ul>
+      <li v-for="user in users" v-if="user.isActive" :key="user.id">
+        {{ user.name }}
+      </li>
+    </ul>
+
+    <!-- good 1 : 미리 계산된 결과(activeUser)를 따로 만들어라(filter 이용) -->
+    <ul>
+      <li v-for="user in activeUsers" :key="user.id">
+        {{ user.name }}
+      </li>
+    </ul>
+
+    <!-- bad 2 : v-for, v-if 나란히 ㄴㄴ  -->
+    <ul>
+      <li v-for="user in users" v-if="shouldShowUsers" :key="user.id">
+        {{ user.name }}
+      </li>
+    </ul>
+
+    <!-- good 2 : if 문을 발라서 위로 올려라 -->
+    <ul v-if="shouldShowUsers">
+      <li v-for="user in users" :key="user.id">
+        {{ user.name }}
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        users: [
+          { id: 1, name: 'harry', isActive: false, },
+          { id: 2, name: 'john', isActive: true, },
+          { id: 3, name: 'tony', isActive: false, },
+          { id: 4, name: 'eric', isActive: true, },
+        ],
+        shouldShowUsers: true,
+      },
+      computed: {
+        activeUsers: function () {
+          return this.users.filter(user => {
+            return user.isActive
+          })
+        }
+      },
+    })
+  </script>
+</body>
+
+</html>

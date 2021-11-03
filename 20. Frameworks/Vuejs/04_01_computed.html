@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <p>{{ num }}</p>
+    <!-- 이미 캐싱된 '값'을 가져오는 것이라 doubleNum() 같이 괄호를 뒤에 붙이지 않는다.-->>
+    <p>{{ doubleNum }}</p>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        num: 2,
+      },
+      computed: {
+        doubleNum: function () {
+          // 값이 캐싱이 되어 값이 변경되지 않는 이상 다시 계산하지 않는다.
+          return this.num * 2
+        }
+      },
+    })
+  </script>
+</body>
+</html>

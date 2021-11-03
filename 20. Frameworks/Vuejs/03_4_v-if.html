@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 조건부 렌더링 2 ; true 일때만 렌더링 -->
+    <!-- cheap initial, expensive toggle -->
+
+    <!-- 예시 1 -->
+    <div v-if="seen">
+      seen이 true 일때만 렌더링
+    </div>
+
+    <!-- 예시 2 -->
+    <div v-if="myType === 'A'">
+      A
+    </div>
+    <div v-else-if="myType === 'B'">
+      B
+    </div>
+    <div v-else-if="myType === 'C'">
+      C
+    </div>
+    <div v-else>
+      Not A/B/C
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        seen: false,
+        myType: 'A',
+      }
+    })
+  </script>
+</body>
+</html>
