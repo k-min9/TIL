@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 사용자가 입력한 값으로 posts의 title을 검색하여 보여줌 -->
+    <div>
+      <input type="text" v-model.trim.lazy="keyword">
+    </div>
+
+    <ul v-if="keyword">
+      <li v-for="post in filteredPosts" :key="post.id">
+        {{ post.title }}
+      </li>
+    </ul>
+    <ul v-else>
+      <li v-for="post in posts" :key="post.id">
+        {{ post.title }}
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        keyword: '',
+        posts: [],
+      },
+      methods: {
+        fetchPosts() {
+          // 내장 라이브러리니까 별도의 import 필요 없음
+          const URI = 'https://jsonplaceholder.typicode.com/posts/'
+          fetch(URI)
+            .then(res => res.json())
+            .then(posts => this.posts = posts)
+        },
+
+      },
+      computed: {
+        filteredPosts() {
+          return this.posts.filter(post => post.title.includes(this.keyword))
+        }
+      },
+      // lifecyclehook에서 실행하는 행동을 메소드화하여 의도파악이 편해지고 깔끔해짐
+      created() {
+        this.fetchPosts()
+      }
+
+    })
+
+  </script>
+</body>
+</html>

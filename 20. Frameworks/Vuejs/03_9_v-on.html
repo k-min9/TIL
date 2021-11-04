@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 메서드 핸들러 -->
+    <button v-on:click="doAlert">Button</button>
+    <!-- 축약어 --> 
+    <button @click="doAlert">Button</button>
+    <button @click="onInputEnter('ssafy')">Button</button>
+
+
+    <!-- 기본 동작 방지 -->
+    <form action="/articles/" @submit.prevent>
+      <button>Submit</button>
+    </form>
+
+    <!-- 키 별칭을 이용한 키 입력 수식어 -->    
+    <input @keyup.enter="onEnter">
+
+    {{ message }}
+    <button @click="changeMessage">button</button>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue.js',
+      },
+      methods: {
+        doAlert: function () {
+          alert('hello!!!')
+        },
+        onEnter: function (event) {
+          console.log(event)
+          console.log(event.target.value)
+        },
+        onInputEnter: function (onInputValue) {
+          console.log(onInputValue)
+        },
+        changeMessage: function() {
+          this.message = 'bye bye'
+        }
+      }
+    })
+  </script>
+</body>
+</html>
