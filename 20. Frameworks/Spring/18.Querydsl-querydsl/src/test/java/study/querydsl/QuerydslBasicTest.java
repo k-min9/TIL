@@ -2,7 +2,9 @@ package study.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -451,4 +453,41 @@ public class QuerydslBasicTest {
             System.out.println("username = " + username + " age = " + age + " rank = " + rank);
         }
     }
+
+
+    /** 결과물에 상수나 문자 더하기 */
+    // 상수 : Expressions.constant("더할 상수")
+    @Test
+    public void constant() {
+        List<Tuple> results = queryFactory
+                .select(member.username, Expressions.constant("A"))
+                .from(member)
+                .fetch();
+
+        for (Tuple result : results) {
+            System.out.println("result = " + result); // [member1, A], [member2, A], [member3, A], [member4, A] 출력
+        }
+    }
+
+    // 문자 (username_age 식으로 써보자)
+    @Test
+    public void concat() {
+        List<String> results = queryFactory
+                .select(member.username
+                        .concat("_")
+                        .concat(member.age.stringValue()))  // stringValue : 숫자를 문자로 변환 (잊지 말자!), 앞으로 Enum 처리할 일 생기면 심심찮게 쓰는 함수
+                .from(member)
+                //.where(member.username.eq("member1"))
+                .fetch();
+
+        for (String result : results) {
+            System.out.println("result = " + result);
+        }
+        // 출력값
+        // result = member1_10
+        // result = member2_20
+        // result = member3_30
+        // result = member4_40
+    }
+
 }
