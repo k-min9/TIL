@@ -1,6 +1,7 @@
 package study.querydsl;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
+import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
@@ -18,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static study.querydsl.entity.QMember.*;
+import static study.querydsl.entity.QTeam.*;
 
 @SpringBootTest
 @Transactional
@@ -189,4 +192,49 @@ public class QuerydslBasicTest {
         // 이렇게 단순하면 상관 없는데, 컨텐츠 쿼리는 복잡하지만 카운트 쿼리는 간단할때는 따로짜는게 더 좋을때도 있다.
         // ex) where을 붙이면 양쪽 쿼리, 모든 조인에 다 붙는데, 그게 카운트에는 필요 없을때가 있다.
     }
+
+    @Test
+    public void aggregation() {
+        // 여러 가지 반환 타입에 대응하기 위해서 querydsl은 튜플 타입을 제공함
+        List<Tuple> results = queryFactory
+                .select(
+                        member.count(),
+                        member.age.sum(),
+                        member.age.avg(),
+                        member.age.max(),
+                        member.age.min()
+                )
+                .from(member)
+                .fetch();
+
+        // 10, 20, 30, 40 일테니까
+        Tuple tuple = results.get(0);
+        assertThat(tuple.get(member.count())).isEqualTo(4);
+        assertThat(tuple.get(member.age.sum())).isEqualTo(100);
+        assertThat(tuple.get(member.age.avg())).isEqualTo(25);
+        assertThat(tuple.get(member.age.max())).isEqualTo(40);
+        assertThat(tuple.get(member.age.min())).isEqualTo(10);
+
+    }
+
+    /**팀의 이름과 각 팀의 평균 연령을 구해보자*/
+    @Test
+    public void groupBy() throws Exception {
+        List<Tuple> results = queryFactory
+                .select(team.name, member.age.avg())
+                .from(member)
+                .join(member.team, team)
+                .groupBy(team.name)
+                .fetch();
+
+        Tuple teamA = results.get(0);  // 10, 20
+        Tuple teamB = results.get(1);  // 30, 40
+
+        assertThat(teamA.get(team.name)).isEqualTo("teamA");
+        assertThat(teamA.get(member.age.avg())).isEqualTo(15);
+
+        assertThat(teamB.get(team.name)).isEqualTo("teamB");
+        assertThat(teamB.get(member.age.avg())).isEqualTo(35);
+    }
+
 }
