@@ -2,6 +2,8 @@ package study.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
@@ -390,4 +392,63 @@ public class QuerydslBasicTest {
 
     /** JPQL, querydsl의 한계 : From절의 서브쿼리는 지원하지 않는다. 원래는 select 절도 안되는데, 하이버네이트에서 지원해주는 것을 querydsl에서 사용하고 있다.
      * 해결법 : 서브 쿼리가 아니라 join으로 해결한다(할 수 있으면), 쿼리를 2번 분리해서 실행한다, NATIVE SQL을 사용한다. */
+
+
+    // CASE문 : 조건에 따라 값 정하기 (90~100점은 A 80~90점은 B...)
+    // 이런 것은 DB에서 처리할게 아니라 가져와서 비지니스 로직 차원에서 정리하는 것이 좋다
+    // 1. 단순 버전
+    @Test
+    public void case_simple() {
+        List<String> result = queryFactory
+                .select(member.age
+                        .when(10).then("10살")
+                        .when(20).then("20살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    // 2. 복잡 버전
+    @Test
+    public void case_complex() {
+        List<String> result = queryFactory
+                .select(new CaseBuilder()
+                        .when(member.age.between(0, 20)).then("0~20살")
+                        .when(member.age.between(21, 30)).then("21~30살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    // orderBy와 case 조합해서 원하는 순서대로 회원 출력
+    @Test
+    public void case_with_orderBy() {
+        // 조건(30살 초과~, 0~20살, 21~30살 순서대로 출력)을 변수로 선언해버린다.
+        NumberExpression<Integer> rankPath = new CaseBuilder()
+                .when(member.age.between(0, 20)).then(2)
+                .when(member.age.between(21, 30)).then(1)
+                .otherwise(3);
+
+        // 변수화 한 조건을 사용할 수 있는게 바로 querydsl의 장점
+        List<Tuple> result = queryFactory
+                .select(member.username, member.age, rankPath)
+                .from(member)
+                .orderBy(rankPath.desc())  // 등록한 rank를 이용하여 정렬한다.
+                .fetch();
+
+        for (Tuple tuple : result) {
+            String username = tuple.get(member.username);
+            Integer age = tuple.get(member.age);
+            Integer rank = tuple.get(rankPath);
+            System.out.println("username = " + username + " age = " + age + " rank = " + rank);
+        }
+    }
 }
