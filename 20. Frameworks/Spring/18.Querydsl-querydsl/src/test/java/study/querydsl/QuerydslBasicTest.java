@@ -15,6 +15,8 @@ import study.querydsl.entity.QTeam;
 import study.querydsl.entity.Team;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import java.util.List;
 
@@ -236,5 +238,97 @@ public class QuerydslBasicTest {
         assertThat(teamB.get(team.name)).isEqualTo("teamB");
         assertThat(teamB.get(member.age.avg())).isEqualTo(35);
     }
+
+    @Test
+    public void join() {
+        List<Member> results = queryFactory
+                .selectFrom(member)
+                // left join, inner join, theta join(연관관계가 없는 대상간의 조인) 가능
+                .join(member.team, team)  // 조인대상, 별칭(alias) : member.team as team
+                .where(team.name.eq("teamA"))
+                .fetch();
+
+        assertThat(results)
+                .extracting("username")  // assertJ 지원 함수, extract(추출)하고, 검증한다. 여러필드 한번에 추출 검증에 유용
+                .containsExactly("member1", "member2");
+    }
+
+
+    /** 세타(크로스) 조인(막조인...) 예시 : 회원의 이름이 팀 이름과 같은 회원 조회 : 연관성 없는 관계 대상 간 조인 */
+    @Test
+    public void theta_join() {
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+
+        List<Member> results = queryFactory
+                .select(member)
+                .from(member, team)
+                .where(member.username.eq(team.name))
+                .fetch();
+
+        for (Member result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    /**
+     * 팀 이름이 teamA인 팀만 조인, 회원은 모두 조회
+     * JPQL에서는 "select m, t from Member m left join m.team t on t.name = 'teamA'"
+     * */
+    @Test
+    public void join_on_filtering() {
+        List<Tuple> results = queryFactory
+                .select(member, team)
+                .from(member)
+                .leftJoin(member.team, team)
+                .on(team.name.eq("teamA"))
+                .fetch();
+
+        // leftjoin이니까 member는 다 긁어오는데 team 이름이 teamA인 team만 가져는걸 확인할 수 있다.
+        // 그냥 join하면 inner 하면서 member3, member4는 아예 빠짐... 뭐 이렇게 쓸거면 그냥 on 안쓰고 where로 결과 필터링 해도 되니까 의미가 적다
+        for (Tuple result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    /** 막 조인 예시 : 잘보면 join이 member.team이 아니라 진짜 그냥 team을 박았다. 세타조인과 마찬가지로 cross join됨 */
+    @Test
+    public void join_on_like_theta_join() {
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+        em.persist(new Member("teamC"));
+
+        List<Tuple> results = queryFactory
+                .select(member, team)
+                .from(member)
+                .leftJoin(team)  // 아이디 매칭 없이 그냥 관계 없는 두 대상도 막 조인 (left outer join 쿼리 확인 가능)
+                .on(member.username.eq(team.name))
+                .fetch();
+
+        for (Tuple result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+
+    /** 페치 조인 : 아무리 강조해도 지나침이 없는 */
+    @PersistenceUnit
+    EntityManagerFactory emf;  // 페치조인이 무사히 LAZY 설정된 team을 가져왔나 확인 하기 위해서
+
+    @Test
+    public void fetchJoin() {
+        em.flush();
+        em.clear();
+
+        Member findMember = queryFactory
+                .selectFrom(member)
+                .join(member.team, team).fetchJoin()  // .fetchJoin() 이것만 붙이면 알아서 페치조인 처리를 해줌
+                .where(member.username.eq("member1"))
+                .fetchOne();
+
+        boolean loaded = emf.getPersistenceUnitUtil().isLoaded(findMember.getTeam());  // team이 영속성 컨텍스트에 로드돠었는지 여부
+        assertThat(loaded).as("페치 조인 미적용!").isTrue();
+    }
+
 
 }
