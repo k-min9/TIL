@@ -3,6 +3,7 @@ package study.querydsl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import study.querydsl.dto.MemberDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
 import study.querydsl.entity.QTeam;
@@ -490,4 +492,55 @@ public class QuerydslBasicTest {
         // result = member4_40
     }
 
+    /** DTO 조회
+     * JPQL 문법 :  em.createQuery("select new study.querydsl.dto.MemberDto(m.username, m.age) from Member m", MemberDto.class)
+     * new를 이용한 생성자방법만 지원하고, 패키지 이름을 일일히 적어줘야 해서 매우 지저분함
+     * querydsl은 세가지 방법 지원 : 프로퍼티 접근, 필드 직접 접근, 생성자 사용
+     * */
+
+    // 1. 프로퍼티 접근
+    @Test
+    public void findDtoBySetter() {
+        List<MemberDto> results = queryFactory
+                .select(Projections.bean(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    // 2. 필드 접근 (Getter, Setter 필요 없이 그냥 값을 박아버린다.)
+    // 그러니까 이름 맞춰줘야 한다. DTO와 이름이 안 맞을 경우, member.username.as("name") 이런식으로 가능 ; name이 DTO쪽 필드이름)
+    @Test
+    public void findDtoByField() {
+        List<MemberDto> results = queryFactory
+                .select(Projections.fields(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    // 3. 생성자 접근 (타입을 맞춰줘야 한다.)
+    @Test
+    public void findDtoByConstructor() {
+        List<MemberDto> results = queryFactory
+                .select(Projections.constructor(MemberDto.class,
+                        member.username,
+                        member.age))
+                .from(member)
+                .fetch();
+
+        for (MemberDto result : results) {
+            System.out.println("result = " + result);
+        }
+    }
 }
