@@ -2,6 +2,7 @@ package study.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import javax.persistence.PersistenceUnit;
 
 import java.util.List;
 
+import static com.querydsl.jpa.JPAExpressions.*;
 import static org.assertj.core.api.Assertions.*;
 import static study.querydsl.entity.QMember.*;
 import static study.querydsl.entity.QTeam.*;
@@ -311,7 +313,8 @@ public class QuerydslBasicTest {
     }
 
 
-    /** 페치 조인 : 아무리 강조해도 지나침이 없는 */
+    /** 페치 조인 : 아무리 강조해도 지나침이 없는
+     * 페치조인 대상에 on이나 where로 필터링시, DB의 상태와 객체의 상태간 일관성이 깨진다. */
     @PersistenceUnit
     EntityManagerFactory emf;  // 페치조인이 무사히 LAZY 설정된 team을 가져왔나 확인 하기 위해서
 
@@ -331,4 +334,60 @@ public class QuerydslBasicTest {
     }
 
 
+    /** 서브쿼리 예제 1 : 나이가 가장 많은 사람 하나 뽑아 볼까*/
+    @Test
+    public void subQuery() {
+        // alias가 중복되면 안되니까 QMember 인스턴스 하나 따로 만들어준다.
+        QMember memberSub = new QMember("memberSub");
+
+        List<Member> results = queryFactory
+                .selectFrom(member)
+                .where(member.age.eq(
+                        // 서브 쿼리 내 새 alias 선언, 안하면 충돌나니까
+                        select(memberSub.age.max())
+                                .from(memberSub)
+                ))
+                .fetch();
+        
+        assertThat(results).extracting("age").containsExactly(40);
+    }
+
+    /** 서브쿼리 예제 2: 10살 넘는 사람*/
+    @Test
+    public void subQuerywithIn() {
+        // alias가 중복되면 안되니까 QMember 인스턴스 하나 따로 만들어준다.
+        QMember memberSub = new QMember("memberSub");
+
+        List<Member> results = queryFactory
+                .selectFrom(member)
+                .where(member.age.in(
+                        // 서브 쿼리 내 새 alias 선언, 안하면 충돌나니까
+                        select(memberSub.age)
+                                .from(memberSub)
+                                .where(memberSub.age.gt(10))  // 20, 30, 40 이 서브쿼리로 나옴
+                ))
+                .fetch();
+
+        assertThat(results).extracting("age").containsExactly(20, 30, 40);
+    }
+
+    /** 서브쿼리 예제 3 : 셀렉트에 서브쿼리 넣기 + JPAExpressions.select를 static import (예제 1, 2까지 다 되 버렸네...) */
+    @Test
+    public void selectSubQuery() {
+        QMember memberSub = new QMember("memberSub");
+
+        List<Tuple> results = queryFactory
+                .select(member.username,
+                        select(memberSub.age.avg())
+                                .from(memberSub))
+                .from(member)
+                .fetch();
+
+        for (Tuple result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    /** JPQL, querydsl의 한계 : From절의 서브쿼리는 지원하지 않는다. 원래는 select 절도 안되는데, 하이버네이트에서 지원해주는 것을 querydsl에서 사용하고 있다.
+     * 해결법 : 서브 쿼리가 아니라 join으로 해결한다(할 수 있으면), 쿼리를 2번 분리해서 실행한다, NATIVE SQL을 사용한다. */
 }
