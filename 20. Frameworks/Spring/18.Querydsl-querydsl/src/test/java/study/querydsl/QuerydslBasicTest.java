@@ -157,4 +157,36 @@ public class QuerydslBasicTest {
         }
         // 5 > 6 > null 순으로 정렬되는것을 볼 수 있다.
     }
+
+    @Test
+    public void paging() {
+        List<Member> results = queryFactory
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)
+                .limit(2)
+                .fetch();
+
+        for (Member result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    @Test
+    public void paging2() {
+        QueryResults<Member> results = queryFactory
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)
+                .limit(2)
+                .fetchResults();
+
+        assertThat(results.getTotal()).isEqualTo(4);
+        assertThat(results.getLimit()).isEqualTo(2);
+        assertThat(results.getOffset()).isEqualTo(1);
+        assertThat(results.getResults().size()).isEqualTo(2);
+
+        // 이렇게 단순하면 상관 없는데, 컨텐츠 쿼리는 복잡하지만 카운트 쿼리는 간단할때는 따로짜는게 더 좋을때도 있다.
+        // ex) where을 붙이면 양쪽 쿼리, 모든 조인에 다 붙는데, 그게 카운트에는 필요 없을때가 있다.
+    }
 }
