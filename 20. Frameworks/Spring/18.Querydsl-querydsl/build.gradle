@@ -53,4 +53,12 @@ configurations {
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
 }
+
+// querydsl cannot find symbol 문제 해결
+compileQuerydsl.doFirst {
+	if(file(querydslDir).exists() )
+		delete(file(querydslDir))
+}
+
+
 //querydsl 추가 끝

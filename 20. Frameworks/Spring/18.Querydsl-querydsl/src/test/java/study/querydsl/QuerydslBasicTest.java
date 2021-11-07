@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
+import study.querydsl.dto.QMemberDto;
 import study.querydsl.entity.Member;
 import study.querydsl.entity.QMember;
 import study.querydsl.entity.QTeam;
@@ -543,4 +544,18 @@ public class QuerydslBasicTest {
             System.out.println("result = " + result);
         }
     }
+
+    // +@ 궁극의 방법 QueryProjection (DTO생성자에 @QueryProjection추가 후 활용)
+    @Test
+    public void findDtoByQueryProjection() {
+        List<MemberDto> results = queryFactory
+                .select(new QMemberDto(member.username, member.age))  // 자바코드에 QMemberDto로 들어가니 타입 컴파일러 오류로 잡아줌
+                .from(member)
+                .fetch();
+
+        for (MemberDto result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
 }
