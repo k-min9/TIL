@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.dto.MemberDto;
 import study.querydsl.dto.QMemberDto;
@@ -637,5 +638,48 @@ public class QuerydslBasicTest {
         return usernameEq(usernameCond).and(ageEq(ageCond));  // 조립하려면 Predicate가 아니라 BooleanExpression 써야한다.
     }
 
+
+
+    // 벌크 연산 (수정, 삭제)
+    @Test
+    //@Commit  // 테스트 DB 내용 확인으로 잠시...
+    public void bulkUpdate() {
+        // member1 = 10, member2 = 20 -> 비회원
+        // member3 = 30, member4 = 40 -> 유지
+
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        // 벌크 연산 주의점 : DB에 직접 수정하기 때문에 영속성 컨텍스트(안 바뀜)와 내용이 일치하지 않아진다.
+        // 이 상태로 뭐 찾아오라면 영속성 컨텍스트에서 가져오니까 난리남
+        // 초기화 해라!
+        em.flush();
+        em.clear();
+    }
+
+    // 단순 벌크 연산 예제 1 : 모든 회원의 나이를 한 살 빼라
+    @Test
+    public void bulkAdd() {
+        long count = queryFactory
+                .update(member)
+                .set(member.age, member.age.add(-1))  // 곱하기 multiply 등등 찾으면 이것저것 나온다.
+                .execute();
+        em.flush();
+        em.clear();
+    }
+
+    // 단순 벌크 연산 예제 2 : 18 이상의 회원을 모두 지워라
+    @Test
+    public void bulkDelete() {
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+        em.flush();
+        em.clear();
+    }
 
 }
