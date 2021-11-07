@@ -1,9 +1,12 @@
 package study.querydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -557,5 +560,82 @@ public class QuerydslBasicTest {
             System.out.println("result = " + result);
         }
     }
+
+    /**동적 쿼리 2가지 방법
+     * 1. BooleanBuilder
+     * 2. where 다중 파라미터 */
+    // 1. BooleanBuilder
+    @Test
+    public void dynamicQuery_BooleanBuilder() {
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> results = searchMember1(usernameParam, ageParam);
+        for (Member result : results) {
+            System.out.println("result = " + result);
+        }
+
+        List<Member> results2 = searchMember1(usernameParam, null);
+        for (Member result2 : results2) {
+            System.out.println("result2 = " + result2);
+        }
+    }
+
+    // 값이 null인 condition은 확인 하지 않음
+    private List<Member> searchMember1(String usernameCond, Integer ageCond) {
+        BooleanBuilder builder = new BooleanBuilder();
+        // null이 아니라 값이 있으면 and로 저 조건을 넣어라라는 말을 builder에 저장
+        // builder의 조합에는 and or을 사용할 수 있다. 이걸로 초기값 설정도 물론 가능
+        if (usernameCond != null) {
+            builder.and(member.username.eq(usernameCond));
+        }
+        if (ageCond != null) {
+            builder.and(member.age.eq(ageCond));
+        }
+
+        return queryFactory
+                .selectFrom(member)
+                .where(builder)  // 완성한 빌더를 넣으면 끝!
+                .fetch();
+    }
+
+    // 2. where 다중 파라미터 방법 (나중에 읽기 편함, 메소드간 조립 가능, 메소드 재활용 가능)
+    @Test
+    public void dynamicQuery_WhereParam() {
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> results = searchMember2(usernameParam, ageParam);
+        for (Member result : results) {
+            System.out.println("result = " + result);
+        }
+    }
+
+    private List<Member> searchMember2(String usernameCond, Integer ageCond) {
+        return queryFactory
+                .selectFrom(member)
+                .where(usernameEq(usernameCond), ageEq(ageCond))  // 각각의 조건에 맞는 method 생성성
+               .fetch();
+    }
+
+    private BooleanExpression usernameEq(String usernameCond) {
+        if (usernameCond == null) { return null;}
+        return member.username.eq(usernameCond);
+    }
+
+    private BooleanExpression ageEq(Integer ageCond) {
+        if (ageCond == null) {return null;}
+        return member.age.eq(ageCond);
+        // 단순하니까 삼항연산자로 해버려도 될것 같긴 하네
+        // return ageCond != null ? member.age.eq(ageCond) : null;
+    }
+
+    // 메소드 조립 : 자바코드니까 가능한 방법! querydsl의 최대 장점 중 하나가 이런 composition
+    // 메소드 조립 예시 (searchMember2의 .where(allEq(usernameCond, ageCond)로 교체 가능)
+    // 그 외의 메소드 조립 예시 : 광고상태 isValid + 날짜가 IN => 합쳐서 isServicable
+    private BooleanExpression allEq(String usernameCond, Integer ageCond) {
+        return usernameEq(usernameCond).and(ageEq(ageCond));  // 조립하려면 Predicate가 아니라 BooleanExpression 써야한다.
+    }
+
 
 }
