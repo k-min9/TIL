@@ -6,33 +6,47 @@
 
 ## 00. Daily Algorithm
 
-백준 based 알고리즘 풀이 모음집
+알고리즘 풀이 모음집
 
-기초 언어 : Python
+대상 : 백준(BOJ), Leetcode(feat. 파이썬 알고리즘 인터뷰), SWEA
+
+언어 : Python based, C++ STL 까지 사용 가능
 
 
 
 ## 10. Language
 
-틈틈히 학부시절 썼던 언어 복습
+언어 학습 정리
 
-기초 언어 : Java
+C++ : 열혈 C++ 프로그래밍 (윤성우 저)
 
-예정 언어 : C, C#
+Java : 이것이 자바다 (한빛미디어, 신용권 저)
+
+JavaScript : 교육과정
 
 
 
 ## 20. Frameworks
 
-현재 학습중인 백엔드 프레임워크 정리
+프레임워크 정리
 
-기초 공부 : Spring (Java), Django (Python)
+백엔드 : Spring (Java), Django (Python)
+
+프론트엔드 : Vue.js
 
 
 
 ## 30. Projects
 
 배운 것을 융합하고, 관심 있는 것을 실제 구현해보는 곳
+
+
+
+## 80. Certificate
+
+자격 관련 공부 및 성과
+
+정보처리기사, SQLD, 빅데이터 분석 기사
 
 
 
