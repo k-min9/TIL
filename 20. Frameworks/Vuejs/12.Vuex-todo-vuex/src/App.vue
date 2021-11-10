@@ -8,12 +8,21 @@
 <script>
 import TodoForm from '@/components/TodoForm.vue'
 import TodoList from '@/components/TodoList.vue'
+import { mapActions } from 'vuex'  // 리턴 값이 유사 배열
 
 export default {
   name: 'App',
   components: {
     TodoForm,
     TodoList,
+  },
+  methods:{
+    ...mapActions([
+      'fetchTodos', 
+    ]),
+  },
+  created() {
+    this.fetchTodos()
   }
 }
 </script>
