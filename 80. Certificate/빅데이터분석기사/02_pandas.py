@@ -88,3 +88,7 @@ df_pd = pd.DataFrame(df_np)
 # 넘파이 -> 판다스 (변수 설명)
 df_pd2 = pd.DataFrame(data=df_np, columns=['a', 'b', 'c', 'd', 'e'])  # column 수 모자라면 에러 발생
 print(df_pd2)
+
+
+# 결과물 CSV 파일로 저장 : to_csv("새로운파일명.csv", index=True/False, encoding='utf-8'/'euc-kr', 'cp949')  // 인덱스열 여부, 
+df.to_csv('new_data.csv', index=False, encoding='utf-8')
