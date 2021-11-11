@@ -1,13 +1,13 @@
 <template>
   <li class="todo-list-item">
-    <input type="checkbox" v-model="newTodo.completed" @click="onSave(newTodo)">
+    <input type="checkbox" v-model="newTodo.completed" >
     <span v-if="isEditing">
       <input type="text" v-model="newTodo.title">
-      <button @click="onSave">[save]</button>
+      <button @click="onSave">save</button>
     </span>
     <span v-else>
-      {{ todo.title }}
-      <button @click="onClick">[edit]</button>
+      {{ todo.title }} 
+      <button @click="onClick">edit</button>
     </span>
   </li>
 </template>
@@ -27,16 +27,22 @@ export default {
   props: {
     todo : Object
   },
-  method: {
+  methods: {
     ...mapActions(['updateTodo']),
-    onClick() {
+    onClick() {    
       this.isEditing = !this.isEditing
     },
     onSave() {
       this.updateTodo(this.newTodo)
-      this.isEditing = !this.isEditing      
+      this.isEditing = !this.isEditing
     }
   },
+  watch: {
+    'newTodo.completed': function () {
+      this.updateTodo(this.newTodo)
+    }
+  }
+
 }
 </script>
 
