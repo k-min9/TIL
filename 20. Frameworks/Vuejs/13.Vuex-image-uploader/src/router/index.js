@@ -5,6 +5,7 @@ import store from '@/store'
 import ImageList from '@/views/ImageList.vue'
 import UploadForm from '@/views/UploadForm.vue'
 import AuthHandler from '@/views/AuthHandler.vue'
+import NotFound from '../views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -25,15 +26,15 @@ const routes = [
     name: 'AuthHandler',
     component: AuthHandler,
   },
-  // {
-  //   path: '/404',
-  //   name: 'NotFound',
-  //   component: NotFound,
-  // },
-  // {
-  //   path: '*',
-  //   redirect: '/404'
-  // }
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: NotFound,
+  },
+  {
+    path: '*',
+    redirect: '/404'
+  }
 ]
 
 const router = new VueRouter({

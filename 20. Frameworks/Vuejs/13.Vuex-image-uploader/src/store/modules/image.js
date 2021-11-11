@@ -23,14 +23,15 @@ const actions = {
   // 1. 내가 업로드한 모든 이미지 받아오기
   fetchImages({ commit, rootState, rootGetters }) {
     // 로그인 되어 있을 때만 기본 값 긁어오겠다.
-    if (rootGetters.auth.isLoggedIn) {
+    if (rootGetters.isLoggedIn) {
     // imgur 서식 authorization : Barer{{token}}
+    const { token } = rootState.auth
     const config = {
-      headers: {
-        'Authorization': `Bearer ${rootState.auth.token}`
+      headers: { 
+        'Authorization': `Bearer ${token}`, 
       },
     }
-    axios.get(imgurApi.IMAGE_URL, config)
+    axios.get(imgurApi.IMAGES_URL, config)
       .then(res => commit('SET_IMAGES', res.data.data))    
       .catch(err => console.error(err))
     }
