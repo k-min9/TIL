@@ -53,6 +53,10 @@ const actions = {
     commit('SET_USERNAME', null)
     cookies.set('imgurToken', '')
     cookies.set('imgurUsername', '')
+
+    //Refresh 해버리자
+    window.location.path = '/'
+
   },
 
   // 액션에서 액션 호출(extract method 하고 싶을때) setCookies(_, obj) 같은 느낌으로 가능

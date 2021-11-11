@@ -13,5 +13,6 @@ export default {
     const fullUrl = `${ROOT_URL}/oauth2/authorize?${qs.stringify(queryObj)}`
     window.location.href = fullUrl
   },
-  IMAGES_URL: `${ROOT_URL}/3/account/me/images`
+  IMAGES_URL: `${ROOT_URL}/3/account/me/images`,
+  UPLOAD_URL: `${ROOT_URL}/3/image`,
 }
