@@ -57,7 +57,7 @@ df3 = df[(df['size']>=10) | (df['period']>=30)]  # size가 10 이상이거나, p
 # print(df3)
 
 # 데이터 일괄 변경 (brand 1,2를 1로 brand 3을 2로)
-# 방법 1 : df.replace({"brand":{1:1, 2:1, 3:2}})
+# 방법 1 : df.replace({"brand":{1:1, 2:1, 3:2}}) / df['brand'].replace({1:1, 2:1, 3:2})
 # 방법 2 : 함수 정의, df.apply(함수)
 def brand_grouping(series):
     if series <= 2:

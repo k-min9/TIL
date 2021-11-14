@@ -48,6 +48,7 @@ score = model.score(X_train_MINMAX, Y_train)  # score : 정확도
 # MSE = mean_squared_error(Y_test, pred_test)
 # print(MSE**0.5)
 
+print(type(Y_test))
 
 # 6. 예측값 병합 및 저장 [작동체크]
 Y_test[['y_pred']] = pred_test

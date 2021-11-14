@@ -16,7 +16,7 @@ data=pd.read_csv('05_ML프로세스_예시1_분류문제_cancer.csv', encoding='
 # 2. 특성(x)과 레이블(y) 나누기
 # X = data[['이름1','이름2',...]]  # 방법 1
 X = data[data.columns[1:10]]  # 방법 2 : 연달아있으면 오타도 없고 이게 편함, 떨어져 있으면 # X = data[data.columns[[0,2,4]]]
-Y = data['Class']
+Y = data[['Class']]
 
 # 3. Data Set 분할
 from sklearn.model_selection import train_test_split
@@ -47,14 +47,14 @@ score = model.score(X_train_MINMAX, Y_train)  # score : 정확도
 # 기타 혼돈 행렬(confusion matrix), 분류 예측 레포트(classification report), ROC 지표 등을 이용한 정확도 판별 스킵
 
 # Y_test[['y_pred']] = pred_test
-'''
+print(pred_test)
+
 # 6. 예측값 병합 및 저장 [작동체크]
-# print(Y_train)
-# Y_train[['y_pred']] = pred_train  # 열 추가하며 저장
-# Y_train['y_prob0', 'y_prob1'] = pred_train_proba
-Y_test[['y_pred']] = pred_test
+Y_train['y_pred'] = pred_train  # 열 추가하며 저장
+Y_train[['y_prob0', 'y_prob1']] = pred_train_proba
+Y_test['y_pred'] = pred_test
 Y_test[['y_prob0', 'y_prob1']] = pred_train_proba
-'''
+
 
 answers = pd.concat([X_test, Y_test], axis=1)  # 열로 조합
 answers.to_csv('new_data.csv')
