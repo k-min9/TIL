@@ -1,20 +1,20 @@
 '''
-1 일 1 알고리즘
+1일 1 알고
 '''
 import sys
 input = sys.stdin.readline
 
 
-def calc(pL, target):
-    for n1 in pL:
-        for n2 in pL:
-            for n3 in pL:
+def calc(prime_array, target):
+    for n1 in prime_array:
+        for n2 in prime_array:
+            for n3 in prime_array:
                 if n1 + n2 + n3 == target:
                     print(n1, n2, n3)
                     return
     print(0)
  
- 
+
 def findPrime(num):
     data = list(range(2, num + 1))
     result = []
@@ -31,7 +31,7 @@ def findPrime(num):
  
     return result
  
- 
+
 T = int(input())
 N = []
  
