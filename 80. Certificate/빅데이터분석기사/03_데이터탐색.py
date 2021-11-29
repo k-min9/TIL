@@ -73,6 +73,8 @@ data['sqrt_roe'] = np.sqrt(data['roe'])
 5. 결측치 처리
 '''
 data = pd.read_csv('03_데이터탐색_Missing.csv')
+#print(data)
+#print(data.isnull().sum())
 
 # 5-1. 결측값 확인 : pd.isnull(data) or data.isnull().sum()
 # 기타 파이썬 같은 방법
@@ -93,6 +95,7 @@ data3 = data.dropna(axis=1)  # 결측값 있는 열 제거
 
 # 5-3. 결측값 대체 : fillna()
 data4 = data.fillna(0)  # 결측값 0으로 대체
+data4 = data.fillna({'salary':0, 'sales':1})  # 특정 열만 대체 + 다르게 대체하는 방법
 data5 = data.fillna('빈값')  # 결측값 문자열로 대체
 data6 = data.fillna(method='ffill')  # 앞의 값으로 채우기(pad도 동일), 앞 값이 없으면 NaN
 data7 = data.fillna(method='bfill')  # 앞의 값으로 채우기(pad도 동일),  뒤 값이 없으면 NaN
@@ -119,4 +122,4 @@ data_filter = {'salary': data.salary.interpolate(),  # 보간법
                 'sales': data.sales.mean(),  # 평균
                 'roe': 'missing'}  # 문자열
 data4 = data.fillna(data_filter)
-print(data4)
+# print(data4)
