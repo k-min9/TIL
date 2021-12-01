@@ -2,9 +2,6 @@
 작업형 2 문제 - 1. 타이타닉
 생존 여부 예측 모델 만들기
 '''
-import pandas as pd
-data = pd.read_csv('기출문제_2회_Q1.csv', encoding='utf-8')
-
 # 입력
 '''원래는 주어지는 데이터 읽어오기임 환경 조절 중'''
 # 시험환경 세팅 (코드 변경 X)
@@ -33,6 +30,8 @@ df = pd.read_csv("T2_01_train.csv")
 X_train, X_test, y_train, y_test = exam_data_load(df, target='Survived', id_name='PassengerId')
 '''여기까지'''
 # 실제로는 이런 느낌
+# import pandas as pd
+
 # X_test = pd.read_csv("data/X_test.csv")
 # X_train = pd.read_csv("data/X_train.csv")
 # y_train = pd.read_csv("data/y_train.csv")
