@@ -1,3 +1,5 @@
 @@sample.py
 @@sample.cpp
 *.exe
+*.json
+.vscode
