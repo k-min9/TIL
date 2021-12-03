@@ -56,11 +56,235 @@ EDA : 탐색적 데이터 분석
 
 ## 작업형
 
+### 작업형 1
+
+기본 함수
+
+```
+print(dir())
+help()
+```
+
+numpy 함수
+
+```
+np.ceil(df['age'])  # 올림
+np.floor(df['age'])  # 내림
+np.trunc(df['age'])  # 버림
+```
+
+pandas 함수
+
+```
+# 선택
+i0 = df[1:4]  # 1에서 3까지
+i1 = df.loc[:, 'continent':'size']  # continent 열에서 size 열까지
+i2 = df.iloc[1:7, 0:2]  # 1~7행 0~2열
+i3 = df.at[5, 'price']  # 5행 'price'열(숫자 안 됨)
+
+.head(n)  # 상위 n개
+.tail(n)  # 하위 n개
+
+# 기본 함수
+.mean()  # 평균
+.median()  # 중앙값
+.mode()  # 최빈
+.std() # 표준편차
+.max()/ .min()  # 최대, 최소
+.skew()  # 왜도
+.kurt()  # 첨도
+
+- 시계열 관련
+df['Date'] = pd.to_datetime(df['Date'])  #datetime으로 type 변경
+df['year'] = df['Date'].dt.year  # 새로운 'year'열 만들기 (정수 비교 가능)
+df['month'] = df['Date'].dt.month  # 새로운 'month'열 만들기  (정수 비교 가능)
+```
+
+사용자 함수 적용
+
+```
+X1['gender'] = X1['gender'].apply(change_gender)
+```
+
+정렬 함수
+
+```
+df = df.sort_values(by='ratio' ,ascending=False)
+```
+
+그룹 함수
+
+```
+df = df.groupby('country').max()
+df2 = df.groupby(['city', 'f2']).sum()
+```
+
+나누기
+
+```
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state=42)
+```
+
+IQR
+
+```
+Q1_salary = data['salary'].quantile(q=0.25)  # 아니면 np.percentile(df['salary'], 25)
+Q3_salary = data['salary'].quantile(q=0.75)  # 아니면 np.percentile(df['salary'], 75)
+IQR_salary = Q3_salary - Q1_salary
+```
+
+컬럼 삭제
+
+```
+X_train = X_train.drop(['Warehouse_block', 'Mode_of_Shipment', 'Product_importance', 'Gender'], axis=1)
+```
 
 
-### 전략
 
-종속변수가 범주형이면 로지스틱 회귀, 그 외는 전부 랜덤 포레스트로 접근
+### 작업형 2
+
+#### 기본 전략
+
+종속변수가 0, 1범주형이면 로지스틱 회귀, 그 외는 전부 랜덤 포레스트로 접근
 
 일단 시간 남으면 둘 다 쓰고 train score 높은 쪽으로 제출
+
+```
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+```
+
+
+
+#### 이론 체크
+
+결측치 확인
+
+```
+print(X_train.isnull().sum()) # 전체 확인
+data['missing'] = data.isnull().sum(1)  # 행 단위 체크 열 만들기
+```
+
+결측치 제거
+
+```
+data2 = data.dropna()  # 행 제거
+data3 = data.dropna(axis=1)  # 열 제거
+
+# f1이 결측치가 있을경우 그 행 삭제
+df = df[~df['f1'].isnull()]
+
+# 특정 열 삭제
+X_test = X_test.drop(columns=[id_name, target])
+
+# 특정 행(포도당(Glucose)이 0인 행) 삭제
+del_idx = X_train[(X_train['Glucose'] == 0)].index
+X_train = X_train.drop(index=del_idx, axis=0)
+y_train = y_train.drop(index=del_idx, axis=0)
+```
+
+결측치 대체
+
+```
+data4 = data.fillna(0)  # 결측값 0으로 대체
+data4 = data.fillna({'salary':0, 'sales':1})  # 특정 열만 대체 + 다르게 대체하는 방법
+data5 = data.fillna('빈값')  # 결측값 문자열로 대체
+data6 = data.fillna(method='ffill')  # 앞의 값으로 채우기(pad도 동일), 앞 값이 없으면 NaN
+data7 = data.fillna(method='bfill')  # 앞의 값으로 채우기(pad도 동일),  뒤 값이 없으면 NaN
+data8 = data.fillna(data.mean())  # 평균 mean, 중위값 median, 최대값 max 뭐 이것저것.. 괄호 빼먹지 말자!
+data9 = data.fillna(data.mean()['salary'])  # 남의 평균으로 메우기
+data['f1'] = data['f1'].fillna(median_val)  # 이렇게 해당 열만 채울수도 있음
+df['f1'] = df['f1'].fillna(df['city'].map({'서울': s, '경기':k, '부산':b, '대구':d}))  # map 함수 사용
+```
+
+이상치 대체
+
+```
+# 모든 0을 평균 값으로 변경
+cols = ['BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
+cols_mean = X_train[cols].mean()
+X_train[cols] = X_train[cols].replace(0, cols_mean)
+```
+
+원 핫 인코딩
+
+```
+X1_dummy = pd.get_dummies(X1)
+```
+
+피처엔지니어링(레이블 인코더)
+
+```
+cat_features = [
+                 'workclass',              
+                 'education',            
+                 'marital.status', 
+                 'occupation', 
+                 'relationship', 
+                 'race', 
+                 'sex',
+                 'native.country'
+]
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()  
+X_train[cat_features] = X_train[cat_features].apply(le.fit_transform)  # 문자 범주를 숫자로 변경
+```
+
+레이블 범주화
+
+```
+# target값 변경
+y = (y_train['income'] != '<=50K').astype(int) # 50 이하면 1 아니면 0으로 변경 됨
+```
+
+정규화
+
+```
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()  # 학습기 세팅
+1. 차근차근
+scaler.fit(X_train)  # 학습
+X_train_new = scaler.transform(X_train)
+
+2. 아니면 한방에 
+X_train_MINMAX = scaler_MINMAX.fit_transform(X_train)
+
+결과물은 ndarray임
+```
+
+모델 학습
+
+```
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+model.fit(X_train_MINMAX, Y_train)
+pred_train = model.predict(X_train_MINMAX)  # predict : 예측결과
+pred_train_proba = model.predict_proba(X_train_MINMAX)  # predict_proba : 범주 1이 나올 확률
+```
+
+결과 출력
+
+```
+1. 결과물 만들기
+answer = pd.DataFrame({
+    'ID' : y_test['ID'],
+    'Reached.on.Time_Y.N' : pred
+})
+
+2. 기존결과물에 합치기
+answers = pd.concat([X_test, Y_test], axis = 1)  # 열로 조합
+
+파일화
+answers.to_csv('answers.csv', index=False)
+```
+
+정확도 체크
+
+```
+score = model.score(X_train, Y_train)
+```
+
+
 
