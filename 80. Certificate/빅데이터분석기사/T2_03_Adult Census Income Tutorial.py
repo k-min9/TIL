@@ -88,7 +88,7 @@ X_test[cat_features] = X_test[cat_features].apply(le.fit_transform)
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 X_train[numeric_features] = scaler.fit_transform(X_train[numeric_features])
-X_test[numeric_features] = scaler.fit_transform(X_test[numeric_features])
+X_test[numeric_features] = scaler.transform(X_test[numeric_features])  # 여기는 fit 하면 안 됨!!
 
 # target값 변경
 y = (y_train['income'] != '<=50K').astype(int)
@@ -96,10 +96,11 @@ y = (y_train['income'] != '<=50K').astype(int)
 
 
 # 모델 & 평가
-from sklearn.linear_model import LogisticRegression
-model = LogisticRegression()
+from sklearn.ensemble import RandomForestClassifier
+model = RandomForestClassifier()
 model.fit(X_train, y)
 pred = model.predict(X_test)
+print(model.score(X_train, y))
 
 answers = pd.DataFrame({
     'idx' : y_test.index,

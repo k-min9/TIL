@@ -213,7 +213,7 @@ X_train[cols] = X_train[cols].replace(0, cols_mean)
 X1_dummy = pd.get_dummies(X1)
 ```
 
-피처엔지니어링(레이블 인코더)
+레이블 인코더
 
 ```
 cat_features = [
@@ -228,8 +228,18 @@ cat_features = [
 ]
 
 from sklearn.preprocessing import LabelEncoder
-le = LabelEncoder()  
-X_train[cat_features] = X_train[cat_features].apply(le.fit_transform)  # 문자 범주를 숫자로 변경
+
+# 합쳐서 레이블 인코더
+all_df = pd.concat([X_train.assign(ind="train"), X_test.assign(ind="test")])
+le = LabelEncoder()
+all_df[cat_features] = all_df[cat_features].apply(le.fit_transform)
+
+# 끝나고 다시 train과 test로 나누기 (미리 위에서 ind열을 만들어서 train과 test를 나눠뒀었음)
+X_train = all_df[all_df['ind'] == 'train']
+X_train = X_train.drop('ind',axis=1)
+
+X_test = all_df[all_df['ind'] == 'test']
+X_test = X_test.drop('ind',axis=1)
 ```
 
 레이블 범주화
@@ -247,9 +257,11 @@ scaler = MinMaxScaler()  # 학습기 세팅
 1. 차근차근
 scaler.fit(X_train)  # 학습
 X_train_new = scaler.transform(X_train)
+X_test_new = scaler.transform(X_test)  # 여기는 fit 하면 안된다!
 
 2. 아니면 한방에 
 X_train_MINMAX = scaler_MINMAX.fit_transform(X_train)
+X_test_MINMAX = scaler_MINMAX.transform(X_test)  # 여기는 fit 하면 안된다!
 
 결과물은 ndarray임
 ```
