@@ -12,7 +12,7 @@
 
 유의점 : 중복, 비유연성(사용, 정리를 분리), 비일관성(갱신없이 데이터 수집시)
 
-요소 : Things, Attributes, Relationships
+요소 : Things(어떤것), Attributes(속성), Relationships(관계)
 
 구조 : 외부(개개 사용자) -개념(전체 사용자 통합 전체 DB) - 내부(물리, 저장) 스키마
 
