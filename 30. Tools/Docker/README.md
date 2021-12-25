@@ -45,15 +45,32 @@ WSL2(Windows Subsystem for Linux v.2)윈도우는 윈도우 환경에서 리눅�
 2. 리눅스 커널 업데이트하고 넣기
 3. 커널 안에서 Docker 실행
 
+### Dockerfile 만들고 컨테이너 빌드하기
+
+Dockerfile : 쉽고, 간단, 명확한 구문을 가진 textfile로 컨테이너 이미지를 생성할 수 있는 명령어의 집합
+
+Dockerfile 지시어로 작성
+
+```
+# 이렇게 주석 작성
+FROM 베이스 이미지, 무조건 맨 위에 있어야 함
+COPY 호스트의 파일을 컨테이너로 복사
+EXPORT 서비스할 포트
+ENTRYPOINT : CMD와 함께 사용하면서 command 지정 시 사용 ; 명령어 역할
+CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument 역할
+```
+
+그 이후 docker build -t [이미지명]:tag 로 컨테이너를 만들 수 있음
+
 
 
 ## 명령어
 
 - docker search [이미지명] : Hub에 컨테이너가 있는지 확인
 - docker pull [이미지명]:version : 이미지 다운 받기 (ex- docker pull nginx)
-
 - docker images : 현재 이미지 확인
 - docker rmi [이미지명] : 이미지 삭제
+- docker tag [이미지명]:[변경이미지명] : 이미지 이름 변경 ; 빌드시 [개인 아이디/[이미지명]]의 형태로 만들어야한다.
 
 
 
@@ -63,9 +80,11 @@ WSL2(Windows Subsystem for Linux v.2)윈도우는 윈도우 환경에서 리눅�
 
 - docker rm -f [컨테이너명] : 컨테이너 삭제
 
-- 
 
 
+
+- docker login : 도커 로그인
+- docker push [아이디]/[이미지명]:버전 : Hub 개인 Repository에 배포
 
 ```
 -f : 강제 종료 후 삭제 옵션
