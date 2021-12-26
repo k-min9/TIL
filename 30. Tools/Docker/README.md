@@ -31,7 +31,11 @@
 - 컨테이너(프로세스)는 이미지(실행파일)을 실행한 형태
 - Hub.docker.com : 수많은 컨테이너들이 저장된 웹상의 공간
 
+### 레지스트리
 
+- 컨테이너 보관 창고 / hub.docker.com : 각종 이미지들에 대한 사용 설명서도 첨부 되어 있음
+- 개인 레포지토리는 레지스트리의 하위 속성
+- 그것과 별개로 레지스트리 운영을 도와주는 registry라는 이름의 컨테이너도 있음 -> private registry 만들때 사용
 
 ## 설치
 
@@ -64,21 +68,36 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 
 
 
+## 사용
+
+
+
 ## 명령어
 
 - docker search [이미지명] : Hub에 컨테이너가 있는지 확인
 - docker pull [이미지명]:version : 이미지 다운 받기 (ex- docker pull nginx)
 - docker images : 현재 이미지 확인
+- docker inspect [이미지명] : 해당 이미지 자세히 보기
 - docker rmi [이미지명] : 이미지 삭제
 - docker tag [이미지명]:[변경이미지명] : 이미지 이름 변경 ; 빌드시 [개인 아이디/[이미지명]]의 형태로 만들어야한다.
 
 
 
+- docker create --name [컨테이너명] [이미지명] : 컨테이너 생성
+- docker start [컨테이너명] : 컨테이너 실행
+- docker stop [컨테이너명] : 컨테이너 정지
+
 - docker run -d --name web -p 80:80 [이미지명]:latest : 실행 예시 - 해당 이미지를 80포트로 이름을 붙여서 실행
-
 - docker ps : 현재 실행중인 컨테이너 확인
-
+- docker inspect [컨테이너명] : 컨테이너 세부정보 확인
 - docker rm -f [컨테이너명] : 컨테이너 삭제
+- docker logs [컨테이너명] : 해당 컨테이너가 만들어낸 로그 출력
+- docker top [컨테이너명] : 컨테이너에서 실행중인 프로세스 출력
+- docker exec -it [컨테이너명]/bin/bash : 컨테이너에 직접 접속하여 배시 쉘 사용
+
+
+
+- alias [단축어 명] = "[명령어]" : 자주 사용하는 명령어를 단축어로 등록
 
 
 
@@ -86,7 +105,18 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 - docker login : 도커 로그인
 - docker push [아이디]/[이미지명]:버전 : Hub 개인 Repository에 배포
 
+
+
+쓰일법한 옵션
+
 ```
--f : 강제 종료 후 삭제 옵션
+--help : 자세한 설명 뜸
+-f : force / filter / follow(실시간) : 다양함
+-p : 포트
+-a : 모든
+-i : interactive
+-t : terminal
+--restart : 리스타트 정책
+--no-trunc : 생략 없이 full name
 ```
 
