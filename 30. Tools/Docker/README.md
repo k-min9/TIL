@@ -37,6 +37,13 @@
 - 개인 레포지토리는 레지스트리의 하위 속성
 - 그것과 별개로 레지스트리 운영을 도와주는 registry라는 이름의 컨테이너도 있음 -> private registry 만들때 사용
 
+### 볼륨
+
+- 컨테이너가 만들어주는 데이터를 영구적으로 보존
+- 데이터 보존, readonly service 지원, 데이터 간 공유를 지원
+
+
+
 ## 설치
 
 ### windows10에 DockerDesktop 설치 (Install Docker Desktop on Windows)
@@ -68,11 +75,59 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 
 
 
-## 사용
+## 통신
+
+### eth0
+
+- 입구가 되는 인터페이스
+- 호스트의 포트는 단 하나
+
+### Docker0 통신 구조
+
+- 172.17.0.1을 가지고 게이트 역할을 하고, running시 IP 주소 할당
+
+- bridge : 네트워크 간 연결을 지원
+- --link : 컨테이너 간 연동
+
+### Port-forwarding
+
+- container port를 외부로 노출시켜 연결 허용
+
+### User Defined bridge network
+
+- 기본 Docker0에서 할당하는 주소 방식은 static하지 않기 때문에, 이 부분을 static하게 만들고 싶으면 bridge를 만들어 쓸 수 있음
+- docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 [bridge 이름]
+- 이제부터 docker run 옵션에 --net [bridge이름]을 사용하여 static하게 ip set이 가능해짐
 
 
 
-## 명령어
+## 도커 컴포즈
+
+- 여러 컨테이너를 일괄적으로 정의하고 실행할 수 있게 yaml 파일로 설정하는 툴
+
+- 주의사항 : depends on - 컨테이너간의 종속성을 정의. 정의한 컨테이너가 먼저 동작되어야 한다.(db 먼저 실행해라 같은 것) 
+
+- docker-compose 명령어 (docker 명령어와 비슷)
+
+  ```
+  docker-compose config : 문법 체크
+  docker-compose up -d : (-d : 백그라운드) 실행 요청
+  docker-compose ps : 실행 상태 확인
+  docker-compose scale mysql=2 : mysql 컨테이너 수를 2개로 늘려줘
+  docker-compose down : 실행중인 컨테이너를 종료
+  ```
+
+## 웹 서버 실행 단계 (빌드 및 운영)
+
+1. 서비스 디렉토리 생성
+2. 빌드를 위한 dockerfile 생성
+
+3. docker-compose.yml 생성
+4. docer-compse 명령어
+
+
+
+## 명령어 모음
 
 - docker search [이미지명] : Hub에 컨테이너가 있는지 확인
 - docker pull [이미지명]:version : 이미지 다운 받기 (ex- docker pull nginx)
@@ -97,6 +152,11 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 
 
 
+- docker run -d -v [호스트 경로]:[컨테이너 mount path] (:[read write mode]) : 볼륨 마운트
+- docker volume command : 볼륨과 관련된 커맨드 실행
+
+
+
 - alias [단축어 명] = "[명령어]" : 자주 사용하는 명령어를 단축어로 등록
 
 
@@ -112,6 +172,7 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 ```
 --help : 자세한 설명 뜸
 -f : force / filter / follow(실시간) : 다양함
+-d : 백그라운드 모드
 -p : 포트
 -a : 모든
 -i : interactive
@@ -120,3 +181,8 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 --no-trunc : 생략 없이 full name
 ```
 
+
+
+## 참조
+
+따배도 시리즈 : 
