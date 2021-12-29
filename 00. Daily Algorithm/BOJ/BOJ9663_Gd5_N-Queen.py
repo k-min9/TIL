@@ -7,7 +7,7 @@ input = sys.stdin.readline
 
 # queen이 존재하는 column
 # col에 대해 모든 row에 검사(여기서 백트래킹 발생)
-def dfs(queen, row):
+def backtrack(queen, row):
     count = 0
     if row == N:
         return 1
@@ -21,11 +21,11 @@ def dfs(queen, row):
             if abs(queen[i] - queen[row]) == row - i:
                 break
         else:
-            count = count + dfs(queen, row+1)
+            count = count + backtrack(queen, row+1)
     return count
 
 N = int(input())
-print(dfs([0]*N, 0))
+print(backtrack([0]*N, 0))
 
 '''
 N이 15이하인데 주어진 시간이 10초다.
