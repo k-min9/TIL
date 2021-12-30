@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/websocket
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: create # 애플리케이션 실행시점에 테이블 다 지우고 새로 생성
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000 #1대다 쿼리 뻥튀기 페이징 문제, 최적화 옵션 (MAX는 거의 1000)
+
+logging.level:
+  org.hibernate.SQL: debug # hibernate가 생상하는 로그를 다 보여줌
+# org.hibernate.type: trace # 쿼리 파라미터 로그 남기기
