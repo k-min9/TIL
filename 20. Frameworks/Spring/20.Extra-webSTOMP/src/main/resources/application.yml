@@ -1,4 +1,12 @@
 spring:
+  # 기본 프로파일을 local로 설정 (2.4 버전 이전 설정으로 일단은 설정 // 어차피 embedded 자체가 테스트용)
+  # 자세한 내용 : https://multifrontgarden.tistory.com/277
+  config:
+    use-legacy-processing: true
+
+  profiles:
+    active: local
+
   datasource:
     url: jdbc:mariadb://localhost:3306/websocket
     driver-class-name: org.mariadb.jdbc.Driver

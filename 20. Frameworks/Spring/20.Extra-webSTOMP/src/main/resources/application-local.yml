@@ -1,0 +1,8 @@
+# 로컬 서버용 (embedded redis 환경)
+spring:
+  profiles:
+    active: local
+  redis:
+    host: localhost
+#    port: 6379  # 기존 번호와 충돌
+    port: 6380

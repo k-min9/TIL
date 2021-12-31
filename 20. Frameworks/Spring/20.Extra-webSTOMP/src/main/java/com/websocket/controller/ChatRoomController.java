@@ -14,7 +14,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Controller
-@CrossOrigin(origins="*")
+//@CrossOrigin(origins="*")
 @RequestMapping("/chat")
 public class ChatRoomController {
 

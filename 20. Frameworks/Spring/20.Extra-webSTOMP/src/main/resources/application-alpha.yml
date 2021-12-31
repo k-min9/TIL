@@ -1,0 +1,7 @@
+# 알파(실전) 서버용, 이거 단계에서는 gitgnore 제대로 관리하기
+spring:
+  profiles:
+    active: alpha
+  redis:
+    host: redis가 설치된 서버 호스트
+    port: redis가 설치된 서버 포트
