@@ -1,4 +1,4 @@
-package com.websocket.config.test;
+package com.websocket.test;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

@@ -45,6 +45,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'it.ozimov:embedded-redis:0.7.2'  // 0.7.3부터 자체 로깅 시스템 있기 때문에 절대 금지(slf4j 멀티플 바인딩 오류 발생)
 
+	//JWT 토큰
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+
 }
 
 test {

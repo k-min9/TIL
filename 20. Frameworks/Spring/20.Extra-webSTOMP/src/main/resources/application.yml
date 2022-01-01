@@ -31,6 +31,9 @@ spring:
   freemarker:
     cache: false
 
+jwt:
+  secret: 1@*ft7m1e*47b4yzlppbx5=hmvy86!#f-4v$3g6wrotraqes64  # 나중에 교체하고 gitgnore한다는 전제하에 진행
+
 logging.level:
   org.hibernate.SQL: debug # hibernate가 생상하는 로그를 다 보여줌
 # org.hibernate.type: trace # 쿼리 파라미터 로그 남기기

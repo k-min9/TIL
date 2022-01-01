@@ -3,6 +3,8 @@ package com.websocket.controller;
 import com.websocket.dto.ChatRoom;
 import com.websocket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,6 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Controller
-//@CrossOrigin(origins="*")
 @RequestMapping("/chat")
 public class ChatRoomController {
 
@@ -52,5 +53,17 @@ public class ChatRoomController {
     @ResponseBody
     public ChatRoom roomInfo(@PathVariable String roomId) {
         return chatRoomRepository.findRoomById(roomId);
+    }
+
+    /**
+     * 회원의 이름만 조회하게 개조
+     * @return
+     */
+    @GetMapping("/user")
+    @ResponseBody
+    public String getUserInfo() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        return name;
     }
 }
