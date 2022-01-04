@@ -8,22 +8,19 @@
 이러면 슬라이딩 윈도우가 아니라, 
 문제를 끝까지 똑바로 읽읍시다.
 '''
-# 이진탐색을 만족도에 맞추고, 이때의 len을 비교해서 N보다 작으면 최초의 리스트에서 읽고 끝낸다.
+# # 이진탐색을 만족도에 맞추고, 이때의 len을 비교해서 N보다 작으면 최초의 리스트에서 읽고 끝낸다.
 
-import sys
-input = sys.stdin.readline
+# import sys
+# input = sys.stdin.readline
 
-# N일 동안(슬라이딩 윈도우 크기), 필요 만족도, 맥주 종류
-N, M, K = map(int, input().split())
-beers = [list(map(int, input().split())) for _ in range(K)]
-# 만족도 오름차순
-beers = sorted(beers)
+# # N일 동안(슬라이딩 윈도우 크기), 필요 만족도, 맥주 종류
+# N, M, K = map(int, input().split())
+# beers = [list(map(int, input().split())) for _ in range(K)]
+# # 만족도 오름차순
+# beers = sorted(beers)
 
-lo = 0
-hi = 2**31
-
-
-
+# lo = 0
+# hi = 2**31
 
 '''
 >> 1차시도 : 타임 아웃
@@ -66,5 +63,34 @@ if scores<M:
 
 '''
 
+# >> 리벤지 타임 : 키워드는 선호도 관리
+import sys
+from heapq import heappop, heappush
+input = sys.stdin.readline
 
-# 저녁에 돌아온다!
+# N일 동안(슬라이딩 윈도우 크기), 필요 만족도, 맥주 종류
+N, M, K = map(int, input().split())
+beers = [list(map(int, input().split())) for _ in range(K)]  # (선호도, 도수)
+beers = sorted(beers, key=lambda x : (x[1], x[0]))  # 도수 낮은 수로 먹기 전략
+
+heap = list()
+cnt = 0  # 만족도
+answer = 0
+for beer in beers:
+    cnt += beer[0]
+    heappush(heap, beer[0])
+    if len(heap) == N:
+        if cnt >= M:
+            answer = beer[1]  # 도수
+            break
+        else:
+            cnt -= heappop(heap)
+else:
+    print(-1)
+    exit()
+
+print(answer)
+
+
+
+
