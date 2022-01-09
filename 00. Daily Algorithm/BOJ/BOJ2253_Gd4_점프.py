@@ -13,19 +13,17 @@ INF = 300
 N, M = map(int, input().split())
 
 dp = [[INF]*(150) for _ in range(N+1)]
-dp[2][1] = 1
+dp[1][0] = 0
 
-stop = set()
-for _ in range(M):
-    stop.add(int(input()))
+stop = set(int(input()) for _ in range(M))
 
 # dp 시작
-for x in range(3, N+1):
+for x in range(2, N+1):
     if x in stop:
         continue
     for v in range(1, 149):
-        if x>v:
-            dp[x][v] = min(dp[x-v][v-1], dp[x-v][v], dp[x-v][v+1])+1
+        if x > v:
+            dp[x][v] = min(dp[x-v][v-1], dp[x-v][v], dp[x-v][v+1]) + 1
 
 answer = min(dp[N])
 if answer == INF:
