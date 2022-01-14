@@ -24,9 +24,11 @@ def bfs(rx, ry, bx, by):
         for _ in range(len(que)):
             rx, ry, bx, by = que.popleft()
             if count > 10: 
-                return 0
+                # return 0  # 구슬탈출 1
+                return -1
             elif graphs[ry][rx] == 'O':
-                return 1
+                # return 1  # 구슬탈출 1
+                return count
             for dx, dy in MOVES:
                 # 벽에 부딪힐때까지 이동 (R)
                 nrx, nry = rx, ry
@@ -66,7 +68,8 @@ def bfs(rx, ry, bx, by):
                     que.append((nrx, nry, nbx, nby))
                     visited.add((nrx, nry, nbx, nby))
         count += 1
-    return 0
+    # return 0  # 구슬탈출 1
+    return -1
 
 
 # 입력
