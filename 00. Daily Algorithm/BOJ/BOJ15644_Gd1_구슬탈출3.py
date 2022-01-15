@@ -1,7 +1,5 @@
 '''
-요즘 BFS 성분이 모자라긴 했음
-구슬을 굴려서 빨강은 넣고 파랑은 들어가면 안됨, 10번 이하 츄라이
-ㄴ 개인 핵심 사항 : rx, ry, bx, by 4차원 visited 만드느니 set 쓰자.
+(13459, 13460, 15653) 구슬 탈출 1,2,4 => (15644) 구슬 탈출3 최종 문제
 '''
 import sys
 from collections import deque
@@ -9,12 +7,12 @@ input = sys.stdin.readline
 
 
 # 상수
-MOVES = [(-1, 0), (1, 0), (0, 1), (0, -1)]
+MOVES = [(-1, 0, 'L'), (1, 0, 'R'), (0, 1, 'D'), (0, -1, 'U')]
 
 
 def bfs(rx, ry, bx, by):
     que = deque()
-    que.append((rx, ry, bx, by))
+    que.append((rx, ry, bx, by, ''))
     visited = set()
     visited.add((rx, ry, bx, by))
 
@@ -22,14 +20,12 @@ def bfs(rx, ry, bx, by):
     while que:
         # 카운트 기준
         for _ in range(len(que)):
-            rx, ry, bx, by = que.popleft()
+            rx, ry, bx, by, history = que.popleft()
             if count > 10: 
-                # return 0  # 구슬탈출 1
                 return -1
-            elif graphs[ry][rx] == 'O':
-                # return 1  # 구슬탈출 1
-                return count
-            for dx, dy in MOVES:
+            if graphs[ry][rx] == 'O':
+                return count, history
+            for dx, dy, dir in MOVES:
                 # 벽에 부딪힐때까지 이동 (R)
                 nrx, nry = rx, ry
                 while True:
@@ -65,10 +61,9 @@ def bfs(rx, ry, bx, by):
                         nby -= dy
                 # 방문 처리
                 if (nrx, nry, nbx, nby) not in visited:
-                    que.append((nrx, nry, nbx, nby))
+                    que.append((nrx, nry, nbx, nby, history + dir))
                     visited.add((nrx, nry, nbx, nby))
         count += 1
-    # return 0  # 구슬탈출 1
     return -1
 
 
@@ -83,4 +78,9 @@ for y in range(N):
         elif graphs[y][x] == 'B':
             by, bx = y, x
 
-print(bfs(rx, ry, bx, by))
+answer = bfs(rx, ry, bx, by)
+if answer == -1:
+    print(answer)
+else:
+    for ans in answer:
+        print(ans)
