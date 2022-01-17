@@ -32,9 +32,6 @@ for i in range(3):
 
     tmp_time=stime.strftime('%H%M%S')
 
-    # 1씩 더하기 때문
-    sec=1
-
     cnt=0
     if int(tmp_time)%3==0:
             cnt+=1
@@ -45,11 +42,9 @@ for i in range(3):
         if tmp_time==etime:
             break
         
-        # sec만큼 증가 (여기서 sec은 1)
-        stime=stime+timedelta(seconds=sec)
+        stime=stime+timedelta(seconds=1)  # 1초씩 더하기
         tmp_time=stime.strftime('%H%M%S')
         if int(tmp_time)%3==0:
             cnt+=1
-
 
     print(cnt)
