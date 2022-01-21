@@ -191,6 +191,3 @@ print(answer)
 
 
 #### 2-SAT
-
-
-
