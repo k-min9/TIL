@@ -1,17 +1,23 @@
 from flask import Flask, jsonify
+# ORM
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
+# 환경변수
+import os
+from dotenv import load_dotenv
 
 app = Flask(__name__) 
 
 
 '''
-DB 관련 설정
+DB 관련 설정 + ENV 샘플 동봉, 원래는 gitgnore
 '''
 # Declare connection
-mysql_url = "mysql+pymysql://root:1234@localhost:3306/turtletube_test?charset=utf8"
+# mysql_url = "mysql+pymysql://root:1234@localhost:3306/turtletube_test?charset=utf8"
+load_dotenv()
+mysql_url = "mysql+pymysql://" + os.environ.get('DB_USER') + ":"+ os.environ.get('DB_PASS') + "@" + os.environ.get('DB_URL') +"?charset=utf8"
 engine = create_engine(mysql_url, echo=True, convert_unicode=True)
 # Declare & create Session
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
@@ -54,7 +60,7 @@ def db_conn(tid):
 
     res = [1, 2, 3]
     res.append(user.email)
-    
+
     return jsonify(res)
 
 @app.route("/") 
