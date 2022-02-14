@@ -19,7 +19,7 @@ def is_prime(a):
 
 
 input()
-nums = list(map(int, input().split()))
+nums = set(map(int, input().split()))
 
 answer = 1
 for num in nums:
@@ -30,4 +30,3 @@ if answer == 1:
     print(-1)
 else:
     print(answer)
-    
