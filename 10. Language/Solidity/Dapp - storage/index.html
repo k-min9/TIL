@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 예제에 사용된 bulma css framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <!-- html에 web3.js를 cdn으로 import -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+</head>
+<body>
+    <script type="text/javascript" src="script.js"></script>
+    <section class='section'>
+        <h1 class="title">Storage DApp</h1>
+        <table class='table'>
+            <tr>
+                <td>Contract Address</td>
+                <td><span id="contractAddr"></span></td>
+            </tr>
+            <tr>
+                <td>My Address</td>
+                <td><span id="accountAddr"></span></td>
+            </tr>
+            <tr>
+                <td>Lastest Block</td>
+                 <td><span id="lastBlock"></span></td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="button is-primary" onclick="retrieve()">retrieve</button>
+                </td>
+                <td><span id="storedData"></span></td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="button is-primary" onclick="store()">    store
+                    </button>
+                </td>
+                <td>
+                    <input class="input" id="newValue" placeholder="저장할 값" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Transaction Hash</td>
+                <td><span id="txHash"></span></td>
+            </tr>
+        </table>
+    </section>
+</body>
+</html>
