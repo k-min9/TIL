@@ -22,12 +22,30 @@ class Subject extends Component {
 // 컴포넌트 만들고 사용하기 + props(하위 컴포넌트로 data 보내기)
 // 컴포넌트 분리하기 (TOC)
 class App extends Component {
+  // state 만들기, component 생성시 constructor가 가장 먼저 실행되어 초기화 담당
+  constructor(props) {
+    super(props);
+    this.state = {
+      subject: {
+        title: 'State_WEB',
+        sub: 'State_sub 내용물'
+      },
+      contents: [
+        {id:1, title: '1번요소', desc: '1번 요소 설명'},
+        {id:2, title: '2번요소', desc: '2번 요소 설명'},
+        {id:3, title: '3번요소', desc: '3번 요소 설명'},
+      ]
+    }
+  }
+
+
+
   render() {
     return (
       <div className="App">
         <Subject title = "WEB2" sub="prop는 이런식으로 하는겁니다."></Subject> 
-        <Subject title = "WEB3" sub="prop는 이런식으로 하는겁니다.2"></Subject> 
-        <TOC></TOC>
+        <Subject title = {this.state.subject.title} sub={this.state.subject.sub}></Subject> 
+        <TOC data={this.state.contents}></TOC>
         Hello, React!!!
       </div>
     );

@@ -10,6 +10,7 @@ react는 UI 제작용 javascript Library. (Framework가 아님)
 - Component : 사용자 정의 태그
   - 가독성, 재사용성, 유지보수
   - props : component 내부로 보내는 data
+  - state : props의 영향을 받아 component 내부에서 사용되는 것들
 
 - Toolchain : 개발에 필요한 Tool 들을 한번에 제공
 
