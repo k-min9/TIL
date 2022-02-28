@@ -11,7 +11,15 @@ react는 UI 제작용 javascript Library. (Framework가 아님)
   - 가독성, 재사용성, 유지보수
   - props : component 내부로 보내는 data
   - state : props의 영향을 받아 component 내부에서 사용되는 것들
-
+    - state 값이 바뀌면 render 함수가 다시 호출된다.
+- Functions
+  - render : html을 어떻게 그릴지 정하는 함수
+  - bind : 함수 내부에 값을 엮어주거나 주입하는 함수
+    - 함수 뒤에서 .bind(this) 등으로 사용
+  - setState : react에서는 component 구성이 끝난 후,
+  직접 this.title = 'a' 같은 식으로 내용을 바꿀 수 없다.
+  (정확히는 바뀌기는 하는데 render 호출이 안된다.)
+  그래서 setState로 바꾸면 된다.
 - Toolchain : 개발에 필요한 Tool 들을 한번에 제공
 
 ## 시작하기
