@@ -20,6 +20,25 @@ class Subject extends Component {
 
 }
 
+// Subject와 동일하지만 Event를 발생하는 Button 컴포넌트 생성
+class Button extends Component {
+  // render가 반환하는 것을 사용
+  render() {
+    return (
+      // 단 하나의 최상위 태그로 시작해야 함
+      <header>
+        <h1>state 변경 버튼</h1>
+        <h2><a href="/" onClick={function(e){
+          e.preventDefault();
+          this.props.onChangePage();  // 위에서 실행하라고 명령한 함수 실행
+        }.bind(this)}>{this.props.title}</a></h2>
+        {this.props.sub}
+      </header>
+    );
+  }
+
+}
+
 // 컴포넌트 만들고 사용하기 + props(하위 컴포넌트로 data 보내기)
 // 컴포넌트 분리하기 (TOC)
 class App extends Component {
@@ -28,6 +47,7 @@ class App extends Component {
     super(props);
     this.state = {
       mode : 'welcome',  // 현재 표시 화면 종류 추가
+      selected_content_id:2,  // 현재 선택된 표시 화면 종류
       subject: {
         title: 'State_WEB',
         sub: 'State_sub 내용물'
@@ -50,16 +70,32 @@ class App extends Component {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
     } else if (this.state.mode === 'read') {
-      _title = this.state.contents[0].title;
-      _desc = this.state.contents[0].desc;
+      var i = 0;
+      while (i < this.state.contents.length) {
+        var data = this.state.contents[i];
+        if (data.id === this.state.selected_content_id) {
+          _title = data.title;
+          _desc = data.desc;
+          break;
+        }
+        i = i+1;
+      }
     }
     return (
       <div className="App">
         <Subject title = "WEB2" sub="prop는 이런식으로 하는겁니다."></Subject> 
         <Subject title = {this.state.subject.title} sub={this.state.subject.sub}></Subject> 
-        <TOC data={this.state.contents}></TOC>
+        <TOC 
+          onChangePage={function(id){
+          this.setState({
+            mode:'read',
+            selected_content_id: Number(id) // 문자 -> 숫자
+          });
+        }.bind(this)}
+        data={this.state.contents}
+        ></TOC>
 
-        {/* state 전환 버튼을 만들어보자 */}
+        {/* state 전환 버튼을 만들어보자, 직접 입력 버전 */}
         <h3><a href="/" onClick={function(e) {
           console.log(e)
           e.preventDefault(); // 페이지 전환등 원래 하려는 행동을 중지시킴
@@ -69,6 +105,17 @@ class App extends Component {
           });
           // bind로 this 주입
         }.bind(this)}>{this.state.subject.title}</a></h3>
+
+        {/* state 전환 버튼을 만들어보자, event Component 버전 */}
+        <Button
+        title={this.state.subject.title}
+        sub={this.state.subject.sub}
+        onChangePage={function(){
+          this.setState({mode:'read'});
+          alert('welcome->read로 변경!');
+        }.bind(this)}
+        ></Button>
+
 
         Hello, React!!!
         <Content title={_title} desc={_desc}></Content>
