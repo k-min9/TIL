@@ -8,6 +8,7 @@ react는 UI 제작용 javascript Library. (Framework가 아님)
 ## Notation
 
 - Component : 사용자 정의 태그
+  
   - 가독성, 재사용성, 유지보수
   - props : component 내부로 보내는 외부 제어용 data, read-only (수정 불가, 변경 금지)
   - state : props의 영향을 받아 component 내부에서 사용되는 것들, this.setState로 변경 가능
@@ -15,21 +16,27 @@ react는 UI 제작용 javascript Library. (Framework가 아님)
     - props vs state 요약
     1. props는 스마트폰의 볼륨버튼이라면 사용자가 볼륨버튼을 누르면 state는 스마트폰안에서 스스로의 상태인 볼륨이 바뀌게 해놓은 모든 조치(회로,프로그래밍 등등)라고 할 수 있습니다.
     2. 상위 컴포넌트는 하위 컴포넌트에게 props를 통해 값을 전달해 내부의 state를 바꾸기 때문에 컴포넌트 스스로 외부에서 전달되는 props를 변경하는 것은 금지되어 있습니다.  또한 하위 컴포넌트가 상위 컴포넌트를 동작시키려면 props를 전달하는 것이 아니라 상위 컴포넌트 안에 이벤트를 심고 그 안에 setState로 값을 바꿔야 합니다.
-- Functions
-  - render : html을 어떻게 그릴지 정하는 함수
-  - bind : 함수 내부에 값을 엮어주거나 주입하는 함수
-    - 함수 뒤에서 .bind(this) 등으로 사용
-    - 변수 증가시 대응
 
+- Functions
+  
+  - render : html을 어떻게 그릴지 정하는 함수
+  
+  - bind : 함수 내부에 값을 엮어주거나 주입하는 함수
+    
+    - 함수 뒤에서 .bind(this) 등으로 사용
+    
+    - 변수 증가시 대응
+      
       ```
       .bind(this, id, 10) 
       -> function(id(id에 대응), num(10에 대응), e)
       ```
-
+  
   - setState : react에서는 component 구성이 끝난 후,
-  직접 this.title = 'a' 같은 식으로 내용을 바꿀 수 없다.
-  (정확히는 바뀌기는 하는데 render 호출이 안된다.)
-  그래서 setState로 바꾸면 된다.
+    직접 this.title = 'a' 같은 식으로 내용을 바꿀 수 없다.
+    (정확히는 바뀌기는 하는데 render 호출이 안된다.)
+    그래서 setState로 바꾸면 된다.
+
 - Toolchain : 개발에 필요한 Tool 들을 한번에 제공
 
 ## 시작하기
@@ -99,6 +106,16 @@ import './App.css';
 npm run build  // dist 생성
 npx serve -s build  // 배포 (serve 설치 필수), build를 document root로 하겠다.
 ```
+
+## React hook
+
+리액트가 고평가받는 요소
+
+- useState : state 값을 변경하고, 함수형 컴포넌트에서도 상태를 관리 및 render할 수 있게 해준다.
+
+- useEffect : 우리의 코드가 확실하게 단 한 번만 실행할 수 있도록 보호해줌
+  
+  - 정확히는 두번째 argument [] 안에 들어있는 내용(dependency)이 변했을때만 실행함. 내용이 비어있으면 지켜볼 것이 없으니 한번만 실행하는 것
 
 ## 현재 상태 확인하기
 
