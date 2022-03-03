@@ -153,6 +153,21 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 </Router>
 ```
 
+4. 동적 url 보내기와 확인
+
+```
+// 라우팅 등록 (App.js)
+<Route path="/movie/:id">
+
+// 라우팅 하기 (id props 받기 잊지 말기)
+<Link to={`/movie/${id}`}>{title}</Link>
+
+// 라우팅 된 쪽에서 확인, 사용
+import { useParams } from "react-router-dom";
+
+const { id } = useParams();
+```
+
 ## 현재 상태 확인하기
 
 구글 확장프로그램 : React Developer Tools 설치
