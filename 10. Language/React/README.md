@@ -22,11 +22,11 @@ react는 UI 제작용 javascript Library. (Framework가 아님)
   - render : html을 어떻게 그릴지 정하는 함수
   
   - bind : 함수 내부에 값을 엮어주거나 주입하는 함수
-    
+
     - 함수 뒤에서 .bind(this) 등으로 사용
-    
+
     - 변수 증가시 대응
-      
+
       ```
       .bind(this, id, 10) 
       -> function(id(id에 대응), num(10에 대응), e)
@@ -116,6 +116,42 @@ npx serve -s build  // 배포 (serve 설치 필수), build를 document root로 �
 - useEffect : 우리의 코드가 확실하게 단 한 번만 실행할 수 있도록 보호해줌
   
   - 정확히는 두번째 argument [] 안에 들어있는 내용(dependency)이 변했을때만 실행함. 내용이 비어있으면 지켜볼 것이 없으니 한번만 실행하는 것
+
+## Router
+
+1. 환경 설정
+
+```
+npm install react-router-dom
+npm i react-router-dom@5.3.0 (버전 지정 버전, Switch 이)
+```
+
+2. App.vue 상단에 hashrouter(#)인지 browserrouter인지 선택해서 맨 위에 가져다 두기
+
+```
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+```
+
+- Switch : Route(url) 찾기, 한번에 하나의 route만 render하게 해 줌
+- Link : 브라우저의 새로고침 없이 페이지를 이동시켜 줌
+
+3. 내용 작성
+
+```
+<Router>
+  <Switch> 
+    <Route path="/hello">
+      <h1>Hello</h1>
+    </Route>
+    <Route path="/movie">
+      <Detail />
+    </Route>
+    <Route path="/">
+      <Home />
+    </Route>
+  </Switch>
+</Router>
+```
 
 ## 현재 상태 확인하기
 
