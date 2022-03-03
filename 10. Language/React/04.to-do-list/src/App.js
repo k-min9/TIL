@@ -24,6 +24,13 @@ function App() {
         />
         <button>Add To Do</button>
       </form>
+      <hr />
+      <ul>
+        {/* javascript의 용법을 쓰게 하려는 react의 노력. 실제 map과 매우 유사 (value, index) */}
+        {toDos.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 }
