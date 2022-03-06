@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Unity, { UnityContext } from "react-unity-webgl";
 
 const unityContext = new UnityContext({
@@ -9,6 +9,13 @@ const unityContext = new UnityContext({
 });
 
 function App() {
+  const [speed, SetSpeed] = useState(0);
+
+  useEffect(function() {
+    unityContext.on("GetSpeed", function(speed) {
+      SetSpeed(speed);
+    });
+  }, []);
 
   function speedIncrease() {
     // parameter : gameObjectName, methodName, parameter(string, number, boolean)
@@ -25,11 +32,12 @@ function App() {
 
   return (
   <div>
+    <div> 현재 속도 : {speed}</div>
     <button onClick={speedIncrease}>이동속도 증가</button>
     <button onClick={speedDecrease}>이동속도 감소</button>
     <button onClick={handleOnClickFullscreen}>Fullscreen</button>
     <div>
-      <Unity style={{width:'1080px', height:'720px'}} unityContext={unityContext} />
+      <Unity style={{width:'1080px', height:'720px', border: "5px solid black", background: "grey"}} unityContext={unityContext} />
     </div>
   </div>
   );
