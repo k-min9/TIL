@@ -6,7 +6,7 @@
 
 ## Getting Started
 
-- Unity Hub : 개발 환경
+- Unity Hub : 개발 환경. 여러버전의 Unity Editor를 설치하고 관리
 - 일반적 필수 구성 요소 : Assets, ProjectSettings, Packages
 
 ## Notation
