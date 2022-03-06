@@ -10,14 +10,23 @@ const unityContext = new UnityContext({
 
 function App() {
 
+  function speedIncrease() {
+    // parameter : gameObjectName, methodName, parameter(string, number, boolean)
+    unityContext.send("Player", "SpeedUp");
+  }
+
+  function speedDecrease() {
+    unityContext.send("Player", "SpeedDown");
+  }
+
   function handleOnClickFullscreen() {
     unityContext.setFullscreen(true);
   }
 
   return (
   <div>
-    <button>이동속도 증가</button>
-    <button>이동속도 감소</button>
+    <button onClick={speedIncrease}>이동속도 증가</button>
+    <button onClick={speedDecrease}>이동속도 감소</button>
     <button onClick={handleOnClickFullscreen}>Fullscreen</button>
     <div>
       <Unity style={{width:'1080px', height:'720px'}} unityContext={unityContext} />
