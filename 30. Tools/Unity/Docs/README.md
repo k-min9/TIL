@@ -126,7 +126,35 @@ Object [=단순한 껍데기(Holder)] + Component[스스로 동작하는(완결�
 - 오디오 클립을 하이어라키 창에 드래그&드롭하여 오디오 소스 컴포넌트 생성
 - 일단은 생략
 
+## Assets
+
+- 외부 Assets을 활용하여 바퀴를 두 번 만들 필요가 없어진다.
+- 구매하기 : Asset store
+- 사용하기 : 창 -> window -> package manager -> My assets -> Download -> Import
+
+## Animator
+
+- Animation Controller로 제어, 각각 Exit, AnyState, Entry 등에 적용
+  - Has Exit Time : 애니메이션 재생 종료시 Exit으로 빠져나감
+  - Transition Duration : 애니메이션 적용에 필요한 시간
+- 애니메이션 정보는 모델의 fbx 파일 안에 있음
+  - FBX : 각종 정보들이 구분되어 저장되는 3D 포맷
+- 상태를 제어할 Parameter을 좌측에서 추가
+  - 방법 1 :
+  애니메이션 상태 사이를 양방향 Transition으로 연결
+  Parameter을 Condition으로 사용하여 연결된 Transition 완성하기
+  - 방법 2 : 
+  블렌더 사용하기
+- parameter 변수 설정 Tip
+  - float : 이동 등 강약 있음
+  - Boolean : 걷는 중, 뛰는 중 같은 상태 확인
+  - Trigger : 도약함 등 한번만 사용
+  
 ## 기타
+
+- 새로운 입력키 : Edit > Project Settings > Input Manager에서 추가 가능
+
+- Debug.Log("내용")으로 동작확인
 
 - 오브젝트 풀링 : 초기에 필요한 만큼 오브젝트를 미리 만들어 'Pool'에 쌓아두는 방식
   - Instantiate, Destroy 같은 처리량이 많은 로직을 조금 써서 프리징 등을 막을 수 있고, 재사용이 가능함
