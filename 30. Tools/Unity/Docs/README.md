@@ -69,6 +69,21 @@ Object [=단순한 껍데기(Holder)] + Component[스스로 동작하는(완결�
 
 특징 : 재사용성, 독립성(기능 추가 삭제가 쉬움)
 
+- 자주 쓸만한 추가 Component
+  - Light :
+    - 특정 지점(Point 설정시)으로부터
+    - Intnsity 강도의
+    - Color 색 빛을
+    - Range 범위내에
+  - Particle :
+    - 주요속성 : Start Lifetime(생존 시간), Start Speed(초기 속도)
+    - Renderer > Material(우측 원형)로 재질 설정
+    - Emission : 파티클 입자 출력양
+    - Shape : 모양(Cone, Sphere...) + 방향(Rotation)
+    - Color Over Lifetime : 시간마다 색상 변화, Gradient, 투명도 조절 가능
+    - Size Over Liftime : 시간마다 점점 작아짐
+    - Limit Velocity overLifeTime : 시간에 따른 속도 제한, Drag : 저항값
+
 ## 메시지, 브로드 캐스팅, 이벤트 메서드
 
 ## 코딩
@@ -143,7 +158,7 @@ Object [=단순한 껍데기(Holder)] + Component[스스로 동작하는(완결�
   - 방법 1 :
   애니메이션 상태 사이를 양방향 Transition으로 연결
   Parameter을 Condition으로 사용하여 연결된 Transition 완성하기
-  - 방법 2 : 
+  - 방법 2 :
   블렌더 사용하기
 - parameter 변수 설정 Tip
   - float : 이동 등 강약 있음
@@ -155,6 +170,8 @@ Object [=단순한 껍데기(Holder)] + Component[스스로 동작하는(완결�
 - 새로운 입력키 : Edit > Project Settings > Input Manager에서 추가 가능
 
 - Debug.Log("내용")으로 동작확인
+
+- 재질을 찾지 못함 : Magneta(분홍색 표기)
 
 - 오브젝트 풀링 : 초기에 필요한 만큼 오브젝트를 미리 만들어 'Pool'에 쌓아두는 방식
   - Instantiate, Destroy 같은 처리량이 많은 로직을 조금 써서 프리징 등을 막을 수 있고, 재사용이 가능함
