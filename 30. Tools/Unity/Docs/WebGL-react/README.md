@@ -118,3 +118,17 @@ ref docs 추가 :
       }
     }
    ```
+
+## 트러블 슈팅
+
+- 인터넷에서 WebGL을 사용할 경우 인터넷 IME가 한글을 지원하지 않는다.
+  한글 Input이 가능해지게 Scripts Component를 추가해야 함.
+  <https://github.com/kou-yeung/WebGLInput> 에서 지원을 해줌.
+  1. WebGLSupport.unitypackage 다운로드
+  2. import하고 싶은 프로젝트를 열고 다운받은 파일 열기
+  3. import 후, inputField 계열 GameObject에 Component WebGLInput 추가
+  
+  - (22.03.15 버전 기준 오류 발생) 수정하기
+  1. 빌드 후, framework.js 파일 열기
+  2. allocate(intArrayFromString(input.value), "i8", ALLOC_NORMAL);를
+  allocate(intArrayFromString(input.value), ALLOC_NORMAL);로 변경
