@@ -44,6 +44,24 @@
   2. Window > Photon Unity Networking > PUN Wizard > Setup Project
   3. 이메일 입력시 자동 연동해줌, 그 후 Done의 Close 눌러서 종료
 
+## 적용
 
+포톤에서 모든 동기화는 PhotonView 컴포넌트에서 작업.
+변수와 함수도 PhotonView 컴포넌트를 거쳐가야함
 
+변수 동기화 : OnphotonSerializeView, 값이 자주 바뀌는 체력등에 활용
+함수 동기화 : RPC
+RaiseEvent : PhotonView를 거치지 않는 이벤트
 
+## Photon View
+
+네트워크상 식별자인 View ID를 부여
+Observed Compnents List에 등록된 컴포넌트 들의 변화 수치 관측 
+다른 버전의 자신의 동기화에 사용
+IPunObservable 인터페이스 상속 컴포넌트만 관측 가능
+
+## Photon Trasform View
+자신의 게임 오브젝트에 추가된 트랜스폼 컴포넌트 값의 변화를 측정하고, Photon View를 사용하여 동기화
+
+## Cinemachine
+Package Manager에 준비되어있는것 설치하면 준비 끝
