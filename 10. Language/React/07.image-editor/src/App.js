@@ -18,7 +18,26 @@ function App() {
   const editorAddIcon = () => {editorRef.current.getInstance().addIcon('arrow', {fill:'red'});}
   const editorAddImage = () => {editorRef.current.getInstance().addImageObject(imageSERVER + 'https://docs.unity3d.com/uploads/Main/ShadowIntro.png');}
   const editorAddImage2 = () => {editorRef.current.getInstance().addImageObject(logoImg);}
-  
+  const editorAddImage3 = () => {
+    editorRef.current.getInstance().addImageObject(logoImg)
+    .then(res => {
+      const editorInstance = editorRef.current.getInstance();
+      var canvasSize = editorInstance.getCanvasSize();
+      editorInstance.setObjectProperties(res.id, {width:canvasSize.width, height:canvasSize.height - 10} 
+    )}
+  );}
+  const editorAddImage4 = () => {editorRef.current.getInstance().loadImageFromURL(imageSERVER + 'https://docs.unity3d.com/uploads/Main/ShadowIntro.png', 'lena')
+  .then(res => {console.log(res.oldWidth +'/' + res.oldHeight)
+  console.log(res.newWidth +'/' + res.newHeight)})
+;}
+  const editorAddImage5 = () => {
+    editorRef.current.getInstance().addImageObject(logoImg)
+    .then(res => {
+      const editorInstance = editorRef.current.getInstance();
+      editorInstance.resize({width:200, height:150} 
+    )}
+  );}
+
   return (
     <div>
       <ImageEditor
@@ -63,6 +82,9 @@ function App() {
       <button onClick={editorAddIcon}> 붉은 화살표 </button>
       <button onClick={editorAddImage}> 이미지 추가 </button>
       <button onClick={editorAddImage2}> 투명/내부 이미지 추가 </button>
+      {/* <button onClick={editorAddImage3}> 투명/내부 거대 이미지 추가 </button> */}
+      <button onClick={editorAddImage4}> 새로운 티켓 부르기 </button>
+      <button onClick={editorAddImage5}> 티켓 크기 200 * 150 </button>
       <img src={logoImg} alt="logo" onClick={editorAddImage2}></img>
     </div>
 
