@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import "tui-image-editor/dist/tui-image-editor.css";
 import ImageEditor from "@toast-ui/react-image-editor";
+import logoImg from "./images/transparent.png"
 
 function App() {
   const myTheme = {
@@ -16,8 +17,8 @@ function App() {
   }
   const editorAddIcon = () => {editorRef.current.getInstance().addIcon('arrow', {fill:'red'});}
   const editorAddImage = () => {editorRef.current.getInstance().addImageObject(imageSERVER + 'https://docs.unity3d.com/uploads/Main/ShadowIntro.png');}
-
-
+  const editorAddImage2 = () => {editorRef.current.getInstance().addImageObject(logoImg);}
+  
   return (
     <div>
       <ImageEditor
@@ -61,6 +62,8 @@ function App() {
       <button onClick={editorFlipX}> X 좌우 반전 </button>
       <button onClick={editorAddIcon}> 붉은 화살표 </button>
       <button onClick={editorAddImage}> 이미지 추가 </button>
+      <button onClick={editorAddImage2}> 투명/내부 이미지 추가 </button>
+      <img src={logoImg} alt="logo" onClick={editorAddImage2}></img>
     </div>
 
   );
