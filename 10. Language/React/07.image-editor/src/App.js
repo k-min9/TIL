@@ -9,6 +9,7 @@ function App() {
   };
   const imageSERVER = "https://cdn.filestackcontent.com/AM9o5lgXYR1uvQX2NaAqnz/output=secure:true/"
   const editorRef = useRef(null);
+  const FileSaver = require('file-saver')  // 로컬 저장용 (npm install file-saver)
     
   const editorFlipX = () => {
     // const editorInstance = editorRef.current.getInstance();
@@ -37,6 +38,11 @@ function App() {
       editorInstance.resize({width:200, height:150} 
     )}
   );}
+  const editorToBase64 = () => {
+    const editorInstance = editorRef.current.getInstance();
+    var res = editorInstance.toDataURL();
+    console.log(res)
+  }
 
   return (
     <div>
@@ -85,6 +91,7 @@ function App() {
       {/* <button onClick={editorAddImage3}> 투명/내부 거대 이미지 추가 </button> */}
       <button onClick={editorAddImage4}> 새로운 티켓 부르기 </button>
       <button onClick={editorAddImage5}> 티켓 크기 200 * 150 </button>
+      <button onClick={editorToBase64}> 저장하기 </button>
       <img src={logoImg} alt="logo" onClick={editorAddImage2}></img>
     </div>
 
