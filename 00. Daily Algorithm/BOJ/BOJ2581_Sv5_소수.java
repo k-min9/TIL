@@ -8,6 +8,7 @@ public class BOJ2581_Sv5_소수 {
 
   public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
+    scan.close();
 
     int M = scan.nextInt();
     int N = scan.nextInt();

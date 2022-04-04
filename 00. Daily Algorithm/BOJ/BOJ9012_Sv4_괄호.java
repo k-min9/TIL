@@ -12,6 +12,7 @@ public class BOJ9012_Sv4_괄호 {
  
 		Scanner in = new Scanner(System.in);
 		int T = in.nextInt();
+		in.close();
 		
 		for(int i = 0; i < T; i++) {
 			System.out.println(solve(in.next()));	// nextLine()쓰면 안된다.
