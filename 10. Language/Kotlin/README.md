@@ -37,6 +37,7 @@ Local variable : 그 외에 scope 내에 선언
   - 문자열 : 따옴표로 감싼 범위 전부, 따옴표 세개일 경우 줄 바꿈이나 특수문자까지 문자열로 사용
 - 논리형
   - Boolean : true, false
+- Any : 어떠한 자료형과 호환되는 최상위 자료형
 
 ## 형변환과 배열
 
@@ -57,3 +58,70 @@ Local variable : 그 외에 scope 내에 선언
   intArr[2] = 8  // 3이 8로 바뀜
   println(intArr[4])  // 5가 출력됨
 ```
+
+## 함수, 타입 추론
+
+fun 으로 시작
+
+- 형태 : fun 이름(parameter):자료형 {}
+
+``` Kotlin
+fun main() {
+  println(add(5,6,7))
+}
+
+fun add(a:Int, b:Int, c:Int):Int {  // 반환형이 Int라는 선언
+  return a + b + c
+}
+
+// 단일 표현식 함수형
+fun add(a:Int, b:Int, c:Int) = a + b + c
+```
+
+타입추론 : ':자료형' 처럼 명시해주지 않고 알아서 추론해준다.
+
+## 조건문
+
+- if ~ else ~
+- When : 다른 문의 Switch와 유사 (부등호 사용은 불가, 여러 조건 만족시 가장 먼저 부합되는 것 실행)
+
+``` Kotlin
+when(a) {
+  1 -> println("정수 1입니다")
+  2 -> "정수 2입니다"  // 이렇게 적을 경우 값을 반환. var result = when... 으로 할당 가능
+  is Long -> println("Long 타입입니다")
+  else -> println("어떠한 조건도 만족하지 않습니다")
+}
+
+```
+
+- 비교 연산:
+  - 부등호, ==, ! 는 동일
+  - is 연산자 : 좌측 변수가 우측 자료형에 호환되는지 bool값 리턴 (a is Int)
+
+## 반복문
+
+- 조건형 반복문 : while, do ... while
+- 범위형 반복문 : for
+
+  ``` Kotlin
+    for(i in 0..9)  // 0에서 9까지 반복
+    for(i in 0..9 step 3)  // 0, 3, 6. 9로 반복
+    for(i in 9 downTo 0)  // 9에서 0까지 1씩 감소하며 반복
+    for(i in 'a'..'e') // a부터 e까지 반복하며 증가
+  ```
+
+## 흐름제어
+
+- return, break는 동일
+- 이중 반복문 등에서
+
+  ``` Kotlin
+  loop@for(i in 1..10) {
+    for (j in 1..10) {
+      if (i == 1 && j == 2) break@loop
+    }
+  }
+  ```
+
+  레이블+@ 기호를 앞에 달고 break에 @+레이블 이름을 달면 한 번 에 빠져나올 수 있다.
