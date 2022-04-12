@@ -1,0 +1,18 @@
+server:
+  port: 0 # 랜덤 포트 부여
+
+spring:
+  application:
+    name: user-service
+
+
+eureka:
+  instance:
+    # 부여하지 않으면 서버가 여럿 돌아도 0으로 Availability Zone 내용이 늘어나지 않은 것 확인할 수 있음
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}} # 랜덤 포트 부여시 정보
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+#      defaultZone: http://127.0.0.1:8761/eureka  # 서버 위치
