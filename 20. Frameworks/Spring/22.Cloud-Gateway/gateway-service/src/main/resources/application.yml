@@ -1,0 +1,28 @@
+server:
+  port: 8000
+
+# 유레카와 연동할 예정
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+spring:
+  application:
+    name: gateway-service
+  # gateway 핵심 정보
+  cloud:
+    gateway:
+      routes:
+        - id: first-service  # 고유 ID
+          uri: http://localhost:8081/  # 포워딩 위치
+          predicates:
+            - Path=/first-service/**  # 조건 (이 주소로 올 경우 8081로 보내겠다는 소리)
+        - id: second-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/second-service/**
+
