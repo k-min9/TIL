@@ -4,6 +4,7 @@
 최신의 패러다임을 적용하고, Java의 몇 몇 약점을 개선함
 기존 Java 머신과 호환되게 만들어짐.
 
+- 참조 강좌 링크 : [Dimo의 Kotlin 강의](https://www.youtube.com/watch?v=8RIsukgeUVw&list=PLQdnHjXZyYadiw5aV3p6DwUdXV2bZuhlN)
 - 웹 컴파일러 사이트 : <https://play.kotlinlang.org>
   
 ## 변수
@@ -29,6 +30,20 @@ Local variable : 그 외에 scope 내에 선언
   var a:Int = 123
   var b:Int? = null 
 ```
+
+## 변수 제어
+
+Kotlin은 선언 시 값을 할당해 줘야 컴파일이 가능 하지만, 그러지 못하는 경우가 있다.
+
+- 이때 lateinit를 써서 변수만 선언하고, 초기값의 할당을 나중에 할 수 있도록 설정 가능
+
+사용법 : lateinit var a:Int
+제한사항 : 할당전까지 변수 사용 불가(에러 발생), 기본 자료형에는 사용 불가
+초기화 여부 확인 : ::a.isInitialized로 체크 가능
+
+- 지연대리자속성 : 변수 사용시점까지 초기화를 늦춰줌, 코드 실행 초기화
+
+사용법 : val a: Int by lazy{7}  // 7 부분은 람다함수로 여러 문장 가능
 
 ## 기본 자료형
 
@@ -298,6 +313,37 @@ collection에 일반 함수나 람다 함수를 사용하여 for 문 없이도 �
 - flatMap : 아이템마다 만들어진 collection을 합쳐서 반환
 - getOrElse : 해당 위치에 아이템이 있으면 반환하고 없으면 지정 기본값 반환
 - zip : 두 collection을 1:1 대응 pair로 만들어 반환 (수가 다를 경우, 작은 쪽을 따라감)
+
+## 코루틴
+
+비동기로 여러개의 루틴을 동시에 처리, 메인 루틴가 실행/종료를 제어하고 별개로 진행
+
+- 지원범위
+  - GlobalScope: 프로그램 어디서나 제어, 동작이 가능한 기본 범위
+  - CoroutineScope : 특정한 목적의 Dispatcher를 지정하여 제어 및 동작이 가능한 범위
+    - Dispatcher : 코루틴스코프 제작시 적용가능
+      - Default : 기본적인 백그라운드
+      - IO : I/O 최적화 동작
+      - Main : 메인(UI) 스레드에서 동작
+- 반환값 여부
+  - launch : 없음. job 객체
+  - async : 있음. Deffered 객체
+- 코루틴은 프로그램 종료시 함께 종료되기 때문에 코로틴 종료를 기다려야 한다.
+  - runBlocking {} 블럭을 사용  // 안드로이드는 이 대기 시간이 길어지면 앱 강제 종료
+  - 대기
+    - delay(milisecond: Long) : 밀리세컨드 단위로 루틴을 잠시 대기
+    - Job.join() : Job의 실행이 끝날때까지 대기
+    - Deferred.await() : Deferred의 실행이 끝날때까지 대기하고 값을 반환
+  - 취소 : cancel()
+  - 기타 : TimeoutOrNull(밀리세컨드), 시간내 실행 못할 경우 null 반환
+
+``` Kotlin
+import kotlinx.corotines.*  // 임포트 필요
+
+val scope = CoroutineScope(Dispathcer.Default)
+val coroutineA = scope.launch {}
+val coroutineB = scope.async {}
+```
 
 ## 기타
 
