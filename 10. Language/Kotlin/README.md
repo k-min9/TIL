@@ -10,6 +10,10 @@
 
 var : 일반적인 변수, 읽기 쓰기가 가능
 val : 선언시 초기화 하고 변경 불가
+(할당 변경이 안되는 것이지, 내부 속성은 변경할 수 있음)
+const : 상수, 한 번 선언 후 절대 변경 불가. 기본자료형만 생성 가능
+반드시 companion object 안에 선언되어 객체와 상관없이 클래스 연관 고정값으로 쓰임
+의례적으로 CONST_A 같이 대문자와 언더바만 사용
 
 property : class 내에 선언
 Local variable : 그 외에 scope 내에 선언
@@ -35,6 +39,9 @@ Local variable : 그 외에 scope 내에 선언
 - 문자형
   - Char : 문자 하나(2 byte), 작은 따옴표로 감싸고, 특수 문자(\t ...) 지원
   - 문자열 : 따옴표로 감싼 범위 전부, 따옴표 세개일 경우 줄 바꿈이나 특수문자까지 문자열로 사용
+    - 자주 쓰는 함수 : .length, .toLowerCase(), .split, .joinToString(""), .substring
+    - 빈 문자열 체크 : .isNullOrEmpty(), isNullOrBlank() // 공백문자(" ")까지 체크
+    - 포함 여부 : startsWith("java"), endsWith(".kt"), contains("line")
 - 논리형
   - Boolean : true, false
 - Any : 어떠한 자료형과 호환되는 최상위 자료형
@@ -125,3 +132,182 @@ when(a) {
   ```
 
   레이블+@ 기호를 앞에 달고 break에 @+레이블 이름을 달면 한 번 에 빠져나올 수 있다.
+
+## 클래스
+
+- 선언 : class [클래스명] (파라미터)
+- 인스턴스 내용 : ${인스턴스명.파라미터명}
+- 클래스 내 함수 사용 : 인스턴스명.함수()
+- 생성자 : init
+  - 기본 생성자 : 클래스를 만들때 기본으로 선언 - init
+  - 보조 생성자 : 기본값 부여 등 필요에 따라 추가적으로 선언 - constructor
+
+  ``` Kotlin
+  fun main() {
+    var a = Person("강민구", 1990)  // init 사용
+
+    var b = Person("강민구")  // constructor 사용
+  }
+
+  class Person (var name:String, val birthYear:Int) {
+    init {
+      println("${this.birthYear}년생 {$this.name}님이 생성되었습니다.")
+    }
+
+    // this 잊지말고 쓰고 그 이후에 parameter 집어 넣기
+    constructor (name:String) : this(name, 1997) {  
+      println("init의 birthyear에 1997이 input 되었습니다!")
+    }
+  }
+  ```
+
+- 상속 : Kotlin은 기본 상속 금지
+  - 상속 하는 쪽 : open class로 열어둘 수 있음 ; open class Animal(name:String, age:Int, type:String)
+  - 상속 받는 쪽 : :상속받을 클래스 명 ; ~~:Animal(name, age, "개")
+    - 내부 함수 선언하여 전용 함수 만들기 가능
+    - override로 함수를 재선언하여 재구현할 수 있음
+
+- 추상화 : abstract를 붙은 class. override로 구현부를 만들어 구현해야 함
+  - kotlin의 인터페이스는 추상함수와 일반함수를 다 가질 수 있음.
+    - open, abstract 선언 생략 가능
+    - 여러 개의 인터페이스 상속 가능
+
+- data class : 데이터를 다루는데 최적화된 클래스
+  - equals, hashcode, toString, copy, component1,2.... 같은 5가지 기능을 기본 제공
+
+- Enum class : 열거형, 상수를 나타내는데 최적화 된 클래스
+
+## 프로젝트 구조
+
+- 프로젝트 : 여러 파일로 구성하여 작업할 수 있게하는 틀
+- 모듈 : 하나의 프로젝트는 여러개의 모듈
+- 패키지 : 파일과 폴더의 소속. 자바와 달리 폴더구조와 패키지 명을 일치시키지 않아도 됨
+- 접근 제한자
+  - 패키지 스코프 : public, internal(같은 모듈), private(같은 파일)
+  - 클래스 스코프 : public, private(같은 모듈), protected(자신과 상속받은 범위)
+
+## 고차함수 (high-order function)
+
+함수를 마치 클래스에서 만들어 낸 인스턴스처럼 취급
+패러미터 처럼 취급하거나 결과값을 받아올 수 있음
+
+- 함수의 형식 : (패러미터 자료형, ...) -> 반환형 자료형
+- 람다함수 : 그 자체가 고차함수, 별도의 연산자 없이 변수에 담을 수 있음
+  - 여러 구문 수행 가능, 마지막 구문이 반환됨
+  - 패러미터 없으면 () ->, 패러미터 하나면 생략 가능하고 it로 호출 가능
+- 스코프 함수 : 함수형 언어의 특징을 좀 더 편리하게 사용할 수 있도록 기본 제공
+  - apply, run, with, also, let
+
+``` Kotilin
+
+fun main() {
+
+  넘겨받을함수(::부를함수)
+
+  // 람다함수
+  val c = {str:String -> print("$str")}
+
+}
+
+
+fun 넘겨받을함수 (function: (String) -> Unit) {
+  ...내용
+}
+```
+
+## 오브젝트
+
+싱글톤 패턴, 최초 사용시 자동 생성 후 공용 사용
+companion object : 인스턴스 내에 공용하는 static 같은 object
+
+## 이벤트
+
+옵저버 : 이벤트의 발생을 감시하는 감시자, listner
+이벤트 : 시스템 또는 루틴에 의해 발생하는 동작
+
+구조 예시 : class EventPrinter > Interface EventListener < class Counter
+
+``` Kotlin
+fun main() {
+    EventPrinter().start()
+}
+
+interface EventListener {
+    fun onEvent(count: Int)
+}
+
+class Counter(var listener: EventListener) {
+    fun count() {
+        for (i in 1..100) {
+            if (i % 5 == 0) listener.onEvent(i)
+        }
+    }
+}
+
+class EventPrinter: EventListener {
+    override fun onEvent(count: Int) {
+        print("${count}-")
+    }
+    
+    fun start() {
+        val counter = Counter(this)
+        counter.count()
+    }
+}
+
+```
+
+익명 객체 : EventPrinter가 EventListner를 상속받아 구현하지 않고,
+임시로 만든 별도의 EventListner 객체를 '즉시 생성'하어 넘겨 주게 구현
+
+## Collection
+
+데이터를 모아 관리하자
+
+- List : 여러개의 데이터를 원하는 순서로 넣어서 관리
+  - 종류
+    - List : 생성시 넣은 객체를 대체, 추가, 삭제할 수 없음
+    - MutableList : 가능함
+      - 추가(add), 삭제(remove, removeAt), 정렬(sort), 섞기(shuffle)
+  - for (num in nums) 등으로 사용 가능
+  - 선언 : var a = listOf("사과", "배", "딸기"), var b = mutableListOf(6,3,1)
+
+- Set : 중복이 허용되지 않는 Collection
+  - 종류 : 마찬가지로 Mutable로 구분
+
+- Map : key-value 형태의 Collection
+  - 종류 : 마찬가지로 Mutable로 구분
+  (mutableMapOf("key" to "value", "key2" to "value2", ...))
+    - 추가(put), 삭제(remove)
+  - for (entry in nums) 로 사용 가능. 해당 값은 &#36;{entry.key}, &#36;{entry.value}로 참조
+
+## Collection 함수
+
+수월한 collection 조작을 위한 함수
+collection에 일반 함수나 람다 함수를 사용하여 for 문 없이도 순회하며 참조하거나 변경
+함수 뒤에 {}의 내용물을 실행하고, it는 반복되고 있는 현재 내용물을 가리킴
+
+- .forEach : collection 내용물을 하나하나 반복
+- .filter : collection 내용물을 필터링해서 반환
+- .map : collection 내용물 일괄적으로 변경함
+- .any, .all, .none, .count
+- .firstOrNull, .lastOrNull : 첫번째, 마지막 객체를 반환하거나 없으면 null을 반환
+- associateBy : 아이템에서 key를 추출하여 map으로 변환
+- groupBy : key가 같은 아이템끼리 배열로 묶어 map으로 변환
+- partition : 아이템에 조건을 걸어 true, false 값을 가지는 두 개의 collection으로 나눔
+- flatMap : 아이템마다 만들어진 collection을 합쳐서 반환
+- getOrElse : 해당 위치에 아이템이 있으면 반환하고 없으면 지정 기본값 반환
+- zip : 두 collection을 1:1 대응 pair로 만들어 반환 (수가 다를 경우, 작은 쪽을 따라감)
+
+## 기타
+
+as : 변수를 호환되는 자료형으로 변환 (b as Cola)
+is : 변수가 호환되는지 체크 후 조건문 내부에서만 변환. if 조건문 내부에서만 사용 가능
+제너릭 : 캐스팅 연산은 프로그램 속도의 저하로 이어짐, 컴파일 시점에 타입을 설정해둠
+null safe operator(?.) : NPE 발생시 그 이후 문장이 실행되지 않음
+elvis operator(?:"대체객체") : NPE 발생시 대체객체 값을 넣어줌
+동일성 : 내용 동일성(&#61;&#61;), 객체 동일성(&#61;&#61;&#61;)
+default argument : argument에 기본값을 넣어 줌
+named parameter : 패러미터이름을 넣으면 해당 위치에 그 내용을 넣을 수 있음
+vararg : 갯수가 지정되지 않은 패러미터
+Infix : 연산자처럼 쓸 수 있는 함수
