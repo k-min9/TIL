@@ -111,7 +111,7 @@ function App() {
       <button onClick={editorAddIcon}> 붉은 화살표 </button>
       <button onClick={editorAddImage}> 이미지 추가 </button>
       <button onClick={editorAddImage2}> 투명/내부 이미지 추가 </button>
-      {/* <button onClick={editorAddImage3}> 투명/내부 거대 이미지 추가 </button> */}
+      <button onClick={editorAddImage3}> 투명/내부 거대 이미지 추가 </button>
       <button onClick={editorAddImage4}> 새로운 티켓 부르기 </button>
       <button onClick={editorAddImage5}> 티켓 크기 200 * 150 </button>
       <button onClick={editorToBase64}> 저장하기 </button>
