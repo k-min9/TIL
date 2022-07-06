@@ -25,6 +25,9 @@ IDE : 이클립스
   - 적용 범위(scope)를 가짐
   
   - 타입 : premitive 타입...
+  
+  - 문자열은 premitive 타입이 아니기 때문에 == 로 비교할 수 없다. 
+    .equals 쓰자
 
 
 
