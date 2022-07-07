@@ -112,6 +112,14 @@ IDE : 이클립스
 
 
 
+## 상속 (Inheritance)
+
+- parent/super/base class와 child/sub/extended class의 IS-A 관계
+  
+  - 부모에서 no-param 생성자가 없으면 자식에서 super 호출을 해야한다.
+    
+    1. 
+
 
 
 ## 이클립스 단축키 및 제어
