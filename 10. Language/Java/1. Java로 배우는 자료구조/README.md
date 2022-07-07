@@ -80,9 +80,19 @@ IDE : 이클립스
 
 - 생성자 : 객체의 데이터 필드 값을 초기화. 클래스와 동일한 이름을 가짐
 
+## Static과 Visibility
 
-
-
+- Static : 클래스는 설계도라 그 안에 데이터를 넣을 수 없는데, 이를 가능하게 함
+  
+  - vs non-Static : static 멤버는 class 멤버이고, non-static 멤버는 object 멤버이다.
+  
+  - main 메서드가 static인 이유 :  java는 모든것이 class라서 누군가가 시작점인 main이 속한 class를 만들수가 없다.
+  
+  - static 메서드에서 non-static 멤버를 엑세스 할 수 없는 이유 : scope상 존재하지 않기 때문이다. 생성되지 않은 객체에 접근하라는 요구.
+  
+  - 다른 class에 속한 static 멤버 엑세스하는 법 : (클래스이름.메서드) 로 엑세스하자
+  
+  - 용도 : main 메서드, 상수(PI, System.out), 순수기능(Math.abs 같은 수학 함수)
 
 ## 이클립스 단축키 및 제어
 
