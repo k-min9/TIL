@@ -135,6 +135,17 @@ IDE : 이클립스
 
 - 하나의 배열에 서로 다른 타입을 저장, Generic Programming이 가능
 
+## class Object와 Wrapper class
+
+- Object : 모든 클래스의 superclass
+  - equals toString등의 자체 멤버 class 보유
+    - 다만 메서드를 의도대로 사용하려면 override해야 한다.
+
+- Wrapper class : 기본 타입의 데이터를 하나의 객체로 포장해주는 클래스
+  - 배경 : Object는 모든 종류의 객체를 저장할 수 있지만 primitive type은 객체가 아니라 저장이 안됨 -> primitive type을 객체로 만들어 저장하자
+  - 장점 : 데이터 타입간 변환 등 여러 기능을 넣을 수 있음
+  - 기타 : Autoboxing과 Unboxing을 통해 자동으로 변환해준다.
+
 ## 이클립스 단축키 및 제어
 
 단축키 변경은 Window > Preferences > General > Keys (Ctrl+Shift+L) 에서 가능
