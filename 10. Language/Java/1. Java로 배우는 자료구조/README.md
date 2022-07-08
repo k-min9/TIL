@@ -33,7 +33,7 @@ IDE : 이클립스
 
 - 메서드 : 함수
 
-- java는 call by value(값에 의한 호출) 밖에 할 수 없다. 
+- java는 call by value(값에 의한 호출) 밖에 할 수 없다.
   
   - java는 call by ref(참조에 의한 호출) 불가
 
@@ -153,6 +153,22 @@ IDE : 이클립스
 - 인터페이스 : 추상 메서드만을 가진 추상 클래스, implements로 구현
   - 존재의의 : 다중상속이 불가능한 java에서 여러 개의 interface를 사용할 수 있다.
 
+## Generic Programming
+
+- 개요 : 데이터 형식에 의존하지 않고, 미리 지정하지 않는 방식으로 프로그램의 재사용성을 높이는 방식의 프로그래밍
+- 구현 : < T >라는 가상 타입 parameter로 지정하고, 객체 생성 시점에서 지정
+- 장점
+  - 잘못된 타입이 들어오는 것을 컴파일 단계에서 방지
+  - 클래스 외부에서 타입을 지정하므로 체크하거나 변환할 필요가 없음
+  - 재사용성이 증가함
+
+## 리스트
+
+- 개요 : 여러 데이터를 저장하고, CRUD가 가능하며 용량에 제한이 없음
+- ArrayList vs Vector
+  - ArrayList는 Vector 대체를 위해 만들어져서 효율적이고 주로 사용됨
+  - Vector은 다수의 thread가 충돌없이 액세스할 수 있게 Synchronize 되어 있음
+
 ## 이클립스 단축키 및 제어
 
 단축키 변경은 Window > Preferences > General > Keys (Ctrl+Shift+L) 에서 가능
@@ -185,9 +201,9 @@ IDE : 이클립스
 
 - 클래스 이름 선택 우클릭하고 Refactor(Alt+Shift+T) > Rename 가능
 
-- 선택된 문자열 검색 
+- 선택된 문자열 검색
   
-  - 전체 : Ctrl + Alt + G 
+  - 전체 : Ctrl + Alt + G
   
   - 파일 내부 : Ctrl + K
 
