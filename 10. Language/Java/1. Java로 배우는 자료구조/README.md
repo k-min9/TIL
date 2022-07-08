@@ -133,7 +133,7 @@ IDE : 이클립스
   - 이때 computer의 메소드가 Computer의 것이냐, Notebook의 것을 쓸것이냐에 따라 언어적으로 static binding과 dynamic binding으로 나뉨.
   java는 dynamic binding을 사용함. 가까운 쪽을 쓴다고 기억하면 됨.
 
-
+- 하나의 배열에 서로 다른 타입을 저장, Generic Programming이 가능
 
 ## 이클립스 단축키 및 제어
 
