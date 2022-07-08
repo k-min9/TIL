@@ -146,6 +146,13 @@ IDE : 이클립스
   - 장점 : 데이터 타입간 변환 등 여러 기능을 넣을 수 있음
   - 기타 : Autoboxing과 Unboxing을 통해 자동으로 변환해준다.
 
+## 추상(abstract) 클래스
+
+- 개요 : 추상 메서드를 포함한 클래스, 객체를 만들 수 없음
+  - 추상 메서드 : 선언만 있고 구현이 없는 메서드
+- 인터페이스 : 추상 메서드만을 가진 추상 클래스, implements로 구현
+  - 존재의의 : 다중상속이 불가능한 java에서 여러 개의 interface를 사용할 수 있다.
+
 ## 이클립스 단축키 및 제어
 
 단축키 변경은 Window > Preferences > General > Keys (Ctrl+Shift+L) 에서 가능
