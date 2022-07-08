@@ -21,10 +21,10 @@ IDE : 이클립스
   - 적용 범위(scope)를 가짐
   
   - 타입 : premitive 타입
-    
+
     - premitive 외의 모든 변수는 참조 변수
   
-  - 문자열은 premitive 타입이 아니기 때문에 == 로 비교할 수 없다. 
+  - 문자열은 premitive 타입이 아니기 때문에 == 로 비교할 수 없다.
     .equals 쓰자
 
 - 배열 : 동일한 형태의 변수 여러개를 저장할 수 있는 특별한 형태의 변수
@@ -108,17 +108,30 @@ IDE : 이클립스
 
 - 캡슐화 : 객체가 제공해주는 메서드를 통하지 않고 데이터에 접근 못하게 설정. information hiding
   
-  -  getter/setter/toString...
-
-
+  - getter/setter/toString...
 
 ## 상속 (Inheritance)
+
+공통적인 부분을 빼서 묶는다. 명령어는 extends
+
+- 장점 : 유지보수 용이, 확장성 용이, 모듈을 통한 재사용성
 
 - parent/super/base class와 child/sub/extended class의 IS-A 관계
   
   - 부모에서 no-param 생성자가 없으면 자식에서 super 호출을 해야한다.
-    
-    1. 
+
+- 오버라이딩과 오버로딩
+
+- 다향성 (Polymorphism)
+  
+  - 부모 타입의 변수가 서브 타입의 객체를 참조할 수 있음
+
+  ``` java
+    Compuer computer = new Notebook("제조사", "스펙", "사이즈")
+  ```
+
+  - 이때 computer의 메소드가 Computer의 것이냐, Notebook의 것을 쓸것이냐에 따라 언어적으로 static binding과 dynamic binding으로 나뉨.
+  java는 dynamic binding을 사용함. 가까운 쪽을 쓴다고 기억하면 됨.
 
 
 
