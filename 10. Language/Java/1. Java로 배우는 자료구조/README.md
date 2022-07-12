@@ -6,6 +6,15 @@ IDE : 이클립스
 
 ## 기본 Base
 
+- Java 실행 과정
+  - 컴파일 과정을 통해 java 소스 코드를 실행파일로 변경
+    - *.java(소스 코드)에서 .class(기계어 코드)로 변경
+  - Java 실행파일을 해석할 수 있는 가상머신(JVM)이 이 파일을 해석하여 실행
+  
+- Java 개발 도구
+  - JVM : Java 가상 머신으로, Java 실행 파일을 해석하여 실행
+  - JRE(Java Runtime Environment) : Java 언어로 만들어진 프로그램을 실행시키기 위한 환경
+  - JDK(Java Development Kit) : Java 언어를 이용하여 프로그램을 개발하기 위한 환경
 - Java 프로그램은 하나 혹은 그 이상의 클래스로 구성되어 있음
   
   - 클래스는 대문자로 시작
@@ -120,18 +129,26 @@ IDE : 이클립스
   
   - 부모에서 no-param 생성자가 없으면 자식에서 super 호출을 해야한다.
 
-- 오버라이딩과 오버로딩
+- 오버라이딩과 오버로딩 : 발음만 비슷한 전혀 다른 개념, 생략.
 
 - 다향성 (Polymorphism)
   
   - 부모 타입의 변수가 서브 타입의 객체를 참조할 수 있음
+    - 부모의 타입으로 자식을 생성, 참조
+    - 부모의 메소드로 호출
+  - 장점 : Person 배열로 Teacher과 Student 동시 관리가 가능
 
   ``` java
-    Compuer computer = new Notebook("제조사", "스펙", "사이즈")
+    부모클래스명 변수명 = new 자식클래스명();
+    Compuer computer = new Notebook("제조사", "스펙", "사이즈");
   ```
+
+- 동적 바인딩 : 컴파일시 호출 메소드와 실행시 호출 메소드가 유동적으로 적용
 
   - 이때 computer의 메소드가 Computer의 것이냐, Notebook의 것을 쓸것이냐에 따라 언어적으로 static binding과 dynamic binding으로 나뉨.
   java는 dynamic binding을 사용함. 가까운 쪽을 쓴다고 기억하면 됨.
+  - Person teacher일 경우, teacher.study(); 는 에러 -> ((Teacher)teacher).study();
+  (하기 전에 instanceof로 꼭 확인하지)
 
 - 하나의 배열에 서로 다른 타입을 저장, Generic Programming이 가능
 
