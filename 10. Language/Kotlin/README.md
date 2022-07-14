@@ -403,3 +403,4 @@ FontFamily : res>font 등의 폴더를 만들고 집어넣은 후, "@font/폰트
 onBackPressed : 뒤로가기 버튼 이벤트 (액티비티)
 Handler().postDelayed({isDoube=false}, 2000) : 2초 지나면 false로 바꿔라
 랜덤한 값 뽑기 : sentenceList.random() (해당 리스트는 mutableListOf<>() 으로 선언)
+LayoutInflater는 XML에 정의된 Resource를 View 객체로 반환 출처

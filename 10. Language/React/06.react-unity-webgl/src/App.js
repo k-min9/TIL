@@ -3,10 +3,14 @@ import Unity, { UnityContext } from "react-unity-webgl";
 
 // Develop_mode
 const unityContext = new UnityContext({
-  loaderUrl: "build/02.Gallery.loader.js",
-  dataUrl: "build/02.Gallery.data",
-  frameworkUrl: "build/02.Gallery.framework.js",
-  codeUrl: "build/02.Gallery.wasm",
+  loaderUrl: "build/03.MetaStudy.loader.js",
+  dataUrl: "build/03.MetaStudy.data",
+  frameworkUrl: "build/03.MetaStudy.framework.js",
+  codeUrl: "build/03.MetaStudy.wasm",
+  // loaderUrl: "build/Test.loader.js",
+  // dataUrl: "build/Test.data",
+  // frameworkUrl: "build/Test.framework.js.",
+  // codeUrl: "build/Test.wasm",
   // 스크린샷 용
   // webglContextAttributes: {
   //   preserveDrawingBuffer: true,
@@ -25,6 +29,12 @@ function App() {
   const [image, Setimage] = useState("https://docs.unity3d.com/uploads/Main/ShadowIntro.png");
   // 사용가능횟수 = 1000회/하루?? : https://www.youtube.com/watch?v=L3wJi7dvH2I
   const imageSERVER = "https://cdn.filestackcontent.com/AM9o5lgXYR1uvQX2NaAqnz/output=secure:true/"
+
+  useEffect(function () {
+    unityContext.on("debug", function (message) {
+      console.log(message);
+    });
+  }, []);
 
   const onChange = (event) => {
     Setimage(event.target.value)
@@ -76,6 +86,26 @@ function App() {
     unityContext.send("Window2", "SetUrl", "https://ipfs.io/ipfs/Qmdi9KQ8c5ifTeZVLwKJBgtir6cDVHQ9fLuxob9Mgdnd1v?filename=Qmdi9KQ8c5ifTeZVLwKJBgtir6cDVHQ9fLuxob9Mgdnd1v");
   }
 
+  function setGuage() {
+    unityContext.send("YoutubeAdvanced", "ChangeVideoTime", 30)
+  }
+
+  function setGuage2() {
+    unityContext.send("YoutubeAdvanced", "ChangeVideoTime", 60)
+  }
+
+  function setGuage3() {
+    unityContext.send("YoutubeAdvanced", "ChangeVideoTime", 15)
+  }
+
+  function setGuage4() {
+    unityContext.send("YoutubeAdvanced", "SkipToPercent", 0.2)
+  }
+
+  function setGuage5() {
+    unityContext.send("YoutubeAdvanced", "SkipToPercent", 0.8)
+  }
+
   // function takeScreenShot() {
   //   const data = unityContext.takeScreenshot("image/jpeg", 1.0);
   //   if (data !== null) {
@@ -97,6 +127,11 @@ function App() {
     <button onClick={setImage3}>이미지3 변경</button>
     <button onClick={setWindow1}>카드1 변경</button>
     <button onClick={setWindow2}>카드2 변경</button>
+    <button onClick={setGuage}>진행상황변경</button>
+    <button onClick={setGuage2}>진행상황변경2</button>
+    <button onClick={setGuage3}>진행상황변경3</button>
+    <button onClick={setGuage4}>진행상황변경4</button>
+    <button onClick={setGuage5}>진행상황변경5</button>
     {/* <button onClick={takeScreenShot}>스크린샷</button> */}
     <button onClick={handleOnClickFullscreen}>Fullscreen</button>
     <div>
