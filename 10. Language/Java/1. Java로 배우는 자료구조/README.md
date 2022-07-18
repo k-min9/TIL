@@ -179,12 +179,46 @@ IDE : 이클립스
   - 클래스 외부에서 타입을 지정하므로 체크하거나 변환할 필요가 없음
   - 재사용성이 증가함
 
+## 컬렉션
+
+- 개요 : 객체를 담을 수 있는 신축성 있는 주머니
+- 장점 : 자동으로 크기 조절, 명시적인 이름의 메소드 사용
+- 특징 : 기본 데이터 타입 저장을 위해 Wrapper Class를 이용
+- 종류
+  - List : ArrayList, Vector, LinkedList
+  - Set : HashSet, TreeSet
+  - Map : HashMap, HashTable, TreeMap, Properties
+
 ## 리스트
 
-- 개요 : 여러 데이터를 저장하고, CRUD가 가능하며 용량에 제한이 없음
+- 개요 : 데이터를 순차적으로 처리하는 구조로 인덱스로 관리(주소 참조)
+  - 여러 데이터를 저장하고, CRUD가 가능하며 용량에 제한이 없음
+  - 객체와 null을 담을 수 있다
+- 함수
+  - .add(데이터) : 더하기
+  - .get(인덱스)
+  - .set(인덱스, 교체값) : 인덱스의 내용물 교체
+  - .remove(인덱스) or .remove(데이터)
+
 - ArrayList vs Vector
   - ArrayList는 Vector 대체를 위해 만들어져서 효율적이고 주로 사용됨
   - Vector은 다수의 thread가 충돌없이 액세스할 수 있게 Synchronize 되어 있음
+
+## HashMap
+
+- 개요 : 키 객체와 값 객체로 구성된 객체를 저장. 중복 불가.
+- 함수
+  - .put(키, 데이터)
+  - .get(키)
+  - .size()
+  - .remove(키)
+  - .keySet() : 반복
+
+    ``` java
+    for ( String key : map1.keySet() ) {
+      int number = map1.get( key );
+    }
+    ```
 
 ## 이클립스 단축키 및 제어
 
