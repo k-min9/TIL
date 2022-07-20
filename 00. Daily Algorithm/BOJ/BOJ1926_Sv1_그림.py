@@ -38,7 +38,10 @@ for x in range(N):
             bfs(x, y)
 
 print(len(answers))
-print(max(answers))
+if len(answers) != 0:
+    print(max(answers))
+else:
+    print(0)
 
 '''
 ㅎㅎㅎ!
