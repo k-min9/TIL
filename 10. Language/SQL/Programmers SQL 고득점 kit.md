@@ -23,8 +23,6 @@
 | NAME             | VARCHAR(N) | TRUE     |
 | SEX_UPON_OUTCOME | VARCHAR(N) | FALSE    |
 
-
-
 ## 1. SELECT
 
 ### 1. 모든 레코드 조회하기
@@ -84,7 +82,7 @@ ORDER BY ANIMAL_ID
 단, 이름이 같은 동물 중에서는 보호를 나중에 시작한 동물을 먼저 보여줘야 합니다.
 
 ```sql
-SELECT ANIMAL_ID, NAME,	DATETIME 
+SELECT ANIMAL_ID, NAME, DATETIME 
 FROM ANIMAL_INS 
 ORDER BY NAME, DATETIME DESC
 ```
@@ -99,8 +97,6 @@ FROM ANIMAL_INS
 ORDER BY DATETIME 
 LIMIT 1
 ```
-
-
 
 ## 2. SUM, MAX, MIN
 
@@ -142,8 +138,6 @@ SELECT COUNT(DISTINCT NAME )
 sFROM ANIMAL_INS;
 ```
 
-
-
 ## 3. GROUP BY
 
 ### 1. 고양이와 개는 몇 마리 있을까
@@ -173,7 +167,7 @@ ORDER BY NAME
 
 ### 3. 입양 시각 구하기(1)
 
-09:00부터 19:59까지, 각 시간대별로 입양이 몇 건이나 발생했는지 조회하는 SQL문. 
+09:00부터 19:59까지, 각 시간대별로 입양이 몇 건이나 발생했는지 조회하는 SQL문.
 
 이때 결과는 시간대 순으로 정렬
 
@@ -200,13 +194,11 @@ FROM ANIMAL_OUTS
 WHERE @hour < 23
 ```
 
-
-
 ## 4. IS NULL
 
 ### 1. 이름이 없는 동물의 아이디
 
-동물 보호소에 들어온 동물 중, 이름이 없는 채로 들어온 동물의 ID를 조회하는 SQL 문. 
+동물 보호소에 들어온 동물 중, 이름이 없는 채로 들어온 동물의 ID를 조회하는 SQL 문.
 
 단, ID는 오름차순 정렬
 
@@ -218,11 +210,11 @@ WHERE NAME IS NULL
 
 ### 2. 이름이 있는 동물의 아이디
 
-동물 보호소에 들어온 동물 중, 이름이 있는 동물의 ID를 조회하는 SQL 문. 
+동물 보호소에 들어온 동물 중, 이름이 있는 동물의 ID를 조회하는 SQL 문.
 
 단, ID는 오름차순 정렬
 
-```
+```sql
 SELECT ANIMAL_ID
 FROM ANIMAL_INS 
 WHERE NAME IS NOT NULL
@@ -236,11 +228,9 @@ ORDER BY ANIMAL_ID
 이때 프로그래밍을 모르는 사람들은 NULL이라는 기호를 모르기 때문에, 이름이 없는 동물의 이름은 "No name"으로 표시
 
 ```sql
-SELECT ANIMAL_TYPE,	IFNULL(Name, 'No name') AS NAME, SEX_UPON_INTAKE
+SELECT ANIMAL_TYPE, IFNULL(Name, 'No name') AS NAME, SEX_UPON_INTAKE
 FROM ANIMAL_INS
 ```
-
-
 
 ## 5. JOIN
 
@@ -284,7 +274,7 @@ LIMIT 3
 
 ### 4. 보호소에서 중성화한 동물
 
-보호소에 들어올 당시에는 중성화되지 않았지만, 
+보호소에 들어올 당시에는 중성화되지 않았지만,
 
 보호소를 나갈 당시에는 중성화된 동물의 아이디와 생물 종, 이름을 조회하는 아이디 순으로 조회하는 SQL 문
 
@@ -296,8 +286,6 @@ WHERE B.SEX_UPON_INTAKE LIKE 'Intact%'
 AND A.SEX_UPON_OUTCOME NOT LIKE 'Intact%'
 ORDER BY A.ANIMAL_ID
 ```
-
-
 
 ## 6. String, Date
 
@@ -314,7 +302,7 @@ ORDER BY ANIMAL_ID
 
 ### 2. 이름에 el이 들어가는 동물 찾기
 
-동물 보호소에 들어온 동물 이름 중, 이름에 "EL"이 들어가는 개의 아이디와 이름을 조회하는 SQL문. 
+동물 보호소에 들어온 동물 이름 중, 이름에 "EL"이 들어가는 개의 아이디와 이름을 조회하는 SQL문.
 
 이때 결과는 이름 순으로 조회. 단, 이름의 대소문자는 구분하지 않음
 
@@ -330,7 +318,7 @@ ORDER BY NAME
 
 중성화된 동물은 `SEX_UPON_INTAKE` 컬럼에 'Neutered' 또는 'Spayed'라는 단어가 들어있음
 
-동물의 아이디와 이름, 중성화 여부를 아이디 순으로 조회하는 SQL문. 
+동물의 아이디와 이름, 중성화 여부를 아이디 순으로 조회하는 SQL문.
 
 이때 중성화가 되어있다면 'O', 아니라면 'X'라고 표시
 
@@ -357,11 +345,9 @@ ORDER BY B.DATETIME-A.DATETIME DESC
 LIMIT 2
 ```
 
-
-
 ### 5. DATETIME에서 DATE로  형 변환
 
-ANIMAL_INS 테이블에 등록된 모든 레코드에 대해, 
+ANIMAL_INS 테이블에 등록된 모든 레코드에 대해,
 
 각 동물의 아이디와 이름, 들어온 날짜를 조회하는 SQL문
 
@@ -372,4 +358,3 @@ SELECT ANIMAL_ID, NAME, DATE_FORMAT(DATETIME, '%Y-%m-%d') AS 날짜
 FROM ANIMAL_INS
 ORDER BY ANIMAL_ID
 ```
-
