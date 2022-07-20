@@ -220,6 +220,16 @@ IDE : 이클립스
     }
     ```
 
+## 예외 처리
+
+- 개요 : Exception 객체를 통한 폭탄 제거
+- 자주 발생하는 Exception
+  - ArithmeticException : /0
+  - NumberFormatException, ArrayIndexOutOfBoundsException
+  - NullPointerException : null로 객체에 접근하려고 하는 경우
+- 처리 방법 : try ~ catch ~ finally 를 하위부터 상위로 작성
+- 예외 발생 시점에서 처리하기 애매한 경우 : 상위 메소드로 throws 활용
+
 ## 이클립스 단축키 및 제어
 
 단축키 변경은 Window > Preferences > General > Keys (Ctrl+Shift+L) 에서 가능
