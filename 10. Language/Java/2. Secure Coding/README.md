@@ -70,6 +70,29 @@
   - 취약 코드 : 우선 꼭 프로그램 실행 등이 필요한 기능인지 고민하고,
   꼭 필요하다면 입력값이 적절한지 꼭 확인해야 한다.
 
+## XSS(크로스 사이트 스크립트)
+
+- 개요 : 검증되지 않은 입력값을 응답의 일부로 사용하는 경우, [사용자 브라우저]에서 악의적인 스크립트 실행
+- 종류 : Reflective, Stored(게시글 등 DB에 스크립트째 저장), DOM
+- 예시
+  - Reflective, Stored : JSTL Tag를 이용해 HTML 인코딩을 적용하여 해결 가능
+
+  ```javascript
+  <p>내용 : ${content}</p>
+  ```
+
+  - DOM : 정규식을 하나 만들어 a를 필터링하거나 HTML 인코딩 적용 or 텍스트노드 쓰기로 해결
+
+  ```javascript
+  var a = document.URL
+  >> 이후 a를 filtering하지 않고 사용한 내용
+  ```
+
+- 해결 : 입/출력되는 헤더, 쿠키, 파라미터, 응답값에 HTML 인코딩 또는 XSS Filter를 적용
+대상 : Web 컴포넌트 Filter, Interceptor 컴포넌트, Controller에 Validator or 필터링
+  - 기존 시스템의 Controller에 필터링을 넣는 것은 힘들 수 있으므로 입력값 차원에서 처리하는게 좋을 수 있다.
+  - 프레임워크의 Filter는 서버에 들어오는 값을 선처리/후가공 하는 역할을 하고 Chaining이 쉬우므로 적합하다.
+
 ## 실습
 
 환경 : 웹 서버(tomcat), 웹 브라우저(browser), 프록시 서버(paros)로 구축
