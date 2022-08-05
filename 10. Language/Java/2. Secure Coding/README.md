@@ -160,6 +160,45 @@ MultipartResolver 같은 컴포넌트를 이용하여 받고, 공통 제약 등�
     (Spring의 SessionInterceptor 등)
     - 다중 로그인 제한 : 기존 접속 종료, 새로운 접속시 DB 테이블 정보(IP address) 업데이트
 
+## 접근 제어
+
+- 배경 : 파라미터 변조; 파라미터(서버에 전달되는 값(쿠키, \<Form>필드, 쿼리))를 조작하여 변경/변조되는 공격
+- 개요 : 파라미터 변조에 대한 대응으로 접근 제어를 통해 권한이 있는 사용자에게만 특정 자원이나 기능이 제공되게 보장함
+- 원칙
+  - 직무 분리 : 예를 들어 암호키 관리와 변경의 직무 및 관리자를 나누기
+  - 최소 권한의 원칙 : 허가 업무를 위한 최소한의 권한 만을 부여하여 피해를 최소화
+  (정보 등급 분류, 접근 통제 리스트 등을 활용)
+- 단계
+  1. 식별 : 본인이 누군지를 확인
+  2. 인증 : 본인임을 증명
+  3. 인가 : 접근 허용 및 권리 부여
+- 방법
+  - 자율적 접근제어(DAC) : 사용자 신분에 기초하여 접근을 제한, 접근 통제 목록을 사용
+  - 강제적 접근제어(MAC) : 정책에 근거해 권한 할당. 보안 등급을 부여하고 엄격하게 제어.
+  - 역할기반 접근제어(RBAC) : 사용자별로 역할에 적합한 접근 권한이 할당. 최소원칙/직무분리가 잘 지켜짐.
+- 구현 : Spriong Security Access Control List를 이용.
+  - ACL_CLASS : 객체. 도메인 객체의 클래스에 대한 정보 저장
+  - ACL_SID : 주체. 사용자 또는 역할 정보에 대한 키 정보 저장
+  - ACL_OBJECT_IDENTITY : 객체. 도메인 객체 인스턴스 정보 저장
+  - ACL_ENTRY : 접근 권한 데이터 저장
+- 자바 클래스에서 ACL 적용
+
+  ``` java
+  // findAll 실행 후, 사용자가 READ 권한을 가지고 있어야만, NoticeMessage를 반환
+  @PostFilter("hasPermission(filterObject, 'READ')")
+  List<NoticeMessage> findAll();
+
+  // findById 실행 후, READ 권한이 있어야지만, NoticeMessage를 반환
+  @PostAuthorize("hasPermission(returnObject, 'READ')")
+  NoticeMessage findById(integer id);
+
+  // save 호출 전, WRITE 권한이 있는 경우에만, NoticeMessage를 저장 
+  @PreAuthorize("hasPermission(#noticeMessage, 'WRITE')")
+  NoticeMessage save(@Param("noticeMessage")NoticeMessage noticeMessage);
+
+  // 모든 경우에서, 권한이 없을 경우 AccessDeniedException 발행
+  ```
+
 ## 실습
 
 환경 : 웹 서버(tomcat), 웹 브라우저(browser), 프록시 서버(paros)로 구축
