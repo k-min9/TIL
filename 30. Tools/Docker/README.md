@@ -42,8 +42,6 @@
 - 컨테이너가 만들어주는 데이터를 영구적으로 보존
 - 데이터 보존, readonly service 지원, 데이터 간 공유를 지원
 
-
-
 ## 설치
 
 ### windows10에 DockerDesktop 설치 (Install Docker Desktop on Windows)
@@ -62,7 +60,7 @@ Dockerfile : 쉽고, 간단, 명확한 구문을 가진 textfile로 컨테이너
 
 Dockerfile 지시어로 작성
 
-```
+```Markdown
 # 이렇게 주석 작성
 FROM 베이스 이미지, 무조건 맨 위에 있어야 함
 COPY 호스트의 파일을 컨테이너로 복사
@@ -72,8 +70,6 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 ```
 
 그 이후 docker build -t [이미지명]:tag 로 컨테이너를 만들 수 있음
-
-
 
 ## 통신
 
@@ -99,17 +95,15 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 - docker network create --driver bridge --subnet 192.168.100.0/24 --gateway 192.168.100.254 [bridge 이름]
 - 이제부터 docker run 옵션에 --net [bridge이름]을 사용하여 static하게 ip set이 가능해짐
 
-
-
 ## 도커 컴포즈
 
 - 여러 컨테이너를 일괄적으로 정의하고 실행할 수 있게 yaml 파일로 설정하는 툴
 
-- 주의사항 : depends on - 컨테이너간의 종속성을 정의. 정의한 컨테이너가 먼저 동작되어야 한다.(db 먼저 실행해라 같은 것) 
+- 주의사항 : depends on - 컨테이너간의 종속성을 정의. 정의한 컨테이너가 먼저 동작되어야 한다.(db 먼저 실행해라 같은 것)
 
 - docker-compose 명령어 (docker 명령어와 비슷)
 
-  ```
+  ```Markdown
   docker-compose config : 문법 체크
   docker-compose up -d : (-d : 백그라운드) 실행 요청
   docker-compose ps : 실행 상태 확인
@@ -125,8 +119,6 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 3. docker-compose.yml 생성
 4. docer-compse 명령어
 
-
-
 ## 명령어 모음
 
 - docker search [이미지명] : Hub에 컨테이너가 있는지 확인
@@ -135,8 +127,6 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 - docker inspect [이미지명] : 해당 이미지 자세히 보기
 - docker rmi [이미지명] : 이미지 삭제
 - docker tag [이미지명]:[변경이미지명] : 이미지 이름 변경 ; 빌드시 [개인 아이디/[이미지명]]의 형태로 만들어야한다.
-
-
 
 - docker create --name [컨테이너명] [이미지명] : 컨테이너 생성
 - docker start [컨테이너명] : 컨테이너 실행
@@ -150,26 +140,17 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 - docker top [컨테이너명] : 컨테이너에서 실행중인 프로세스 출력
 - docker exec -it [컨테이너명]/bin/bash : 컨테이너에 직접 접속하여 배시 쉘 사용
 
-
-
 - docker run -d -v [호스트 경로]:[컨테이너 mount path] (:[read write mode]) : 볼륨 마운트
 - docker volume command : 볼륨과 관련된 커맨드 실행
 
-
-
 - alias [단축어 명] = "[명령어]" : 자주 사용하는 명령어를 단축어로 등록
-
-
-
 
 - docker login : 도커 로그인
 - docker push [아이디]/[이미지명]:버전 : Hub 개인 Repository에 배포
 
-
-
 쓰일법한 옵션
 
-```
+```Markdown
 --help : 자세한 설명 뜸
 -f : force / filter / follow(실시간) : 다양함
 -d : 백그라운드 모드
@@ -181,8 +162,6 @@ CMD 동작시 자동으로 실행할 서비스나 스크립트 지정 ; argument
 --no-trunc : 생략 없이 full name
 ```
 
-
-
 ## 참조
 
-따배도 시리즈 : 
+따배도 시리즈
