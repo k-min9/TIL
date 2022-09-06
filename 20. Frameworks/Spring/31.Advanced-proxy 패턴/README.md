@@ -28,10 +28,30 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
     - (= 같은 인터페이스를 사용해야 함)
   - 서버 객체를 프록시 객체로 변경해도 클라이언트 코드를 변경하지 않아야 한다.
     - DI를 통한 주입
-- 프록시 사용 패턴 분류 : 사용 의도에 따라 분류
+- 프록시 사용 패턴 분류 : 사용 의도에 따라 분류 (생긴게 유사해도 의도로 구분)
   - 프록시 패턴 : 접근 제어가 목적
     - 권한에 따른 접근 차단
     - 캐싱 : 데이터가 이미 있다고 반환하고, 서버에 요청하지 않음
     - 지연 로딩 : proxy를 가져다가 사용하다가, 실제 요청이 있을때 조회
   - 데코레이터 패턴 : 새로운 기능 추가가 목적
     - 원래 서버가 제공하는 기능에 부가 기능을 추가
+- 예시 (proxy 삽입 비교)
+
+  ``` Java
+    void noProxy() {
+        ConcreteLogic concreteLogic = new ConcreteLogic();
+        ConcreteClient client = new ConcreteClient(concreteLogic);
+        client.execute();
+    }
+
+    void addProxy() {
+        ConcreteLogic concreteLogic = new ConcreteLogic();
+        // 이 부분이 proxy. 원하면 체인도 가능
+        TimeProxy timeProxy = new TimeProxy(concreteLogic);
+        ConcreteClient client = new ConcreteClient(timeProxy);
+        client.execute();
+    }
+  ```
+
+- 문제점
+  - 호출대상인 component를 가지고 있어야하며, 항상 호출해야되는데 그 부분이 중복.
