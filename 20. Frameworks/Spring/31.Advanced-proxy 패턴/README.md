@@ -57,3 +57,34 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
   - 호출대상인 component를 가지고 있어야하며, 항상 호출해야되는데 그 부분이 중복
   - 클래스가 100개면 100개의 프록시 클래스가 필요함
     - 이걸 해결 하는게 동적 프록시
+
+## 동적 프록시
+
+자바가 기본으로 제공하는 JDK 동적 프록시 기술이나 CGLIB 같은 프록시 생성 오픈소스 기술을 활용하면 프록시 객체를 동적으로 만들어낼 수 있다.
+
+- 리플렉션 : 클래스나 메서드의 메타정보를 동적으로 획득하고, 코드도 동적으로 호출할 수
+있게 해주는 기술
+
+  ``` Java
+
+  //클래스 정보
+  Class classHello = Class.forName("hello.proxy.jdkdynamic.reflectionTest$Hello");
+  Hello target = new Hello();
+
+  //메서드 callA 정보
+  Method methodCallA = classHello.getMethod("callA");
+  Object result1 = methodCallA.invoke(target);
+  ```
+
+  - 다만 컴파일 에러가 아닌 런타임 에러가 발생하니 정말 필요할때만 쓰자
+
+- JDK 동적 프록시 : 인터페이스 기반으로 작동
+  - InvocationHandler를 구현한 핸들러로 JDK 동적 프록시에 적용할 공통 로직 개발
+  - Proxy.newProxyInstance(클래스 로더 정보, 인터페이스, 핸들러 로직) : 동적으로 프록시 객체 생성
+  
+    ``` Java
+
+      AInterface proxy = (AInterface) Proxy.newProxyInstance(AInterface.class.getClassLoader(), new Class[] {AInterface.class}, handler);
+      proxy.call();
+    ```
+
