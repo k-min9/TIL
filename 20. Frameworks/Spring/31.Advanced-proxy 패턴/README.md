@@ -123,10 +123,14 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
 
     // 스프링이 제공하는 포인트 컷 중 하나 (이름 패턴 매칭용)
     NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
-    pointcut.setMappedNames("save");  // save() 호출시 적용
+    pointcut.setMappedNames("request*", "order*", "save*");  // request*... 호출시 적용
 
     // Advisor 인터페이스의 가장 일반적인 구현체
     DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, new TimeAdvice()); 
     proxyFactory.addAdvisor(advisor);  // 어드바이스가 아닌 어드바이저를!
     ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
   ```
+
+- 남은 과제
+  - Config마다 설정 파일이 엄청 많다.
+  - 지금까지의 방법으로는 컴포넌트 스캔(V3)에 대응할 수 없다.
