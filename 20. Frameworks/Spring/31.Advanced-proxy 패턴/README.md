@@ -93,3 +93,40 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
     - jdk에서 InvocationHandler를 쓰듯이 MethodInterceptor를 사용하여 invoke
   - 다만 이어지는 proxy Factory를 사용하면 편리하게 그 동작을 할 수 있으므로 이런 개념이 있다만 알고 넘어가자
   - 키워드 : Enhancer, setSuperclass, setCallback, ConcreteService
+
+## 프록시 팩토리
+
+스프링이 지원하는 프록시
+
+- 배경 : JDK, CGLIB등을 상황에 따라 분리하여 적용하고 관리해야 할까?
+- 개요 : 스프링은 항상 유사한 기술이 있을때 통합해서 일관성 있게 + 더 편하게 추상화된 기술을 제공
+- 흐름 : adviceInvocationHandler과 adviceMethodInterceptor로 advice를 호출하면 끝
+- 메소드
+  - new ProxyFactory(target) : 프록시의 호출 대상을 넘기면 그 정보를 기반으로 프록시를 만들어낸다.
+    - 인스턴스가 인터페이스가 있으면 jdk, 없으면 cglib 기반 동적 프록시를 생성
+  - proxyFactory.addAdvice(advice) : 프록시가 사용할 부가 로직(advice) 추가
+  - proxyFactory.setProxyTargetClass(true) : 인터페이스가 있어도 강제로 CGLIB 사용
+    - 실무 : 기본적으로 인터페이스가 있어도 이 옵션 항상 사용함!
+  - proxyFactory.getProxy() : 프록시 객체를 생성하고 반환
+- 단어 정의
+  - 포인트컷(Pointcut) : 어디에 부가 기능을 적용할지, 적용하지 않을지 판단하는 필터링 로직
+  - 어드바이스(Advice) : 프록시가 호출하는 부가 기능이다. 프록시 로직
+  - 어드바이저(Advisor) : 어디(Pointcut)에 조언(Advice)를 적용할지 알고 있는 것. 단순히 포인트컷1 + 어드바이스1
+    - 이런 방식으로 역할과 책임을 명확히 분리할 수 있다.
+    - 어드바이저가 여럿일 경우 1프록시에 여러 어드바이저를 적용한다.
+      - 즉 스프링의 AOP는 target마다 하나의 프록시만 생성
+- 예시
+
+  ``` Java
+    ServiceInterface target = new ServiceImpl();
+    ProxyFactory proxyFactory = new ProxyFactory(target);
+
+    // 스프링이 제공하는 포인트 컷 중 하나 (이름 패턴 매칭용)
+    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+    pointcut.setMappedNames("save");  // save() 호출시 적용
+
+    // Advisor 인터페이스의 가장 일반적인 구현체
+    DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(pointcut, new TimeAdvice()); 
+    proxyFactory.addAdvisor(advisor);  // 어드바이스가 아닌 어드바이저를!
+    ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
+  ```
