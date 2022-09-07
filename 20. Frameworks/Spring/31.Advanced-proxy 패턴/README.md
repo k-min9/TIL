@@ -87,3 +87,9 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
       AInterface proxy = (AInterface) Proxy.newProxyInstance(AInterface.class.getClassLoader(), new Class[] {AInterface.class}, handler);
       proxy.call();
     ```
+
+- CGLIB(Code Generator Library) : 바이트 코드를 조작해 클래스를 생성하는 라이브러리
+  - 인터페이스 없이 구체 클래스만으로도 동적 프록시를 생성할 수 있음
+    - jdk에서 InvocationHandler를 쓰듯이 MethodInterceptor를 사용하여 invoke
+  - 다만 이어지는 proxy Factory를 사용하면 편리하게 그 동작을 할 수 있으므로 이런 개념이 있다만 알고 넘어가자
+  - 키워드 : Enhancer, setSuperclass, setCallback, ConcreteService
