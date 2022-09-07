@@ -78,7 +78,7 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
 
   - 다만 컴파일 에러가 아닌 런타임 에러가 발생하니 정말 필요할때만 쓰자
 
-- JDK 동적 프록시 : 인터페이스 기반으로 작동
+- JDK 동적 프록시 : 인터페이스 기반으로 작동 (V1 케이스에만 적용 가능)
   - InvocationHandler를 구현한 핸들러로 JDK 동적 프록시에 적용할 공통 로직 개발
   - Proxy.newProxyInstance(클래스 로더 정보, 인터페이스, 핸들러 로직) : 동적으로 프록시 객체 생성
   
@@ -87,4 +87,3 @@ v3 - 컴포넌트 스캔으로 스프링 빈 자동 등록
       AInterface proxy = (AInterface) Proxy.newProxyInstance(AInterface.class.getClassLoader(), new Class[] {AInterface.class}, handler);
       proxy.call();
     ```
-
