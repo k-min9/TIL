@@ -178,3 +178,12 @@ BeanPostProcessor. 객체를 빈 생성 후, 저장소에 등록하기 전에 �
           return new DefaultPointcutAdvisor(pointcut, advice);
       }
     ```
+
+  - @Aspect 프록시 : 스프링이 @Aspect를 찾아서 Advisor로 변환하여 저장
+    - @Aspect로 애노테이션 기반 프록시를 클래스에 적용
+      - 이 어노테이션 있어도 빈 등록 따로 해줘야 함
+    - @Around 의 값에 포인트컷 AspectJ 표현식 삽입
+      - ex) @Around("execution(* hello.proxy.app..*(..))")
+    - @Around 이하 메서드가 어드바이스가 됨
+    - joinPoint.proceed() : 실제 호출 대상(target)을 호출
+
