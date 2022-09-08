@@ -147,3 +147,5 @@ BeanPostProcessor. 객체를 빈 생성 후, 저장소에 등록하기 전에 �
   - 오버라이드 가능한 메서드
     - postProcessBeforeInitialization : 객체 생성 이후에 @PostConstruct 같은 초기화가 발생하기 전에 호출
     - postProcessAfterInitialization : 객체 생성 이후에 @PostConstruct 같은 초기화가 발생한 다음에 호출
+- 해결 : 그 많은 설정 지옥이 없어짐, 컴포넌트 스캔이 적용되지 않는 문제가 해결됨
+  - 그런데 스프링은 빈후처리기를 이미 만들어서 제공을 한다. 가져다 쓰면 됨
