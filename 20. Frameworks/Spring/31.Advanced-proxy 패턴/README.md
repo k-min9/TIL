@@ -149,3 +149,32 @@ BeanPostProcessor. 객체를 빈 생성 후, 저장소에 등록하기 전에 �
     - postProcessAfterInitialization : 객체 생성 이후에 @PostConstruct 같은 초기화가 발생한 다음에 호출
 - 해결 : 그 많은 설정 지옥이 없어짐, 컴포넌트 스캔이 적용되지 않는 문제가 해결됨
   - 그런데 스프링은 빈후처리기를 이미 만들어서 제공을 한다. 가져다 쓰면 됨
+- 스프링
+  - 준비
+  
+    ``` Java
+    // build. gradle에 추가
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    ```
+
+    aspectJ 관련 라이브러리(aspectjweaver) 등록되고, 스프링부트가 AOP 관련 클래스를 자동으로 스프링 빈에 등록
+  - 자동 프록시 생성기(AutoProxyCreator)
+    - 스프링 빈으로 등록된 Advisor 들을 자동으로 찾아서 프록시가 필요한 곳에 자동으로
+프록시를 적용
+    - @AspectJ와 관련된 AOP 기능을 자동으로 찾아서 처리
+    - 모든 Advisor 빈을 조회
+
+    ``` Java
+    // adviser 자동 등록
+      @Bean
+      public Advisor advisor(LogTrace logTrace) {
+
+          //pointcut (포인트 컷 표현식 사용)
+          AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+          pointcut.setExpression("execution(* hello.proxy.app..*(..)) && !execution(* hello.proxy.app..noLog(..))");
+
+          //advice
+          LogTraceAdvice advice = new LogTraceAdvice(logTrace);
+          return new DefaultPointcutAdvisor(pointcut, advice);
+      }
+    ```
