@@ -3,6 +3,7 @@ package hello.aop;
 import hello.aop.order.OrderRepository;
 import hello.aop.order.OrderService;
 import hello.aop.order.aop.AspectV1;
+import hello.aop.order.aop.AspectV2;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,8 @@ import org.springframework.context.annotation.Import;
 
 @Slf4j
 @SpringBootTest
-@Import({AspectV1.class}) // 빈 등록해야되는데 테스트 할거니까 앞으로 이렇게 쭉 쓸 거임
+//@Import({AspectV1.class}) // 빈 등록해야되는데 테스트 할거니까 앞으로 이렇게 쭉 쓸 거임
+@Import({AspectV2.class})
 public class AopTest {
 
     @Autowired
