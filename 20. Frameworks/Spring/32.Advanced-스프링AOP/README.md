@@ -43,7 +43,19 @@
       - @Bean 직접 등록
       - @Component로 컴포넌트 스캔 자동 등록
       - @Import로 설정파일 추가하듯이 class째 등록
-  - @Around : 포인트 컷 지정. 해당 애노테이션 메서드를 어드바이스로 변경.
+  - @Around : 포인트 컷 지정. 해당 애노테이션 메서드를 어드바이스로 변경. 
+    - 첫 번째 파라미터는 무조건 ProceedingJoinPoint이고 joinPoint.proceed()를 호출해야 함
+      - 그래야 다음 호출을 위한 chaining이 가능함
+    - 거의 강력해서 얘만 써도 됨
+      - 조인 포인트 실행(joinPoint.proceed()) 여부 선택
+      - 전달 값 반환(joinPoint.proceed(args[]))
+      - 반환 값, 예외 변환 가능
+      - proceed() 를 여러번 실행할 수도 있음(재시도)
+      - 기능 분리 : 분리가 되어 있어 chaining이 필요 없으므로, around와는 다르게 반드시 joinPoint.proceed()를 호출할 필요도 없고, 실수할 가능성도 적어짐. 그리고 의도가 명확해짐(좋은 설계 = 제약이 있는 코드)
+        - @Before : 조인 포인트 실행 이전에 실행
+        - @AfterReturning : 조인 포인트가 정상 완료후 실행
+        - @AfterThrowing : 메서드가 예외를 던지는 경우 실행
+        - @After : 조인 포인트가 정상 또는 예외에 관계없이 실행(finally)
   - @Pointcut : 포인트컷을 분리
   - @Order : @Aspect는 순서를 보장하지 않음. 순서 보장용.
     - @Aspect 단위로 별도의 클래스를 분리해서 나눠야 함
