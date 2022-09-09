@@ -2,10 +2,7 @@ package hello.aop;
 
 import hello.aop.order.OrderRepository;
 import hello.aop.order.OrderService;
-import hello.aop.order.aop.AspectV1;
-import hello.aop.order.aop.AspectV2;
-import hello.aop.order.aop.AspectV3;
-import hello.aop.order.aop.AspectV4Pointcut;
+import hello.aop.order.aop.*;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,7 +16,8 @@ import org.springframework.context.annotation.Import;
 //@Import({AspectV1.class}) // 빈 등록해야되는데 테스트 할거니까 앞으로 이렇게 쭉 쓸 거임
 //@Import({AspectV2.class})
 //@Import({AspectV3.class})
-@Import({AspectV4Pointcut.class})
+//@Import({AspectV4Pointcut.class})
+@Import({AspectV5Order.LogAspect.class, AspectV5Order.TxAspect.class})  // class 단위로 이렇게 넣어줘야 함!
 public class AopTest {
 
     @Autowired
