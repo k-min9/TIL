@@ -73,3 +73,13 @@
       - @annotation : 메서드가 주어진 애노테이션을 가지고 있는 조인 포인트를 매칭
       - @args : 전달된 실제 인수의 런타임 타입이 주어진 타입의 애노테이션을 갖는 조인 포인트
       - bean : 스프링 전용 포인트컷 지시자, 빈의 이름으로 포인트컷을 지정한다
+    - 포인트 컷 매칭 조건
+      ex) "execution(public String hello.aop.member.MemberServiceImpl.hello(String))"
+      1. 접근제어자(public) : 생략 가능
+      2. 반환타입(String)
+      3. 선언 타입 : hello.aop.member.MemberServiceImpl
+           - .. : 해당 위치의 패키지와 그 하위 패키지도 포함
+      4. 메서드 이름 : hello
+      5. 파라미터 : String
+           - (..) 파라미터의 종류와 수를 신경쓰지 않겠다.
+      6. 예외 : 생략
