@@ -177,7 +177,8 @@ public class ExecutionTest {
     //(String), (String, Xxx), (String, Xxx, Xxx)
     @Test
     void argsMatchComplex() {
-        pointcut.setExpression("execution(* *(String, ..))");
+        // String이 2개다 pointcut.setExpression("execution(* *(String, String))");
+        pointcut.setExpression("execution(* *(String, ..))");  // 파라미터가 1개 이상인데 2번째거는 아무거나해도 됨
         assertThat(pointcut.matches(helloMethod, MemberServiceImpl.class)).isTrue();
     }
 
