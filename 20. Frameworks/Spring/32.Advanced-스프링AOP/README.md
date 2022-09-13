@@ -43,7 +43,7 @@
       - @Bean 직접 등록
       - @Component로 컴포넌트 스캔 자동 등록
       - @Import로 설정파일 추가하듯이 class째 등록
-  - @Around : 포인트 컷 지정. 해당 애노테이션 메서드를 어드바이스로 변경. 
+  - @Around : 포인트 컷 지정. 해당 애노테이션 메서드를 어드바이스로 변경.
     - 첫 번째 파라미터는 무조건 ProceedingJoinPoint이고 joinPoint.proceed()를 호출해야 함
       - 그래야 다음 호출을 위한 chaining이 가능함
     - 거의 강력해서 얘만 써도 됨
@@ -75,6 +75,18 @@
         - @within : 선택된 클래스 내부에 있는 메서드만 조인 포인트로 선정, 부모 타입의 메서드는 적용되지 않음
       - @annotation : 메서드가 주어진 애노테이션을 가지고 있는 조인 포인트를 매칭
         - annotation.value()로 실제 값을 꺼낼 수 있음
+        - 받은 파라미터로 대체도 가능
+
+        ``` java
+          // 적용 전
+          @Around("@annotation(hello.aop.exam.annotation.Trace)")
+          public Object doRetry(ProceedingJoinPoint joinPoint)
+
+          // 적용 후
+          @Around("@annotation(retry)")
+          public Object doRetry(ProceedingJoinPoint joinPoint, Retry retry)
+        ```
+
       - @args : 전달된 실제 인수의 런타임 타입이 주어진 타입의 애노테이션을 갖는 조인 포인트. 단독 사용 불가.
       - bean : 스프링 전용 포인트컷 지시자, 빈의 이름으로 포인트컷을 지정한다
         - 단독사용 불가 지시자들 정리: args, @args, @target
@@ -89,3 +101,4 @@
       5. 파라미터 : String
            - (..) 파라미터의 종류와 수를 신경쓰지 않겠다.
       6. 예외 : 생략
+- 스프링 AOP 공식 지원 대표 예시 : @Transactional, @Async(동기->비동기 지원)
