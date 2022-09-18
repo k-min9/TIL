@@ -19,10 +19,11 @@ public class OrderService {
         orderRepository.save(order);
 
         log.info("결제 프로제스 진입");
+        // 런타임 예외 (언체크 -> 롤백)
         if (order.getUsername().equals("예외")) {
             log.info("시스템 예외 발생");
             throw new RuntimeException("시스템 예외");
-
+        // 비지니스 예외 (체크 -> 상태를 대기로 바꾸고 커밋하여 주문 내용을 살림)
         } else if (order.getUsername().equals("잔고부족")) {
             log.info("잔고 부족 비즈니스 예외 발생");
             order.setPayStatus("대기");
