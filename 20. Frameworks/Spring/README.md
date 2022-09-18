@@ -53,9 +53,16 @@
 
 ## 05. 스프링 MVC 2편 - 백엔드 웹 개발 활용 기술
 
-관련 프로젝트 : 08.MVC2-thymeleafBasic, 09.MVC2-thymeleafForm, 10.MVC2-message,
+관련 프로젝트 :  
+08.MVC2-thymeleafBasic  
+09.MVC2-thymeleafForm  
+10.MVC2-message  
 
-11.MVC2-validation, 12.MVC2-login, 13.MVC2-exception, 14.MVC2-typeconverter, 15.MVC2-upload
+11.MVC2-validation  
+12.MVC2-login  
+13.MVC2-exception  
+14.MVC2-typeconverter  
+15.MVC2-upload  
 
 ## 06. 실전! 스프링 부트와 JPA 활용1 - 웹 애플리케이션 개발
 
@@ -83,30 +90,30 @@
 
 ## 12. 스프링 핵심 원리 - 고급편
 
-관련 프로젝트 :
-30.Advanced-로그 추적기
-31.Advanced-proxy 패턴
-32.Advanced-스프링AOP
-33.Advanced+DB2-스프링 트랜잭션
+관련 프로젝트 :  
+30.Advanced-로그 추적기  
+31.Advanced-proxy 패턴  
+32.Advanced-스프링AOP  
+33.Advanced+DB2-스프링 트랜잭션  
 
 ## 기타 1. 프로토콜 시리즈
 
-관련 프로젝트 :
-19.Extra-websocket
-20.Extra-webSTOMP
-23.Extra-MakingProtocol / 직접 만들어보자
+관련 프로젝트 :  
+19.Extra-websocket  
+20.Extra-webSTOMP  
+23.Extra-MakingProtocol / 직접 만들어보자  
 
 ## 기타 2. 스프링 클라우드
 
-관련 프로젝트 :
-21.Cloud-Eureka
-22.Cloud-Gateway
+관련 프로젝트 :  
+21.Cloud-Eureka  
+22.Cloud-Gateway  
 
 ## 기타 3. 스프링 과거편
 
-관련 프로젝트 :
-24.Extra-MakingCookie
-27.Servlet-기초
+관련 프로젝트 :  
+24.Extra-MakingCookie  
+27.Servlet-기초  
 
 ## 99. 감상
 
