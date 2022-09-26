@@ -189,6 +189,30 @@
     (= 번호 낮을 수록 우선순위가 높음)
     - 연결된 서브넷의 모든 인스턴스에 자동 적용됨
     - 이슈 :  EC2 웹서버 운영시 외부에서 Client가 접속 후 리턴 트래픽을 받을 때 NAT를 사용하므로 임시포트(ephemeral ports) 1024-65535를 사용
+- NAT(Network Address Translation) : Private IP 주소를 Public IP 주소로 변환
+  - 배경 : Private IP를 가진 인스턴스는 인터넷으로 트래픽을 어떻게 보내나?
+  - 분류
+    - NAT Instance : 사용자가 Public EC2에 NAT 기능을 구성하고 설치
+      - 장 : NAT Gateway에 비해 더 많은 기능 구현 가능, 보안 그룹 적용 가능
+        - ex) Squid Proxy 설정으로 특정 URL로만 액세스 제한(DNS Filtering) 가능
+      - 단 : EC2 고장시 기능 동작을 안하게 됨
+      - 이슈 : 사용시 EC2 ENI의 원본/대상확인(Source/Destination Check) 비활성화 해야함
+      활성화시 원본/대상이 아니라 트래픽이 Drop됨
+    - NAT Gateway : 원리는 비슷하지만 AWS에서 제공하고 관리하는 서비스
+      - 장 : 고가용성, 대역폭 자동 확장
+      - 단 : 사용자 추가 기능 구현 불가, 보안 그룹 적용 불가
+      - 이슈 : Gateway로 쓸 Elastic IP를 지정해야 함.
+      이때 단 하나의 Public 주소만 쓰게 되므로 포트를 통해 접속을 분산 함. 따라서, NACL 인바운드 트래픽에서 1024 - 65535 포트를 허용해야 트래픽을 수신할 수 있음
+  - 이용시 발생하는 문제와 해결
+    - 포트 할당 오류로 인한 실패 또는 연결오류(ErrorPortAllocation) 발생
+      - 문제 : 55000건의 동시 접속 지원을 넘은 요청
+      - 해결 : NAT Gateway를 추가해서 더 많은 접속을 지원
+    - 인스턴스에서 인터넷에 액세스는 되지만 특정 시간 후 끊어짐
+      - 문제 : NAT Gateway 연결이 X초 이상 유후일 경우 연결 시간이 초과됨
+      - 해결 : EC2 인스턴스에서 X초 미만 값으로 TCP keepalive를 활성화
+    - 프라이빗 서브넷의 인스턴스에서 NAT Gateway를 통해 대상에 연결할 때 일부 TCP연결은 성공하지만 일부는 실패하거나 시간초과
+      - 문제 : 대상 엔드포인트가 조각난 TCP 패킷으로 응답하는게 원인
+      NAT Gateway는 조각난 패킷(fragmented packets)을 지원하지 않음
 
 ## EC2 Networkinng
 
