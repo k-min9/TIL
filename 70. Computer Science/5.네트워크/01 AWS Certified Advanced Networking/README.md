@@ -100,3 +100,71 @@
     - Dot1q(1EEE 802.1q) : Ethernet Frame(전달 단위)에는 VLAN 정보용 태그가 없음
       - 다른 스위치로 트래픽을 보낼때 여러 VLAN 정보가 포함된 Dot1Q Header Tag를 붙임
       - 같은 스위치(Host)로 보낼때 Dot1Q Tag를 제거하고 Access Port로 전달(Access Port는 VLAN 정보를 들고 있어서 태그가 불필요)
+
+## AWS 글로벌 인프라
+
+- 구성 : 리전 > 가용 영역 > 데이터센터 > 엣지네트워크
+  - 리전 (Region) : 데이터 센터를 클러스터링 하는 물리적 위치.
+    - 2개 이상의 가용 영역으로 구성
+    - 재해복구 설계 : 2개 이상의 리전에 시스템을 배치하여 다른 리전에 재해가 발생해도 복구할 수 있게 설계
+  - 가용 영역 (Availability Zone – AZ)
+    - 1개 이상의 개별 데이터 센터로 구성
+    - 각각 물리적으로 떨어져 있고, 고속 네트워크로 연결됨
+    - 고가용성 설계 : 다중 AZ(Multi AZ), 2개 이상의 가용 역역에 시스템 배치
+  - 엣지 로케이션(Edge Location) : 콘텐츠를 캐싱하여 사용자에게 더 짧은 지연 시간으로 콘텐츠를 전송
+    - 글로벌 배포서비스인 AWS CloudFront, Global Accelerator에서 대표적으로 사용
+    - ex) 서울에서 미국 리전의 데이터에 접속할때 서울 엣지 로케이션에 미리 캐싱
+
+## AWS 가상 네트워크(VPC)
+
+- 개요 : AWS 계정의 가상 네트워크. 블록사이즈 /16 ~ /28
+  - Private : VPC(리전 단위)에 네트워크 환경을 지원하는 서비스
+    - Public IP를 부여하고 Routing Table을 거쳐 Internet Gateway를 통해 인터넷과 통신
+    - ex) EC2
+  - Public Services : 외부에 위치하며 인터넷으로부터 액세스 가능
+    - ex) S3, DynamoDB, WorkSpaces
+- 구성
+  - 기본 VPC : 계정 생성시 리전별로 자동으로 생성 됨 (/16)
+    - VPC 안에 가용영역이 Subnet(/20)되어  
+    NACL(Network access control list, Subnet레벨 방화벽)을 통해  
+    Routing table을 거쳐  
+    IGW (Internet Gateway)와 연결  
+- Custom VPC 생성
+  1. VPC 생성
+      - CIDR 블록 사이즈(/16 ~ /28) 내에서 생성, 이후 범위 수정 불가
+      - 퍼블릭 IP CIDR 생성시 이후 프라빗 IP CIDR 추가 불가
+      - IPv6로 생성시 범위 지정은 필수가 아닌 옵션
+      - 라우팅 테이블, DHCP, Prefix 리스트, NACL이 자동생성됨
+  2. Subnet 생성 : VPC 선택 후, 가용영역 고르고 생성
+      - CIDR 블록 사이즈(/16 ~ /28) 내에서 생성, VPC 블록 주소 내에서
+        - CIDR 블록 주소 수정 불가, 삭제 후 새로 생성만 가능
+      - 하나의 가용영역 지정
+      - 다섯개의 주소를 AWS가 가져감
+        - .0 : Network ID(Netmask)
+        - .1 - Gateway
+        - .2 - DNS
+        - .3 – Reserved
+        - .255 - Broadcast
+  3. Routing Table 생성 : 라우팅 규칙을 통해 네트워크 트래픽 전송되는 위치를 결정
+      - Subnet에 명시적으로 등록하지 않으면 기본 RT와 연결됨
+        - 명시적 서브넷 연결 > 서브넷 연결 편집
+      - Destination : 트래픽을 이동할 대상 IP 주소(대상 CIDR)의 범위
+        - IPv4, IPv6
+        - Prefix List : 관리형 접두사 목록. IP CIDR 범위를 미리 리스트로 만들어 둔 목록
+      - Target : 타겟 주소 : 대상 트래픽 전송시 사용할 게이트웨이, 네트워크 인터페이스 또는 연결
+        - local은 VPC 내부통신 라우팅
+      - CIDR 블록 주소 수정 불가, 삭제 후 새로 생성만 가능
+  4. IGW(Internet Gateway) 생성 : VPC와 인터넷 간에 통신을 할 수 있게 함
+      - 퍼블릭 IPv4가 할당된 인스턴스에 대해 1:1 NAT(네트워크 주소 변환)을 수행
+      - 라우팅 테이블의 Target(타겟 주소) 역할
+        - 퍼블릭 서브넷 : IGW와 바로 연결(라우팅)
+        - 프라이빗 서브넷 : IGW와 바로 연결되지 않음
+      - 순서
+      1. 인터넷 게이트웨이 생성
+      2. 메뉴에서 확인(Detached). 우측 상단 작업 > VPC와 연결
+      3. 연결할 VPC 선택 후 연결. 메뉴에서 확인 (Attached)
+      4. 라우팅 테이블에서 생성된 igw와 연결
+
+## 기타
+
+- 테넌시 : 전용 하드웨어
