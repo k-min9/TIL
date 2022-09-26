@@ -240,6 +240,36 @@
   - 인스턴스가 점보 프레임을 지원하는지 확인하고 9001 MTU(최대 전송 단위)를 설정
     - 더 큰 패킷을 보낼 수 있게 됨
 
+## Load Balancer
+
+- 개요 : 트래픽을 분산하는 서비스. AWS에서는 Elastic Load Balancer라고 호칭  
+비정상 대상을 감지하면, 해당 대상으로 트래픽 라우팅을 중단하고  
+대상이 다시 정상으로 감지되면 트래픽을 해당 대상으로 다시 라우팅  
+- 종류
+  - Application Load Balancer(Layer 7/HTTP, HTTPS)
+    - HTTP Header Content를 사용해 라우팅 요청 처리
+    - 웹 애플리케이션, 서비스에 적합
+  - Network Load Balancer(Layer 4/TCP, UDP, TLS)
+    - Protocol, Port Number를 사용해 라우팅 요청처리
+    - ALB에 비해 상대적으로 빨라서 수백만의 대용량 트래픽 처리에 적합
+  - Gateway Load Balancer(GWLB)
+    - Layer 3 – Gateway Load Balancer Endpoint
+    - Layer 4 – Gateway Load Balancer
+    - GENEVE protocol을 사용하여 encapsulation 트래픽 전송
+    - Transparency한 네트워크 게이트웨이를 제공하므로 방화벽, IPS, IDS 등의 원본 패킷의 데이터가 중요한 가상 어플라이언스에 적합
+  - Classic Load Balancer(이전 세대, Layer 4 + Layer 7 / HTTP, HTTPS, TCP. TLS)
+    - Protocol, Port Number를 사용해 라우팅 요청처리
+    - 곧 deprecated 될 예정
+- 구성 (GWLB)
+  - Listener : 연결 요청을 확인하는 프로세스
+    - 클라이언트/대상과 로드 밸런서 간의 연결을 위한 프로토콜 및 포트번호로 구성
+  - Target Group : 대상(Target)의 모임
+    - Target : EC2 인스턴스, EC2 Auto Scaling Group, IP address, Lambda
+- Gateway Load Balancer 상세
+  - Gateway Load Balancer Endpoint: 서비스 공급자(Provider) VPC의 가상 어플라이언스와 서비스 소비자(Consumer) VPC의 애플리케이션 서버 간에 프라이빗 연결을 제공
+  - 인터넷 게이트웨이를 통해 서비스 소비자 VPC로 들어오는 모든 트래픽은 먼저 검사를 위해 Gateway Load Balancer Endpoint 라우팅된 다음 Application Server로 라우팅
+  - Application Server에서 나가는 모든 트래픽은 다시 인터넷으로 라우팅되기 전에 검사를 위해 Gateway Load Balancer 엔드포인트로 라우팅
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
