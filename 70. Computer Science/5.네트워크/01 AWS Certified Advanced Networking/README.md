@@ -331,6 +331,58 @@
     - 헤더 또는 권한 부여 토큰을 검사하고, CloudFront가 오리진으로 요청을 전달하기 전에 헤더를 삽입하여 콘텐츠에 대한 액세스 권한을 제어
     - 외부 리소스에 대한 네트워크 호출을 생성하여 사용자 자격 증명을 확인하거나 추가 콘텐츠를 가져와 응답을 사용자 지정
 
+## Route 53
+
+- 개요 : AWS의 DNS 서비스
+  - 퍼블릭 도메인 구매, 이전
+  - AWS 내부 VPC에서 사용할 수 있는 프라이빗 도메인 생성
+  - 라우팅 정책 적용
+- DNS(Domain Name System) : 사람이 읽을 수 있는 도메인 이름을 컴퓨터가 읽을 수 있는 IP 주소로 변환하는 시스템
+  - 레벨
+    - FQDN(Fully Qualified Domain Name) : 전체 주소 도메인 네임
+    - Root Domain : 도메인 맨 끝의 점(.), 생략 가능하고 보통 생략 되어 있음
+    - TLD(Top Level Domain) : .com 같은 최상위 도메인. 도메인 네임의 가장 마지막 부분
+    - SLD(Second Level Domain) : 그 부분을 제외한 부분
+  - 레코드 유형 : DNS에 알려줄 트래픽을 도메인에 라우팅하는 방식
+    - A : 도메인 네임을 IPv4 주소로 라우팅 (www.google.com -> 192.100.10.1)
+    - AAAA - 도메인 네임을 IPv6 주소로 라우팅
+    - CNAME - 도메인 네임을 도메인 네임으로 라우팅 (site.google.com -> blog.google.com)
+    - ALIAS(별칭) - 도메인 네임을 AWS리소스로 라우팅 (www.google.com -> AWS EC2, ALB...). AWS 전용.
+    - MX(Mail eXchanger) - 이메일 서버연동시 메일의 소유를 확인하기 위한 레코드
+    - NS(Name Server) – DNS레코드를 가진 DNS 서버를 식별 하기 위한 레코드. 기본 생성
+    - SOA(Start Of Authority) – 도메인의 정보와 권한을 가진 레코드. 기본 생성
+  - DNS resolver(해석기) : 들어온 도메인 이름을 해석하는 중간자. 인터넷 서비스 제공업체(skt, kt 등...)에서 관리
+    - 도메인 입력시 DNS Resolver로 라우팅
+    - name 서버를 탑부터 순서대로 돌아가며 IP 주소 획득
+      - 이때 DNS Resolver가 일정 기간 캐싱
+      - 캐싱 기간은 TTL(Time to live, 단위 : 초)로 Route53이 IP 반환시 함께 부여
+    - 얻은 IP 주소로 요청을 웹서버로 전송하고 반환받음
+  - 라우팅 정책 : 레코드 생성시 선택 가능
+    - 단순 라우팅(Simple) : 도메인 -> IP로 라우팅. 대상 IP가 여럿일 경우 랜덤
+    - 가중치 기반(Weighted) : 서버에따라 분산하는 가중치를 설정하고 그것을 기준으로 라우팅
+      - 트래픽 분산과 여러버전App 테스트에 유용
+    - 지연 시간(Latency) : 가장 짧은 지연시간을 제공하는 리전으로 라우팅
+    - 지리적 위치(Geo Location) : 속한 대륙이나 국가를 기준으로 라우팅
+    - 장애 조치(Failover) : 레코드 유형 - 기본(Primary)라우팅이 실패하면 레코드 유형 - 보조(Secondary)로 자동 라우팅
+      - 상태 검사 : 상태를 모니터링하고 상태가 좋지 않은 경우 장애조치가 작동
+    - 다중값 응답 : Route53 DNS에서 다수의 값을 반환, 상태확인에 따라 정상인 IP 주소만 전달하고 대상은 랜덤한 주소 중 하나를 접속
+- Route 53 Private Hosted DNS Zones : Amazon VPC 내에서 트래픽을 라우팅, 호스팅 영역이 프라이빗
+  - 프라이빗 Domain Name을 프라이빗 IP 주소로 변환 하여 라우팅
+  - 프라이빗 호스팅 영역을 VPC에서 사용하려면 VPC 설정의 DNS 호스트 이름(DNS Hostname)과 DNS 확인 (DNS Resolution)을 필수로 활성화 해야 함
+    - Amazon에서 프라이빗 호스팅 영역에 대한 DNS 쿼리 제공
+    - DNS Hostname : Custom VPC의 경우 이 옵션은 기본적으로 비활성화
+    - DNS Resolution : VPC DNS 서버로부터의 DNS쿼리만 수락
+      VPC DNS 서버의 IP 주소는 VPC IPv4 네트워크 범위를 기준으로 2를 더한 예약된 IP 주소(예, 10.1.0.2)
+
+  - DHCP(Dynamic Host Configuration Protocol) : TCP/IP 네트워크 상의 호스트로 구성 정보를 전달하기 위한 표준을 제공
+    - DHCP 옵션세트에 지정된 도메인 서버를 사용해 도메인 네임을 확인
+- Route53 DNS Resolver for Hybrid Cloud : 추가 DNS 서버를 배포하지 않고도 Amazon VPC와 온-프레미스 데이터 센터간에 트래픽을 전달
+  - 시나리오
+    1. Private Hosted Zone은 Shared Service VPC와 연결
+    2. Inbound Endpoint: 온-프레미스에서 확인하려는 Route 53 이름에 대한 온-프레미스 DNS 서
+  버에 대한 전달 규칙(Conditional Forward)을 만듬
+    3. Outbound Endpoint: AWS VPC에서 온-프레미스로 확인하려는 이름에 대한 Route 53 Resolver 규칙을 생성
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
