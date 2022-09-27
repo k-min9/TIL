@@ -296,6 +296,41 @@
   - 인터넷 게이트웨이를 통해 서비스 소비자 VPC로 들어오는 모든 트래픽은 먼저 검사를 위해 Gateway Load Balancer Endpoint 라우팅된 다음 Application Server로 라우팅
   - Application Server에서 나가는 모든 트래픽은 다시 인터넷으로 라우팅되기 전에 검사를 위해 Gateway Load Balancer 엔드포인트로 라우팅
 
+## Cloud Front
+
+- 개요 : 콘텐츠 전송 네트워크 서비스 (CDN, Contents Delivery Network)
+- 특징 : 엣지 로케이션(전세계 200개 이상)의 캐싱 기능을 이용하여 콘텐츠를 글로벌 사용자에게 더 빨리 배포하도록 지원하는 서비스
+- 생성 : Cloudfront > 배포 > 생성 ('동작'에서 차후 설정 변경 가능)
+  - 뷰어 : 서비스 이용자, 프로토콜 정책(HTTP...), 접근 Method 설정 가능
+  - 기본값 루트 객체 : 처음 접속시 들어가는 사이트 설정 가능
+    - 첫 슬래시(/) 빼야함
+- 보안 액세스
+  - 뷰어 / 오리진 프로토콜 정책 : 뷰어 프로토콜, 오리진 프로토콜 정책으로 보안
+    - Match Viewer(뷰어 일치) : 오리진 프로토콜이 뷰어 프로토콜의 정책을 따라 감
+  - OAI(Origin Access Identity) : 오리진에 직접 접근을 막고 클라우드 프론트를 통해서만 할 수 있도록 설정
+    - CloudFront가 Origin Access ID(원본 Access ID)를 가지고 Origin쪽 Policy에 OAI를 허용
+      - 차후 생성된 OAI를 원본 편집으로 변경 가능
+  - Singed URL, Signed Cookies : 서명된 URL또는 쿠키를 이용해서 콘텐츠에 접속하는 기능
+    - URL또는 쿠키에는 콘텐츠만료기간, 액세스가능한 IP주소를 저장할 수 있음
+    - URL은 1개 파일 1개 서명, Cookie는 1개 쿠키 여러 파일 접속 가능
+  - 지역 제한(Geographic Restrictions) : 특정 국가에서의 엑세스 제한
+  - AWS WAF(Web Application Firewall)와 연결하여 보안 강화
+  - 사용자 지정 HTTP 헤더가 포함된 요청만 전달하도록 Application Load Balancer를 구성
+  - 비대칭키 암호화 방법을 이용한 필드 레벨 암호화 사용 (시험범위 외)
+- Lambda@Edge : AWS Lambda를 확장하여 CloudFront로 전달하고 엣지로케이션에서 해당 함수를 실행
+  - AWS Lambda 서버리스 컴퓨팅 서비스
+  - 다음과 같은 CloudFront 이벤트가 발생할 때 Lambda 함수를 실행
+    - CloudFront가 최종 사용자의 요청을 수신할 때(최종 사용자 요청)
+    - CloudFront가 오리진에 요청을 전달하기 전(오리진 요청)
+    - CloudFront가 오리진의 응답을 수신할 때(오리진 응답)
+    - CloudFront가 최종 사용자에게 응답을 반환하기 전(최종 사용자 응답)
+  - 사용 예시
+    - A/B 테스트를 위해 사이트의 다양한 버전을 볼 수 있도록 쿠키를 검사하고 URL을 다시 작성
+    - User-Agent 헤더를 확인하여 사용 중인 디바이스를 기반으로 디바이스의 화면 크기에 따라 다른 이미지를 반환
+    - 최종 사용자 요청 또는 오리진 요청 이벤트가 발생할 때 HTTP 응답을 생성
+    - 헤더 또는 권한 부여 토큰을 검사하고, CloudFront가 오리진으로 요청을 전달하기 전에 헤더를 삽입하여 콘텐츠에 대한 액세스 권한을 제어
+    - 외부 리소스에 대한 네트워크 호출을 생성하여 사용자 자격 증명을 확인하거나 추가 콘텐츠를 가져와 응답을 사용자 지정
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
