@@ -402,6 +402,24 @@
   - VPC 소유 계정은 동일한 조직에 속한 다른 계정과 한 개 또는 여러 개의 서브넷을 공유
     공유 참여자는 공유된 서브넷의 해당 애플리케이션 리소스에 CRUD를 행사할 수 있음
 
+## VPC PrivateLink
+
+- 개요 : VPC와 서비스 간에 프라이빗 연결을 제공하는 기술
+- 서비스
+  - VPC 엔드포인트 : 인터넷을 통하지 않고 AWS 서비스에 프라이빗하게 연결할 수 있는 VPC의 진입점
+    - 동일한 리전에서만 지원
+    - 종류
+      - 게이트웨이 엔드포인트 : AWS S3와 DynamoDB에 대한 프라이빗 연결
+      - 인터페이스 엔드포인트 : 그 외 서비스
+        서브넷의 IP 주소 범위에서 프라이빗 IP 주소를 사용하는 탄력적 네트워크 인터페이스
+      - Gateway Load Balancer 엔드포인트
+  - VPC 엔드포인트 서비스(AWS PrivateLink, 동명) : VPC 내에 있는 애플리케이션 또는 서비스
+    - 인터넷을 통하지 않고 AWS 내부 네트워크를 통한 트래픽
+    - 다른 AWS 계정의 VPC Endpoint에서 엔드포인트 서비스(AWS PrivateLink)로 연결
+      - 벤더(Service Provider)는 VPC에 애플리케이션을 구성하고 VPC Endpoint 서비스를 구성
+      - 하나 또는 여러 고객(Consumer) AWS 계정의 VPC Endpoint가 벤더 (Provider) AWS 계정의 NLB 또는 GWLB에 연결
+        - 고객이 많거나 고객 VPC의 IP 중복을 걱정하지 않아도 됨
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
