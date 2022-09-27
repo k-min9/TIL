@@ -245,7 +245,8 @@
 - 개요 : 트래픽을 분산하는 서비스. AWS에서는 Elastic Load Balancer라고 호칭  
 비정상 대상을 감지하면, 해당 대상으로 트래픽 라우팅을 중단하고  
 대상이 다시 정상으로 감지되면 트래픽을 해당 대상으로 다시 라우팅  
-- 종류
+  - 조건 : 서브넷당 사용가능 IP 주소가 최소 8개 필요 (권장 최소 CIDR 블록 /27 넷마스크)
+- 종류 : 로드 밸런스 생성시 유형에 따라 선택
   - Application Load Balancer(Layer 7/HTTP, HTTPS)
     - HTTP Header Content를 사용해 라우팅 요청 처리
     - 웹 애플리케이션, 서비스에 적합
@@ -264,8 +265,33 @@
   - Listener : 연결 요청을 확인하는 프로세스
     - 클라이언트/대상과 로드 밸런서 간의 연결을 위한 프로토콜 및 포트번호로 구성
   - Target Group : 대상(Target)의 모임
-    - Target : EC2 인스턴스, EC2 Auto Scaling Group, IP address, Lambda
-- Gateway Load Balancer 상세
+    - 대상 유형 : EC2 인스턴스, EC2 Auto Scaling Group, IP address, Lambda
+    - 프로토콜
+      - ALB : HTTP, HTTPS
+      - NLB : TCP, TLS, UDP, TCP_UDP
+      - GWLB : GENEVE
+    - 상태 검사(Health Check) : 등록된 Target(대상)에게 상태 확인 메시지를 보내서 대상의 상태를 확인
+      - 경로, 정상 임계값(X회 이상 연속 성공), 비정상 임계값(X회 이상 연속 실패), 제한 시간, 간격, 성공코드 설정
+    - 속성
+      - ALB : 등록 취소 지연(Deregistration delay), 느린 시작 기간(Slow start duration), 알고리즘, 고정(Stickness)
+      - NLB : 등록 취소 지연, 등록 해제시 연결 종료, 고정, 프록시 프로토콜, 클라이언트 IP 주소 보존
+- Application Load Balancer 상세
+  - 최소 2개의 가용영역 지정
+  - Listener Protocol로 HTTP, HTTPS 사용할 수 있음
+    - HTTPS 프로토콜 사용시 SSL/TLS 인증서 배포 필요
+      - 인증서는 ACM(AWS Certificate Manager)사용 또는 클라이언트 인증서 사용
+  - 소스 IP 전달(Source IP Preservation)사용을 위해서는 X-Forwarded-For 헤더를 사용
+  - WebSocket 기능 사용을 위해서는 Stickiness를 활성화 해야 함
+  - Listener 규칙 : Host header, Path, Http header, Http request method, Quert string, source IP
+- Network Load Balancer 상세 : 계층이 다르지 ALB와 유사
+  - 수백만 유저(Millions of Concurrent Users/Requests Per Second) 의 경우에 적합
+  - Listener Protocol로 TCP, TCP/UDP, UDP, TLS를 사용 할 수 있음
+    - TLS 프로토콜 사용시 SSL/TLS 인증서 배포 필요
+  - 고정 IP 주소 할당 가능
+  - 클라이언트 IP 주소 전달 가능
+  - Websocket 지원
+  - Listener 규칙 설정 없음
+- Gateway Load Balancer 상세 : ALB, NLB와 이질적
   - Gateway Load Balancer Endpoint: 서비스 공급자(Provider) VPC의 가상 어플라이언스와 서비스 소비자(Consumer) VPC의 애플리케이션 서버 간에 프라이빗 연결을 제공
   - 인터넷 게이트웨이를 통해 서비스 소비자 VPC로 들어오는 모든 트래픽은 먼저 검사를 위해 Gateway Load Balancer Endpoint 라우팅된 다음 Application Server로 라우팅
   - Application Server에서 나가는 모든 트래픽은 다시 인터넷으로 라우팅되기 전에 검사를 위해 Gateway Load Balancer 엔드포인트로 라우팅
@@ -275,3 +301,5 @@
 - 테넌시 : 전용 하드웨어
 - 퍼블릭 IP 자동 할당 : 다음 EC2에 자동으로 퍼블릭 IP를 할당함
 - DNS 확인 : ON이어야 주소가 DNS 서버를 거쳐서 접속함
+- 등록 취소 지연 : Auto Scaling 축소등으로 Deregistration 된 인스턴스에 더 이상 요청을 보내지 않도록 하는 기능
+- 고정(Stickness) : 클라이언트가 세션을 유지한 상태라면 모든 요청을 동일한 인스턴스로 유지하는 기능
