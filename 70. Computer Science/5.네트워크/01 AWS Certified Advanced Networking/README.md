@@ -420,6 +420,84 @@
       - 하나 또는 여러 고객(Consumer) AWS 계정의 VPC Endpoint가 벤더 (Provider) AWS 계정의 NLB 또는 GWLB에 연결
         - 고객이 많거나 고객 VPC의 IP 중복을 걱정하지 않아도 됨
 
+## Hybrid Cloud and VPN
+
+- VPN(Virtual Private Network, 가상 사설망)
+  - 개요
+  - 종류
+    - Site-to-Site VPN : 다른 Site의 Private IP를 가질텐데 그 라우터 들을 인터넷을 통해 보안 터널링으로 연결, IPSec 암호화 프로토콜 사용
+    - Client VPN : Client PC와 회사를 Private하게 연결, TLS 암호화 프로토콜 사용
+  - 기타
+    - IKE(Internet Key Exchange) : VPN간의 연결을 성립하기 위해 사용하는 암호화 키 관리 프로토콜
+    - Hybrid Cloud : AWS Cloud와 외부 On-promise를 연결하기 위해 AWS가 제공하는 VPN 서비스
+- AWS VPN
+  - 연결 옵션
+    - AWS Site-to-Site VPN (AWS Managed VPN) : AWS VPC와 온-프레미스와의 터널을 구성하여 연결, IPsec 프로토콜 사용
+    - AWS Client VPN : AWS 리소스와 노트북 등의 클라이언트와 VPN연결, SSL/TLS 프로토콜 사용
+      - VPC는 Client VPN Endpoint를 세팅
+      - 클라이언트는 VPN 접속을 위한 VPN 구성 파일이 담긴 소프트웨어를 설치
+      - Active Directory 등의 자격증명을 이용해 클라이언트가 VPN 연결 권한을 부여 받음
+    - AWS VPN CloudHub : AWS VPC와 여러 곳의 온-프레미스를 연결하여 서로 통신할 수 있게 AWS Site-to-Site VPN을 구성
+    (site-to-site VPN을 여러개 만들어 하나의 클라우드를 형성, on-promise가 다른 vpc 및 다른 on-promise와도 연결 가능)
+    - Software Site-to-Site VPN : EC2인스턴스에 VPN 소프트웨어를 설치하여 VPN기능을 구현, 외부 프로그램인 만큼 자유롭게 설정이 가능하지만, 직접 관리해야 함
+- AWS Site-to-Site VPN 상세
+  - 개요 : IPSec 암호화 프로토콜을 사용 하여 AWS VPC와 온-프레미스간에 프라이빗 네트워크를 구성
+  - VPC와 연결을 위한 Virtual Private Gateway +  
+    온-프레미스의 Customer Gateway Device의 정보를 구성하기 위한 Customer Gateway를 설정하고  
+    구성 파일을 다운 받아 고객 게이트웨이 디바이스(Customer Gateway Device, CGD, 라우터)에 설치 하여 VPN 연결 터널을 구성
+  - AWS Direct Connect의 백업으로 사용 가능
+  - VPN 터널당 최대 대역폭은 1.25Gbps
+  - VPN 사용을 위해 UDP 500, IP Protocol 50을 방화벽에서 허용해야 함
+    - Virtual Private Gateway (VGW) : AWS VPC와 온-프레미스 네트워크를 연결하는 라우터 역할
+      - Site-to-Site VPN, Direct Connect 연결을 통해 온-프레미스와 연결
+      - VPC는 하나의 VGW만 연결 가능하고 그 VGW를 통해 여러 외부 연결
+      - VGW 생성시 ASN(Autonomous System Number)를 지정
+        - Autonomous System은 내부 연결을 포함하여 하나의 관리자에 운용되는 네트워크 그룹
+        - 인터넷에 연결되는 Public ASN과 내부적으로 사용되는 Private ASN로 나뉨
+          - Private ASN 범위는 64512 ~ 65534이고, 디폴트 값은 64512
+        - 외부 연결(Exterior gateway protocol)은 BGP(Border Gateway Protocol)를 사용하고 BGP끼리만 라우팅 교환
+          - 교환에 내부 라우팅 등의 정보 알 필요가 없음
+    - Customer Gateway : 온-프레미스의 고객 라우터의 설정 값을 AWS에 제공하는 게이트웨이
+      - 물리적으로 설치 되는 것이 아닌 AWS에서 구성되는 가상 게이트 웨이
+    - Customer Gateway Device(CGD) : 온-프레미스에 설치된 라우터 등의 물리적 디바이스 또는 소프트웨어 애플리케이션, AWS 콘솔에서 VPN 구성 파일을 받아 설치하면 VPN 연결 터널이 구성됨
+  - VPN Tunnel
+    - Site-to-Site VPN 연결에 2개의 터널 사용
+    - 각 터널은 고유의 '가상 프라이빗 게이트웨이 퍼블릭 IP 주소'를 사용
+    - 터널 하나가 사용 불가능하게 되면 네트워크 트래픽은 사용 가능한 터널로 자동으로 라우팅
+    - 옵션(암호화, Dead Peer Detection(DPD) 시간 초과, IP 주소 등)을 사용자가 직접 지정 가능
+- AWS Route Learning
+  - 배경 : VPC와 온-프레미스는 서로 다른 네트워크를 어떻게 routing table을 학습하나?
+  - 종류
+    - Static Routing : 수동으로 직접 구성, 소규모에 적합
+      - Site-to-Site VPN에서 지원
+    - Dynamic Routing : 라우팅 프로토콜에서 연결된 라우터끼리 자동으로 공유, 대규모에 적합
+      - Direct Connect, Site-to-Site VPN에서 지원
+      - AWS에서는 Dynamin Routing시 BGP(Border Gateway Protocol)만 사용 가능. (= BGP Protocol)
+        - 다른 자율 시스템(AS)의 라우터 간, 조직 외부에서 사용하는 Exterior Gateway Protocol
+        - 서로 Peer 관계로 연결된 라우터끼리만 Network routes(prefix) 정보를 공유함
+        - 라우팅 경로가 여럿일 경우 Best-Path 알고리즘 사용
+          - 선택 순서
+            1. Highest Weight
+                - 값이 높은 것을 우선하여 선택
+                - 자기 자신의 라우터는 기본값이 32768이며 다른 라우터에서 학습한 값은 0
+            2. Highest Local Preference
+                - 값이 높은 것을 우선하여 선택
+                - 기본값은 100
+            3. Shortest AS Path : 해당 네트워크에서 여기까지 오는데의 경로
+                - 가장 짧은 경로를 우선하여 선택
+                - 자기 자신의 라우터는 i (internal)이며 여러 라우터를 거칠 경우 AS Path가 추가 됨
+                - 속도가 느려도 Path가 짧은것을 선택함.
+                  - 조정 방법
+                    - AS Path에 임의의 내용을 추가해 길게 만들어버리자(AS Prepending)
+                    - Weight를 변경해서 조정하자.
+            4. Lowest Metric
+                - 값이 낮은 것을 우선하여 선택
+                - 기본값은 0
+        - TCP 179 프로토콜 사용
+        - ASN으로 BGP 라우터를 구분
+      - 라우트 전파(Route Propagation) : 자동으로 라우트를 추가하게 하는 옵션
+    - 라우팅 테이블 겹치거나 일치하는 경우 : Local > Static > Dynamic중 구체적인 순서로 선택
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
@@ -427,3 +505,5 @@
 - DNS 확인 : ON이어야 주소가 DNS 서버를 거쳐서 접속함
 - 등록 취소 지연 : Auto Scaling 축소등으로 Deregistration 된 인스턴스에 더 이상 요청을 보내지 않도록 하는 기능
 - 고정(Stickness) : 클라이언트가 세션을 유지한 상태라면 모든 요청을 동일한 인스턴스로 유지하는 기능
+- 프로비저닝(Provisioning) : 사용자의 요구에 맞게 시스템 자원을 할당, 배치, 배포해 두었다가 필요 시 시스템을 즉시 사용할 수 있는 상태로 미리 준비해 두는 것
+- 온 프로미스(On-promise) : IT 서비스를 운영하는 회사가 자체적으로 보유한 공간에 물리적으로 하드웨어 장비를 가지고 직접 운영하는 방식을 말합니다. 클라우드 컴퓨팅 기술이 나오기 전까지 일반적인 기업이 사용하던 일반적인 인프라 구축 방식
