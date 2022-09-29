@@ -498,6 +498,71 @@
       - 라우트 전파(Route Propagation) : 자동으로 라우트를 추가하게 하는 옵션
     - 라우팅 테이블 겹치거나 일치하는 경우 : Local > Static > Dynamic중 구체적인 순서로 선택
 
+## Direct Connect(DX)
+
+- 개요 : AWS와 온-프레미스 간에 DX Location을 통한 전용선을 통해 프라이빗 네트워크 연결 생성
+- 전용선 : Cloud - DX Location - On-promise를 각각 연결
+  - Cloud - DX Location AWS Cage : AWS Backbone으로 연결, AWS가 관리
+  - DX Connection 내 AWS Cage - Customer Cage : Cross-connect
+  - Customer Cage - On-promise Router : WAN으로 연결, 고객 내지 통신사(Telco Partner) 등이 관리
+- 특징
+  - 포트당 1Gbps, 10Gbps, 100Gbps 연결 속도 사용 가능
+  - 물리적인 구성을 해야 하기에 설치 시간이 오래 걸림
+  - VPN보다 가격이 비싸며 인터넷을 통하지 않기에 인터넷 전송 비용이 들지 않음
+  - 기본적으로 암호화를 지원하지 않음
+    - 암호화를 위해 Direct Connect에 VPN을 구성 가능
+  - 트래픽이 인터넷 연결을 사용하는 Site-to-Site VPN보다 안정적
+  - 연결을 생성하기 위해 Virtual Interface (VIF)를 생성하고 VIF는 OSI Layer2 레벨로 통신하므로 각 VIF마다 VLAN을 지정하여 트래픽 분리
+  - 고가용성과 복원력(Resiliency)을 고려한 옵션 지원
+- 하드웨어 네트워크 요구사항
+  - 각각의 포트에 맞는 트랜시버 사용이 필요
+  - 포트에 대한 자동 협상을 비활성화(Disable auto-negotiation)
+  - 단일 모드 광섬유(Single-mode fiber)를 사용
+  - VLAN을 사용해야 하기 때문에, 802.1Q VLAN 캡슐화(802.1Q VLAN encapsulation)를 지원해야 함
+  - Dynamic Protocol인 BGP Protocol을 사용하기 때문에 디바이스에서 BGP(Border Gateway Protocol)와 BGP MD5 인증을 지원해야 함
+  - 기타 : 네트워크에 양방향 포워드 감지(BFD(Bidirectional Forwarding Detection))를 구성할 수 있음
+    - 연결된 두 라우터 또는 스위치 간의 실패를 빠르게 감지(milli~microseconds)
+  - 연결 방법
+    - Dedicated Connection : 고객이 AWS 콘솔을 이용해 연결을 요청하고 구성하는 방법
+    - Hosted Connection : AWS Direct Connect Partner가 고객 대신 연결을 요청하고 구성하는 방법
+  - 순서
+    1. 이름, DX Connection location 위치, 포트 속도, On-promise의 AWS DX 파트너 사용 여부, 공급자(Telco...) 입력하여 요청
+    2. LOA-CFA(Letter of Authorization – Connecting Facility Assignment) 다운로드
+          - DX 로케이션에서 고객 라우터를 AWS 라우터에 연결하는 권한이 적혀있음
+          - 파트너 업체에 보내면 Cross-Connect 구성해줌
+    3. 이 이후에 Virtual Interface (VIF)를 생성하고 사용할 수 있음
+  - Ling Aggregation Group (LAG) : 여러 DX 연결을 LACP(Link Aggregation Control Protocol)를 사용하여 하나의 논리적인 인터페이스로 묶는 것
+    - 합친 규모의 포트로 사용할 수 있으며, 하나의 링크에 문제가 생겨도 지속적 데이터 전송이 가능 (액티브 모드)
+    - 최대 묶을 수 있는 링크 수 4
+    - 같은 유형의 포트(1G, 10G 같이 동일한 대역폭)만 가능
+- Virtual Interface (VIF)
+  - 개요 : 물리적인 DX 연결이 OSI Layer 2이기 때문에 Layer 3를 사용하는 IP를 사용한 네트워크 전달을 위해서 가상인터페이스(Virtual Interface)를 사용
+  - 유형
+    - Private VIF : VPC와 연결된 1개의 VGW와 연결 또는 1개의 Direct Connect Gateway와 연결
+      - Direct Connect 연결 당 최대 50개의 Private VIF 생성가능
+      - Direct Connect Gateway : 가상 프라이빗 게이트웨이(VGW)와 프라이빗 가상 인터페이스(VIF)를 그룹화, 여러 리전에 있는 여러 VPC를 연결할 수 있음
+        - 연결제한
+          - 하나의 Private VIF는 최대 10개의 VGW와 함께 DX Gateway에 연결될 수 있음
+          - 하나의 Transit VIF는 최대 3개의 Transit Gateway와 함께 DX Gateway에 연결될 수 있음
+          - Direct Connect Gateway는 최대 30개의 Private VIF 또는 Transit VIF를 가질 수 있음
+        - 트래픽 전송 제약
+          - Direct Connect Gateway와 연결된 VPC에서 다른 VPC로의 전송 불가
+          - Direct Connect Gateway와 연결된 하나의 VIF에서 다른 VIF로의 전송 불가
+    - Public VIF : S3, Dynamo DB 등의 AWS 퍼블릭 서비스와 인터넷을 사용하지 않고 서비스 연결
+      - Direct Connect 연결 당 최대 50개의 Public VIF 생성가능
+    - Transit VIF : Transit Gateway와 연결, Direct Connect Gateway와 연결
+      - Transit Gateway는 1:1 VPC Peering이 아닌 중앙 허브를 통해 각 VPC 또는 VPN간의 모든 트래픽 라우팅
+  - VLAN : 하나의 DX 연결에 여러 VIF의 트래픽을 논리적으로 분리하기 위해 VLAN 사용
+    - 각각의 전송은 VLAN 번호를 가짐
+    - VLAN 전송을 위해 802.1q 트렁크 프로토콜을 사용
+  - Direct Connect Routing : BGP(Border Gateway Protocol)를 사용, AWS Route Learning과 우선순위 선택 방식이 동일
+    - Highest Weight >  Highest Local Preference > Shortest AS Path > Lowest Metric
+    - BGP Community : Public VIF를 통해 광고되고 수신되는 라우팅을 제어함
+      - BGP 커뮤니티 태그(DX routing의 속성값)를 사용해 라우팅이 전파 되는 범위를 지정 할 수 있음
+        - 7224:8100 - 동일 리전
+        - 7224:8200 - 동일 대륙
+        - 태그 없음 - 모든 퍼블릭 AWS 리전
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
