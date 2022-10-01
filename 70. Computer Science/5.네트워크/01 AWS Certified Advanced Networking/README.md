@@ -654,6 +654,20 @@
     - Amazon EC2 인스턴스 집합에서 특정 TCP 포트에 액세스하면 네트워크 엔지니어에게 자동으로 알리는 시스템 구성
     - 서버가 승인되지 않은 엔드 포인트와의 연결을 열려고 시도할 때마다 알림을 수신하는 시스템 구성
 
+## CloudFormation
+
+- 개요
+  - 코드를 통해 인프라를 프로비저닝, 관리 하는 서비스
+  - VPC 등의 AWS 네트워크 리소스 생성 및 관리를 자동화 할 수 있음
+- 구성 요소
+  - Template : 인스턴스 유형, AMI ID, VPC, IP 주소 등의 인프라를 구성하기 위한 설정 값이 있는 JSON 또는 YAML 형식의 텍스트 파일로 이루어진 템플릿
+  - Stack : Template을 사용하여 생성된 리소스
+  - Change Set : Stack 리소스 변경 사항에 대한 세트
+- 사용 예시
+  - VPC 생성, VPC Peering 등을 자동화
+  - VPC가 삭제되면 VPC의 IP 할당을 다시 확보하는 IP 주소 분배 관리를 자동으로 하기 위해 Lambda + CloudFormation을 사용 하여 구성
+  - 사용 가능한 CIDR 범위를 사용하여 서브넷을 생성할 수 있도록 Lambda + DynamoDB + CloudFormation 사용하여 구성
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
