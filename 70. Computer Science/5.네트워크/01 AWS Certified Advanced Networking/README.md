@@ -596,6 +596,64 @@
     - 정적 라우팅(Static Routing) > 전파된 경로(Routing Propagation)
     - 동일 경로 : VPC > Direct Connect Gateway > Transit Gateway Connect > Site-to-Site VPN
 
+## VPC Monitoring
+
+- Flow Log (흐름 로그)
+  - VPC의 네트워크 인터페이스에서 전송되고 수신되는 IP 트래픽에 대한 정보를 수집할 수 있는 기능
+  - 데이터는 Amazon CloudWatch Logs 또는 Amazon S3에 저장 가능
+  - VPC, Subnet , EC2 인스턴스 레벨에 Flow Log 활성화 가능
+  - 트래픽을 실시간으로 캡처하지 않으며 기본 최대 집계간격이 10분 (1분으로 지정 가능)
+  - Flow Log 레코드는 허용(Accept), 거부(Reject), 모든 트래픽(All Traffic)을 캡처
+  - Flow Log에서 캡처 되지 않는 트래픽 유형
+    - 인스턴스가 AWS DNS 서버에 연결할 때 생성한 트래픽
+    - AWS Windows 라이선스 인증을 위해 Windows 인스턴스에서 생성한 트래픽
+    - 인스턴스 메타데이터를 위해 169.254.169.254와 주고받는 트래픽
+    - AWS Time Sync Service를 위해 169.254.169.123과 주고받는 트래픽
+    - DHCP 트래픽
+    - 기본(Default) VPC 라우터의 예약된 IP 주소로 보내는 트래픽
+    - 엔드포인트 네트워크 인터페이스와 Network Load Balancer 네트워크 인터페이스 간의 트래픽
+- Record 분석
+  - 2 123456789010 eni-1235b8ca123456789 172.31.16.139 172.31.16.21 20641 22 6 20 4249 1418530010 1418530070 ACCEPT OK
+    - 2 : Version, 2와 3이 있음
+    - 123456789010 : 계정 ID
+    - eni-1235b8ca123456789 : ENI, 캡쳐된 네트워크 인터페이스 정보
+    - 172.31.16.139 : 소스 IP
+    - 172.31.16.21 : 데스티네이션 IO
+    - 20641 : 소스 포트
+    - 22 : 데스티네이션 포트
+    - 6 : 프로토콜 번호
+    - 20 : 패키지
+    - 4249 : 바이트
+    - 1418530010 : 로그 수집 시작 시간
+    - 1418530070 : 로그 수집 종료 시간
+    - ACCEPT : 액션
+    - OK : 문제 없음
+    - 결론 : 계정 123456789010에서 네트워크 인터페이스 eni-1235b8ca123456789에 대한 SSH 트래픽(대상 포트  22, TCP 프로토콜)이 허용
+- 흐름을 제어하는 보안 그룹 / 방화벽 규칙
+  - Network ACL : Stateless
+  - Security Group : Stateful
+    - 가정 : Client -> NACL -> Security Group -> EC2 Instance 순으로 들어왔다가 나옴
+    - 결론
+      - Security Group 까지 inbound 되었다면 Stateful 하니까 outbound 규칙이 없어도 ping 허용되지만, Stateless한 NACL에 Outbound 규칙이 없다면 그대로 Ping이 거부되고 Reject
+- 실습
+  - 생성 : ENI 상세에 들어가서 세부 정보 옆에 플로우 로그에서 생성
+    - 대상 로그 그룹 : 로그가 저장될 그룹
+      - CloudWatch 서비스 > 로그 > 로그 그룹에서 생성
+    - IAM 역할 : 로그 그룹 게시 권한
+      - IAM 정책을 만들고, 권한을 설정하고 신뢰 정책을 업데이트 해야 함
+- Alerting : 특정 상황일때 알림을 보내게 설정
+  - AWS CloudTrail + Lambda + SNS
+    - CloudTrail : AWS 사용자 계정에서 이루어진 활동을 모니터링하고 기록
+    - Lambda : 코드를 실행할 수 있는 서버리스 컴퓨팅 (이벤트를 트리거 할 수 있음)
+    - SNS(Simple Notification Service) : 푸쉬 알림 서비스
+    - 애플리케이션이 외부 시스템에 의해 포트가 검색되는 경우 보안팀에 자동으로 알리는 시스템 구성
+  - AWS Config + Lambda + SNS
+    - Config : AWS 리소스 인벤토리, 구성 기록, 구성 변경 알림을 제공
+    - AWS CloudFormation 외부에서 변경된 사항에 대한 경고를 제공하는 시스템 구성
+  - VPC Flow Log + CloudWatch Alarm + SNS
+    - Amazon EC2 인스턴스 집합에서 특정 TCP 포트에 액세스하면 네트워크 엔지니어에게 자동으로 알리는 시스템 구성
+    - 서버가 승인되지 않은 엔드 포인트와의 연결을 열려고 시도할 때마다 알림을 수신하는 시스템 구성
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
