@@ -563,6 +563,39 @@
         - 7224:8200 - 동일 대륙
         - 태그 없음 - 모든 퍼블릭 AWS 리전
 
+## Transit Gateway (TGW) / 전송 게이트웨이
+
+- 배경
+  - VPC는 1:1로만 Peering만 구성 가능
+  - 온-프레미스 전송을 위해 각 VPC에 VPN, DX 연결을 만들어야 하고 연결을 만든 VPC만 통신 가능
+- 개요 : 다른 VPC를 건너뛰어서 각 VPC와 VPN 간의 모든 트래픽을 Routing
+  - 리전별로 TGW를 만들어 TGW Peering을 구성하면 TGW간 통신도 가능
+- 효과 : 복잡한 Peering 관계를 제거하여 네트워크를 간소화
+- 생성
+  - ASN : 사용하는 BGP를 위한 ASN
+  - 구성
+    - DNS 지원 : 퍼블릭 IPv4 DNS 호스트 이름을 프라이빗 IPv4 주소로 확인할 수 있게 됨
+    - VPN ECMP(Equal Cost Multipath) : 터널을 여러개 만들고 트래픽을 동등하게 분산함
+    - 기본 라우팅 테이블 연결 : TGW에 연결되는 VPC 등 리소스의 라우팅 테이블을 TGW의 기본 연결 라우팅 테이블과 자동 연결
+    - 기본 라우팅 테이블 전파 : TGW의 기본 라우팅 테이블로 자동 전파
+  - 교차계정 공유 : AWS Resource Access Manager를 사용하여 전송 게이트웨이를 다른 계정과 공유
+- 연결(Attachment) 가능 대상
+  - VPC : 동일 리전 한정
+  - VPN : VPN의 Custommer Gateway와 연결
+  - Peering Connection : 다른 리전에 있는 TGW 간의 피어링 연결 (여러 리전 TGW 간에 트래픽을 라우팅)
+  - Connect : 타사 가상 어플라이언스 간에 연결을 설정
+- Transit Gateway Routing Table
+  - TGW 연결이 생성시 TGW 라우팅 테이블에 라우팅이 추가 됨
+  - 동적 및 정적 라우팅을 지원
+  - 각 연결에 대해 전파를 활성화/비활성화 가능
+  - VPC 연결의 경우 VPC의 CIDR 블록이 TGW 라우팅 테이블로 전파
+  - TGW Peering 연결은 정적 라우팅만 지원
+  - VPN, Direct Connect 연결의 경우 BGP TGW 라우팅 테이블의 라우팅이 전파
+  - 경로 평가 순서 : AWS Route Learning, DX Routing과 유사
+    - Local Route > Longest Prefix(구체적 경로)
+    - 정적 라우팅(Static Routing) > 전파된 경로(Routing Propagation)
+    - 동일 경로 : VPC > Direct Connect Gateway > Transit Gateway Connect > Site-to-Site VPN
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
