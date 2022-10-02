@@ -668,6 +668,26 @@
   - VPC가 삭제되면 VPC의 IP 할당을 다시 확보하는 IP 주소 분배 관리를 자동으로 하기 위해 Lambda + CloudFormation을 사용 하여 구성
   - 사용 가능한 CIDR 범위를 사용하여 서브넷을 생성할 수 있도록 Lambda + DynamoDB + CloudFormation 사용하여 구성
 
+## Biling and Cost
+
+전송비용. 숫자는 외울 필요 없이, 어느 연결에서 Charge가 되고 어느게 상대적으로 싼지 정도만 체크
+
+- 무료
+  - 같은 가용영역내 internal IP를 통한 EC2간 통신
+    - 다른 영역이거나, 같은 영역이어도 public IP나 elastic IP 사용시 과금
+    - 영역만 달라도 유료라는건 다른 리전도 당연히 유료
+  - Internet에서 EC2, S3, DynamoDB, CloudFront 등에 들어오는 Traffic
+  - Direct Connect에서 들어오는 Traffic
+  - 로드밸런스에서 EC2로 들어가는 경우
+- 유료 서비스
+  - VPC Peering
+  - EC2, S3, DynamoDB, CloudFront 등에서 Internet으로 내보내는 Traffic
+    (초기 용량 조금 무료 + 쓸수록 할인)
+  - Direct Connect에서 나가는 Traffic
+  - 로드밸런스 자체 서비스
+  - EC2에서 로드밸런스로 나가는 경우
+    - 단, 같은 가용 영역이면 무료
+
 ## 기타
 
 - 테넌시 : 전용 하드웨어
@@ -677,3 +697,7 @@
 - 고정(Stickness) : 클라이언트가 세션을 유지한 상태라면 모든 요청을 동일한 인스턴스로 유지하는 기능
 - 프로비저닝(Provisioning) : 사용자의 요구에 맞게 시스템 자원을 할당, 배치, 배포해 두었다가 필요 시 시스템을 즉시 사용할 수 있는 상태로 미리 준비해 두는 것
 - 온 프로미스(On-promise) : IT 서비스를 운영하는 회사가 자체적으로 보유한 공간에 물리적으로 하드웨어 장비를 가지고 직접 운영하는 방식을 말합니다. 클라우드 컴퓨팅 기술이 나오기 전까지 일반적인 기업이 사용하던 일반적인 인프라 구축 방식
+- Amazon WorkSpace의 네트워크 구조와 Dataflow 체크
+  - 최소 /28, 최대 /17 서브넷을 생성해야 IP를 할당할 수 있음
+  - 서로 다른 가용 영역에 있는 두 개 이상의 서브넷이 필요
+  - 인증을 위해서 TCP 443 포트, 관리 및 스트리밍을 위해 TCP/UDP 4172, 4195 포트를 사용
