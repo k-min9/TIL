@@ -24,6 +24,9 @@
 - 단축키
   - F5 : 일반 실행
   - F8 : 플레이어 스폰 없이 스크립트 실행
+  - Ctrl + / : 주석
+  - Ctrl + F : 검색
+  - Ctrl + Shift + F : 전체 검색
 - Command bar : 실행 중, 게임 중에 한 줄 스크립트를 즉시 실행 가능
 
 ## LUA
@@ -31,8 +34,18 @@
 - 특징
   - 함수 선언 및 호출 순서가 엄청 중요! 기본적으로 맨 위에서 선언하자.
   - 자바스크립트 급으로 컴파일 에러 능력이 없다. 특히 자료형 관련.
-- 용어
+- 내용
   - local을 조건문 내부에서만 선언하여 쓸 수 있음
+    - local 변수 = a or b : a가 있으면 a 없으면 b
+      ex) local chara = player.Character or Player.CharacterAdded:Wait()
+  - 전역 변수처럼 쓸 수 있는 value 제공
+  - table : 배열 + dictionary
+    - 배열 : local arr = {1234, "string", true, model.Part1}
+      - 인덱스가 0이 아니라 1부터 시작
+      - .insert : 추가 / .remove : 제거
+      - #배열명 : 배열 크기
+    - dictionary : key와 value로 이루어짐
+    ex) local dic = {name="1", ["level"]=99, isChara=true}
   - null이 아니라 nil
   - ~= : 반대, 조건문에서 다른지 chk
   - float, number, double casting 부담 없이 써도 됨
@@ -41,6 +54,7 @@
     - "2" + "7" -> 9
   - and, or, not : 논리연산자
   - table : Lua의 유일한 자료구조
+  - 주석은 한 줄은 bar 두개 (--), 여러줄은 대괄호 사용(--[[]])
 - 개체 : 대소문자에 유의할 것!
   - workspace : 일반적으로 시작하는 상위 개체
     - <객체위치.객체내용>이나 <객체위치["하위객체"].객체내용>등으로 접근
@@ -50,13 +64,20 @@
       - 개체가 한국어로 되어있는 경우
   - game : game 관련 서비스 개체. 최상위 개체 (workspace의 Parent)
     - 예시
-      - game:GestService("RunService")
+      - game:GetService("RunService")
+        - GetService는 Workspace에 보이지 않는 서비스도 호출 가능
       - game.Players:GetPlayers()
+    - Service
+      - MarketplaceService : 게임 내 판매 관련 함수
+      - ContextActionService : 플레이어 키보드, 마우스 조작 관련 함수
+      - Debris : 시간 차 삭제 등의 함수를 제공
   - script : Script 본체. script.Parent.Color 등으로 조절 가능
   - .new : 꽤 많은 특수형태(Instance, Color, Vector3...)에 입력으로 쓸 수 있음
 - 함수
   - 함수 block, 반복문, 제어문 전부 end로 끝남
     - 무한 반복 추천 : while wait() do ~ end
+    - 배열 반복 : for i, v in ipairs(반복대상) do ~ end
+    - dictionary 반복 : for i, v in pairs(반복대상) do ~ end
   - math : 수학 연산 관련 함수 제공
   - wait(x) : x초 대기
   - FindForChild : 하위 객체 접근용. 없어도 error가 아닌 nil값이 나옴
@@ -93,13 +114,16 @@
 - Health : 0이 되면 해당 캐릭터 kill
   - hunmanoid:TakeDamage() : 'humanoid.Health -= 감소값'과는 다르게 Forcefiled(무적상태)가 아닐때만 데미지를 줌
 - Transparency : 투명도
+- CanColide : 충돌 가능
 - Anchored : 파트 위치 고정
 - Enum : 해당 속성의 선택지 상위 개체. 그러니 문자열로 하드코딩하지 말 것!
 - Data > Classname : Devhub에 검색하기 좋음
 - CFrame : Position + 회전도, 스크립트로만 제어 가능, 위로 밀리지 않고 겹침
   - 더하기 연산시 Position과 동일한 연산에 회전도만 더함
   - 곱하기로 연산시 파트가 바라보는 방향으로 이동
+    - part.CFrame * CFrame.Angles(math.rad(-30),0,0) : x축 30도 회전
   - GetPivot으로 Get하고, PivotTo로 Set
+  - CFrame.lookAt(보는파트.position, 대상파트.position)으로 바라보기
 
 ## 멀티 환경
 
@@ -120,6 +144,16 @@
       - 참고로 game.Players:GetPlayerFromCharacter(모델)로 그 캐릭터의 플레이어 개체 반환
     - Local에서 Server의 내용물을 찾을때는 선로딩문제때문에 WaitForChild를 써야 함
       - ServerScript도 Clone이나 Instance.new로 생성된 개체를 다룰때는 써야한다.
+- 리모트 이벤트
+  - ReplicatedStorage에 RemoteEvent 생성
+    - 서버 클라이언트 양쪽 모두 쓰는 개체는 여기서 제어하자
+  - Bindable 이벤트와 같은 변수 제약을 가지고 있음
+  - 로컬 -> 서버
+    - 송신 : FireServer
+    - 수신 : OnServerEvent:Connect
+  - 서버 -> 로컬
+    - 송신 : FireClient, FireAllClients
+    - 수신 : OnClientEvent:Connect
 - 테스트
   - 서버 환경, 클라이언트 환경, 양쪽 환경에서 볼 수 있음
 
