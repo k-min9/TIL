@@ -61,3 +61,30 @@
     - 대량 데이터 서비스간의 빈번한 RoundTrip, MSA DB 분리에 따른 Join 한계 등을 개선할 수 있음 > 성능 향상 기대
       - Roundtrip : 클라이언트-서버 간의 데어터 왕복 과정. 빈번하다 = 서버 쪽 부담이 크고 성능에 악영향.
     - 영향도 파악, 추적, 디버깅이 어려움
+
+## 아키텍쳐
+
+- API Gateway : routing, 필터링, 인증/인가, API 관리 기능 제공
+- Service Mesh : 내부 서비스간 통신 관리
+- Container Management : 서비스 실행을 위한 Container 환경 제공
+  - k8s, Docker 등
+- Backing Service : 서비스간 데이터 저장, 비동기 통신, 이벤트 전달
+  - Message queue, MOM
+- Telemetry : 로그 확인 및 추적 등의 추적/분석 도구
+- CI/CD : 소스 Commit 부터 배포까지 자동화된 절차를 지원
+
+- 환경
+  - Spring Boot : 다양한 디펜던시를 빠르게 적용하고 스프링을 단독 실행 가능하게 함. 자바 백엔드서버 개발 환경에서 필수.
+    - 내장서버, 다양한 Starter Component, 환경 자동 설정, 설정파일로 XML 대신 properties나 yaml 활용환경 제공.
+
+## Spring Cloud
+
+- 개요 : 분산 시스템 상에서 필요한 내용을 쉽게 구축할 수 있게 하기 위해 Netflix에서 제공한 오픈소스 dependency(OSS)
+- Hystrix : Circuit-breaker. 특정 MS의 장해가 다른 MS의 장해를 일으키는 것을 방지
+  - 기능
+    - Timeout, 장애 대응에 미리 정해둔 루트를 따라 처리하게 설정할 수 있음
+    - 임계치를 넘는 요청에 우회 설정을 해둘 수 있음
+  - 적용
+    1. dependency 적용
+    2. Main app에 @EnableCircuitBreaker 추가
+    3. Circuit break 추가하려는 로직에 @HystrixCommand 추가
