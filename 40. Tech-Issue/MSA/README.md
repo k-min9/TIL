@@ -132,3 +132,11 @@
   2. Spring Gateway는 처리할 수 있는 인스턴스를 Eureka Server(서비스 디스커버리)에서 검색
   3. 찾은 인스턴스에 Gateway가 처리를 요청 (+로드밸런스 활용)
   4. Gateway가 응답을 받고 해당 내용을 Client에게 응답
+
+## OpenFeign
+
+- 개요 : MS간 통신
+- Openfeign vs restTemplate
+  - restTemplate : 전통적인 spring api 호출 구조.(22.10. 기준 Webclient로 전환 중)
+  - openfeign : interface 를 작성하고 annotation 을 선언 하기만 하면 되는 방식.
+    - 불필요한 중복 코드 작성을 없애고, 가독성이 좋아지며 설정이 간편해져 비지니스 로직에 집중할 수 있음
