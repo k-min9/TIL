@@ -65,6 +65,7 @@
 ## 아키텍쳐
 
 - API Gateway : routing, 필터링, 인증/인가, API 관리 기능 제공
+  - Spring Cloud Gateway
 - Service Mesh : 내부 서비스간 통신 관리
 - Container Management : 서비스 실행을 위한 Container 환경 제공
   - k8s, Docker 등
@@ -88,3 +89,40 @@
     1. dependency 적용
     2. Main app에 @EnableCircuitBreaker 추가
     3. Circuit break 추가하려는 로직에 @HystrixCommand 추가
+- Eureka : Server Discovery. 서비스들의 목록과 위치가 동적으로 변하는 환경하에서 서비스를 효율적으로 관리
+  - Eureka Server : Eureka Service를 자기 등록하고 Client가 가용한 서비스 목록을 요청하는 서버
+    - Main에 @EnableEurekaServer 붙은 쪽
+  - Eureka Client : 서비스의 위치 정보를 Eureka Server로 부터 Fetch 하는 서비스
+    - Main에 @EnableEurekaClient 붙은 쪽
+- Spring Gateway : API Gateway. 각 서비스들의 IP와 PORT에 관한 단일화된 엔드포인트 제공
+  - 각 서비스에 필요한 인증/인가, 사용량 제어, 요청 응답 변조등의 기능 담당
+  - 라우팅 + 로드밸런싱 + Mesh 연계 + Filtering + Logging/Monitoring
+  - Main에 @EnableEurekaClient 필요.
+  - 라우팅 설정 등록 예시
+
+    ```YAML
+    spring:
+    application:
+      name: apigateway-service
+    cloud:
+      gateway:
+        routes:
+          - id: spring-service
+            uri: lb://SPRING-SERVICE
+            predicates:
+              - Path=/spring-service/**
+          - id: flask-service
+            uri: lb://FLASK-SERVICE
+            predicates:
+              - Path=/flask-service/**
+          - id: go-service
+            uri: lb://GO-SERVICE
+            predicates:
+              - Path=/go-service/**
+    ```
+
+- 흐름
+  1. 요청이 Spring Gateway로
+  2. Spring Gateway는 처리할 수 있는 인스턴스를 Eureka Server(서비스 디스커버리)에서 검색
+  3. 찾은 인스턴스에 Gateway가 처리를 요청 (+로드밸런스 활용)
+  4. Gateway가 응답을 받고 해당 내용을 Client에게 응답
