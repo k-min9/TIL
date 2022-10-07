@@ -140,3 +140,59 @@
   - restTemplate : 전통적인 spring api 호출 구조.(22.10. 기준 Webclient로 전환 중)
   - openfeign : interface 를 작성하고 annotation 을 선언 하기만 하면 되는 방식.
     - 불필요한 중복 코드 작성을 없애고, 가독성이 좋아지며 설정이 간편해져 비지니스 로직에 집중할 수 있음
+
+## KAFKA
+
+- 개요 : 분산 스트리밍 플랫폼. 데이터 파이프라인을 만드는데 사용하는 오픈 소스 메시지 브로커
+  - (메시지) 브로커 : 특정한 서비스에서 다른 서비스로 메세지를 전달하는 서버
+    - Zookeeper : 브로커 관리자
+    - 이후 kafka 어플리케이션 서버를 브로커로 호칭
+    - 3대 이상 권장의 Broker Cluster 구성 (1대는 Controller(리더) 기능)
+- 특징
+  - Pub/Sub 모델 : 데이터 큐를 중간에 두고, 독립적으로 데이터를 생산, 소비
+    - 의존성이 낮은 느슨한 결합으로 안정적인 데이터 처리가 가능
+  - 고가용성 : 카프카는 Cluster(복수의 노드로 구성)로서 작동하므로, Fault-tolerant한 고가용성 서비스를 제공할 수 있음
+    - Fault-tolerant : 어느 한 모듈에 장애가 발생하더라도 작동
+  - 확장성 : 서버를 수평적으로 늘릴 수 있어 Scale-out이 용이
+  - 메시지 디스크 순차 저장 : 서버 장애시에도 디스크에 저장이 되어있어 유실 걱정이 상대적으로 적음
+  - 분산 처리 : Partition이라는 개념으로 여러 개의 서버에 파티션들을 분산하고, 상황에 맞춘 빠른 처리가 가능
+- AMQP와 비교
+  - AMQP(Advanced Message Queuing Protocol) : 메시지 지향 미들웨어를 위한 표준 응용 계층 프로토콜
+    - 메시지 지향, 큐잉, 라우팅(P2P, Pub-Sub), 신뢰성, 보안
+    - Erlang, RabbitMQ
+    - 초당 20개의 메시지 소비자에게 전달, 소비자 중심
+    - 메시지 전달 보장, 시스템간 메시지 전달
+    - 적은 데이터를 안전하게
+  - Kafka : 메시지 브로커 프로젝트 (아파치 소트웨어 재단 개발 오픈소스)
+    - 분산형 스트리밍 플랫폼
+    - 대용량의 데이터를 처리 가능한 메시징 시스템
+    - 초당 10만개의 이벤트 처리(빠름), 생산자 중심
+    - Ack를 기다리지 않고, Pub/Sub, Topic(카테고리)에 메시지 전달
+    - 대용량을 빠르게
+- 적용 (Spring 코드, 세팅 및 작동 원리는 03.kakfa에 상세 내용 기재)
+  1. dependency 추가 [implementation 'org.springframework.kafka:spring-kafka']
+  2. KafkaProducer/Consumer Config 작성
+
+  ```java
+  @Configuration
+  public class KafkaProducerConfig {
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory(){
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate(){ return new KafkaTemplate<>(producerFactory());}
+  }
+  ```
+
+  Bean이 여럿일 경우 명확히 @Bean(name="~~Factory") 이런식으로 명명해주는 것이 좋음
+  3. Producer/Consumer 클래스 제작
+  Producer 클래스 : 제작한 kafkaTemplate을 주입 한 후, send()를 활용하여 Produce
+  (addcallback후, onSuccess와 onFailure를 오버라이드 하고 행위를 지정할 수 있음)
+  Consumer 클래스 : @KafkaListener(topics="토픽명", containerFactory="빈 팩토리 이름")를 활용하여 Consumer 클래스 구현
