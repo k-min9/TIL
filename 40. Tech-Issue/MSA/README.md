@@ -64,14 +64,20 @@
 
 ## 아키텍쳐
 
-- API Gateway : routing, 필터링, 인증/인가, API 관리 기능 제공
+- API Gateway : 외부 API 요청을 내부로 연계(routing), 로드밸런싱, 필터링, 인증/인가, API 관리 기능 제공
   - Spring Cloud Gateway
-- Service Mesh : 내부 서비스간 통신 관리
+- Service Mesh(그물망) : 내부 서비스간 통신/호출 관리, API Mediation(API 변환등을 통한 프로토콜 중재)를 위해 필요한 기술
+  - Service discovery, Service Router, Circuit Breaker. API Gateway와 합칠수도 있음.
+    - Service discovery(Eureka) : 분산 환경에서 동적으로 생성/변경/삭제되는 서비스 인스턴스 정보를 자동으로 등록/관리
+    - Service Router : Client 요청을 적절한 서비스 인스턴스로 Forwarding. 로드밸런싱이 핵심 기능.
+  - 동적 디스커버리, 라우팅, 로드밸런싱 등 확장 서비스 지원이 가능
+  - 셀프 힐링이나 Circuit breaker 같은 안정성 패턴 지원
 - Container Management : 서비스 실행을 위한 Container 환경 제공
   - k8s, Docker 등
-- Backing Service : 서비스간 데이터 저장, 비동기 통신, 이벤트 전달
-  - Message queue, MOM
-- Telemetry : 로그 확인 및 추적 등의 추적/분석 도구
+- Backing Service : 데이터를 처리, 서비스간 데이터 저장, 비동기 통신, 이벤트 전달
+  - Data Backing Service + Message Backing Service
+  - Message queue, MOM(메시지 기반 미들웨어)
+- Telemetry : 원격(Tele)+측정(Metry). 로그 확인 및 추적 등의 추적/분석 도구
 - CI/CD : 소스 Commit 부터 배포까지 자동화된 절차를 지원
 
 - 환경
