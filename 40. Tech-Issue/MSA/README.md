@@ -170,8 +170,10 @@
     - Ack를 기다리지 않고, Pub/Sub, Topic(카테고리)에 메시지 전달
     - 대용량을 빠르게
 - 적용 (Spring 코드, 세팅 및 작동 원리는 03.kakfa에 상세 내용 기재)
-    1. dependency 추가 [implementation 'org.springframework.kafka:spring-kafka']
-    2. KafkaProducer/Consumer Config 작성
+  - dependency 추가
+    - implementation 'org.springframework.kafka:spring-kafka'
+  - KafkaProducer/Consumer Config 작성
+    - Bean이 여럿일 경우 명확히 @Bean(name="~~Factory") 이런식으로 명명해주는 것이 좋음
 
     ```java
     @Configuration
@@ -191,11 +193,10 @@
     }
     ```
 
-    Bean이 여럿일 경우 명확히 @Bean(name="~~Factory") 이런식으로 명명해주는 것이 좋음
-    3. Producer/Consumer 클래스 제작
-       - Producer 클래스 : 제작한 kafkaTemplate을 주입 한 후, send()를 활용하여 Produce
-       (addcallback후, onSuccess와 onFailure를 오버라이드 하고 행위를 지정할 수 있음)
-       - Consumer 클래스 : @KafkaListener(topics="토픽명", containerFactory="빈 팩토리 이름")를 활용하여 Consumer 클래스 구현
+  - Producer/Consumer 클래스 제작
+    - Producer 클래스 : 제작한 kafkaTemplate을 주입 한 후, send()를 활용하여 Produce
+    (addcallback후, onSuccess와 onFailure를 오버라이드 하고 행위를 지정할 수 있음)
+    - Consumer 클래스 : @KafkaListener(topics="토픽명", containerFactory="빈 팩토리 이름")를 활용하여 Consumer 클래스 구현
 - 기타 : acknowledge로 commit 수행
 
 ## Spring Cloud Config
