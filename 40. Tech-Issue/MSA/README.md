@@ -170,29 +170,53 @@
     - Ack를 기다리지 않고, Pub/Sub, Topic(카테고리)에 메시지 전달
     - 대용량을 빠르게
 - 적용 (Spring 코드, 세팅 및 작동 원리는 03.kakfa에 상세 내용 기재)
-  1. dependency 추가 [implementation 'org.springframework.kafka:spring-kafka']
-  2. KafkaProducer/Consumer Config 작성
+    1. dependency 추가 [implementation 'org.springframework.kafka:spring-kafka']
+    2. KafkaProducer/Consumer Config 작성
 
-  ```java
-  @Configuration
-  public class KafkaProducerConfig {
+    ```java
+    @Configuration
+    public class KafkaProducerConfig {
 
-    @Bean
-    public ProducerFactory<String, String> producerFactory(){
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
+      @Bean
+      public ProducerFactory<String, String> producerFactory(){
+          Map<String, Object> configProps = new HashMap<>();
+          configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+          configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+          configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+          return new DefaultKafkaProducerFactory<>(configProps);
+      }
+
+      @Bean
+      public KafkaTemplate<String, String> kafkaTemplate(){ return new KafkaTemplate<>(producerFactory());}
     }
+    ```
 
-    @Bean
-    public KafkaTemplate<String, String> kafkaTemplate(){ return new KafkaTemplate<>(producerFactory());}
-  }
-  ```
+    Bean이 여럿일 경우 명확히 @Bean(name="~~Factory") 이런식으로 명명해주는 것이 좋음
+    3. Producer/Consumer 클래스 제작
+       - Producer 클래스 : 제작한 kafkaTemplate을 주입 한 후, send()를 활용하여 Produce
+       (addcallback후, onSuccess와 onFailure를 오버라이드 하고 행위를 지정할 수 있음)
+       - Consumer 클래스 : @KafkaListener(topics="토픽명", containerFactory="빈 팩토리 이름")를 활용하여 Consumer 클래스 구현
+- 기타 : acknowledge로 commit 수행
 
-  Bean이 여럿일 경우 명확히 @Bean(name="~~Factory") 이런식으로 명명해주는 것이 좋음
-  3. Producer/Consumer 클래스 제작
-  Producer 클래스 : 제작한 kafkaTemplate을 주입 한 후, send()를 활용하여 Produce
-  (addcallback후, onSuccess와 onFailure를 오버라이드 하고 행위를 지정할 수 있음)
-  Consumer 클래스 : @KafkaListener(topics="토픽명", containerFactory="빈 팩토리 이름")를 활용하여 Consumer 클래스 구현
+## Spring Cloud Config
+
+## 개요
+
+application.yml로 어플리케이션 내부 구성파일을 만들면 변경할 때마다 새로 배포해야되는데  
+이러한 정보를 애초에 외부에 배치된 하나의 중앙화 된 시스템에서 관리하게 해서 그런 일을 없애자  
+
+환경에 맞는 구성 정보를 별도로 관리하고 사용가능  
+(+ 배포 파이프라인으로 접근에 따른 설정도 가능)  
+
+## Dependency
+
+- Server쪽 : Config Server 후 @EnableConfigServer
+- Client쪽 : Cloud-starter-config, cloud-starter-bootstrap, boot-starter-actuator, bootstrap.yml은 application.yml보다 먼저 로딩된다고 한다.
+(bootstrap.yml 이슈 : <https://hongdor.dev/112>)
+
+## Acturator
+
+- Application 상태, 모니터링해주는 자체 기능
+- Metric 수집을 위한 Http Endpoint 제공
+- refresh 옵션 사용시 config value 변경이 반영됨
+- spring cloud bus 사용이 더 효율적
