@@ -108,6 +108,45 @@
   - 플레이어 구성 후, 비공개에서 공개로 전환
   - 저장 > 게시
 
+## 프레임 제어
+
+- 로블록스는 약 60 FPS (서버 상태가 정상일 경우)
+- 종류
+  - Local : RenderStepped, BindToRenderStep
+  - Server : Stepped, Heartbeat
+- 호출순서 : 입력감지>RenderStepped>캐릭터/카메라>Stepped>물리엔진>Heartbeat
+  - RenderStepped : 캐릭터, 카메라 조작 전 호출 > 캐릭터 이동에 관련된 프레임
+  ex) 방향키를 누르면 해당 방향으로 날아가는 스크립트
+  - Stepped : 물리엔진 계산 전 호출 > 물리적으로 영향을 줄 수 있는 파트나 모델을 다루는 함수
+  - Heartbeat : GUI나 기타 나머지 연산
+  - BindToRenderStep은 세부적으로 원하는 시점에 호출 시점을 정할 수 있음
+    - 100, 200, 300을 써도 되지만 Enum.RenderPriority를 이용하자.(낮을수록 우선순위 높음)
+- 예시 : RenderStepped를 이용해서 프레임마다 실행
+
+  ```lua
+  local RunService = game:GetService("RunService")
+
+  function update() 
+  end
+
+  RunService.RenderStepped:Connect(update)
+  ```
+
+- 기타
+  - update 함수에 step을 매개변수로 넣으면 1프레임의 시간(약 0.016)이 들어옴
+  이걸 곱해서 사용함으로써 Unity의 fixedupdate와 비슷하게 서버 환경에 영향을 적게 받는 함수 제작 가능
+  - wait은 보통 아무리 빨라도 0.3~0.4초의 시간을 기다리는 방식.
+  그리고 무한 반복일 경우, 프레임과 연관 없어서 부드럽지 않음
+  - 부르는 함수에 yield 계열 function, wait 같은 것 쓰면 터짐
+  wait쓰고 싶으면 이벤트:Wait()활용!
+
+    ```lua
+    while true do
+      local step = RenderStepped:Wait()
+      wait(3)
+    end
+    ```
+
 ## 자주 쓰이는 속성
 
 - Name : 이름
