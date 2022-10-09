@@ -147,6 +147,34 @@
     end
     ```
 
+## 모듈 스크립트
+
+- 개요 : 여러 곳에서 쓰이는 함수나 이벤트, 변수들을 저장해주는 스크립트
+- 생성
+  - 모듈 스크립트를 생성
+    - 모듈 이름을 return 하는 javascript의 util 파일들과 매우 유사하다.
+    - 실질적으로 함수하나만 있는 모듈일 경우 return 함수 이름으로 작성할 수 있음
+    - 추천 저장위치 : ReplicatedStorage, ServerScriptService(서버에서만 쓸 경우)
+  - 모듈 스크립트를 부를 스크립트에서 require문을 사용하여 선언
+  
+      ```lua
+      local killPartHandler = require(모듈 스크립트 위치)
+      ```
+
+- 특징
+  - 서버와 로컬 양쪽에서 돌아감
+    - 현재 돌아가는 위치 확인
+
+      ```lua
+      local runService = game:GetService("RunService")
+
+      runService:IsClient() -- 조건문으로 서버에서 돌아갈때의 상황 등으로 활용
+      runService:IsServer() 
+      runService:IsStudio() -- 테스트용 코드 만들때 좋겠네
+      ```
+
+  - 모듈 스크립트를 마켓에 통으로 올리고, require(에셋 ID)로 부를 수 있음
+
 ## 자주 쓰이는 속성
 
 - Name : 이름
