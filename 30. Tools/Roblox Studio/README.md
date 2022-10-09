@@ -175,6 +175,28 @@
 
   - 모듈 스크립트를 마켓에 통으로 올리고, require(에셋 ID)로 부를 수 있음
 
+## 코루틴
+
+- 개요 : 비동기 실행
+- 예시 2종
+
+  ```lua
+  local c1 = coroutine.create(연결함수)
+  local success, result = coroutine.resume(c1, 대상개체, 연결함수parameter1, ...) 
+  -- result에 함수 리턴값 들어올 수 있음. 함수 내 yield wait 계열은 반환 못 받음
+  -- success는 정상 여부, 실패할 경우 false가 들어오고 result 값이 에러메시지로 변함
+
+  local c2 = coroutine.wrap(염결함수)
+  local result2 = c2(대상개체, 연결함수parameter1, ...)
+  ```
+
+- coroutine.yield() : 함수 내에서 선언하여 멈췄다가 resume으로 다시 재생할 수 있음
+  - 반복문가 섞어서 재활용 가능한 코루틴을 만들 수 있음
+  - yield 안에 넣은 값을 return으로 쓸 수 있음
+- 기타
+  - spawn(함수) : 안에 들어있는 함수에 별도의 스레드를 할당하는 방법.
+    - 실행에 시간차도 있다는 성능성 문제도 있고, 코루틴 알면 쓸 필요 없음
+
 ## 자주 쓰이는 속성
 
 - Name : 이름
