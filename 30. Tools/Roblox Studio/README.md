@@ -90,6 +90,13 @@
     - Prefab 마냥 Instance.new 쪽이 효율적이지만 복합체면 이쪽이 좋다.
   - MoveTo : Part와는 다르게 position이 없는 모델의 위치 지정 함수.
     - PrimaryPart를 기준으로 좌표를 잡음, 비어있을 경우 bounding box의 중앙
+  - pcall : 감싼 부분이 에러가 발생해도 바깥쪽에 영향을 주지 않도록 해주는 함수
+    - 반환값으로 성공여부와 실패시의 에러메시지를 받을 수 있음
+    - 서버 통신이라던가 에러가 발생할 법한 코드에 씀
+  - xpcall : 에러 발생시 두번째로 입력한 함수가 작동함
+  - Bindable Function : 서버 스크립트 간 타 스크립트에 있는 function 호출
+    - Invoke로 작동, OnInvoke로 받음
+  - Remote Function : 서버 클라이언트간 function 호출
 - eventListener : 호출하는 함수에는 매개변수 및 괄호를 넣지 말 것
   - Connect : 이벤트마다 함수 호출해주는 함수
     - Service.Heartbeat:Connect(함수) : 프레임마다 이벤트(함수) 실행
