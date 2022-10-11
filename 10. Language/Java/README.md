@@ -53,3 +53,19 @@
     - 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 하자
       - Bad : 자동차가 스노우 타이어에 의존
       - Good : 자동차가 타이어 인터페이스에 의존
+
+## Garbage Collection
+
+- 개요 : JVM의 핵심 구조 중 하나. C/C++과 다르게 명시적으로 메모리를 해제하지 않아도 알아서 사용되지 않는 인스턴스를 삭제
+- 방식
+  - Java의 메모리 영역 중 Heap에서 동작
+    - Stack은 포인터 등만 저장하는 가볍고 작은
+    - Heap영역을 Young Generation과 Old Generation 영역으로 나누고 Young은 Eden, Survivor0(From), Survivor1(To)...로 나눔
+      - Young 영역이 Old 영역 보다 규모가 작음. Young 영역이 다 차면 Major GC 동작.
+      - 최초 생성 객체는 모두 Eden 으로 이동한다.
+    - 종류
+      - Minor GC : Young Genetation에서 발생하는 GC. 범위가 작아 짧은 시간 이루어지고 매우 효율적
+        - 기존 객체는 각각 Eden > Survivor1 > Survivor2 > Old로 이동
+      - Major GC : Old Generation에서 발생하는 GC. Minor GC의 몇십배의 시간이 걸리므로 성능에 치명적
+        - GC를 실행하기 위한 Thread를 제외한 모든 Thread가 정지(Stop the world, Mark and Sweep).
+        - 성능 튜닝 대상. 가능한 Major GC가 일어나지 않게 해야 함.
