@@ -35,3 +35,18 @@
   - TCP/IP와 같은 표준 네트워크로 Network Switch와 연결하여 사용
 - SAN(Storage Area Networking) : 스토리지 전용 네트워킹. 대규모 네트워크 사용자를 위해 저장장치를 데이터 서버와 연결하여 별도의 네트워크로 관리하는 고속 네트워크 시스템
   - 개인이 일반적으로 사용하는 LAN선 대신에 광케이블(FC Cable)을 사용하는 것을 SAN의 표준으로 봄
+
+- XML ( eXtensible Markup Language) : 확장될 수 있는 표시 언어.  HTML의 한계를 극복할 목적으로 만들어졌다.
+  - 마크업 언어(HTML) 그 자체가 아니라 마크업 언어를 정의하기 위한 언어
+  - 태그를 정의할 수 있다.
+- POJO(Plain Old Java Object) : 단순한 자바 오브젝트. 객체 지향적인 원리에 충실하면서 환경과 기술에 종속되지 않고 필요에 따라 재활용될 수 있는 방식으로 설계된 오브젝트
+  - 특징 : 특정 규약/환경에 종속되지 않음, 객체 지향적인 원리에 충실
+  - 장점 : 깔끔한 코드, 테스트하기 좋음, 객체 지향적 설계
+  - 예시 : 스프링
+
+- AJAX(Asynchronous JavaScript and XML) : javaScript라이브러리 중 하나. JavaScript를 사용한 비동기 통신, 클라이언트와 서버간에 XML 데이터를 주고받는 기술
+
+- WSDL(Web Services Description Language) : 웹 서비스 기술언어 또는 기술된 정의 파일의 총칭으로 XML로 기술된다.
+웹 서비스의 구체적 내용이 기술되어 있어 서비스 제공 장소, 서비스 메시지 포맷, 프로토콜 등이 기술된다.
+- SOAP(Simple Object Access Protocol) : 일반적으로 널리 알려진 HTTP, HTTPS, SMTP등을 사용하여 XML 기반의 메시지를 컴퓨터 네트워크 상에서 교환하는 형태의 프로토콜이다.
+SOAP는 XML을 근간으로 헤더(선택사항, 메타 정보)와 바디(주요 정보)를 조합하는 디자인 패턴으로 설계되어 있다.
