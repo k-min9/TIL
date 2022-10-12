@@ -69,3 +69,31 @@
       - Major GC : Old Generation에서 발생하는 GC. Minor GC의 몇십배의 시간이 걸리므로 성능에 치명적
         - GC를 실행하기 위한 Thread를 제외한 모든 Thread가 정지(Stop the world, Mark and Sweep).
         - 성능 튜닝 대상. 가능한 Major GC가 일어나지 않게 해야 함.
+
+## Spring/Java 암호화 기술
+
+- 개요 : 허가 된 자 이외에 읽을 수 없게 부호화 하는 기술
+- 종류
+  - 키 갯수
+    - 대칭키(비밀키) : 키 1개
+      - DES, 3-DES, AES
+    - 비대칭키(공개키) : 키 2개
+      - DSA, RSA
+      - 공개키 암호화 : 공개키로 암호화 하고, 비밀키로 해독
+      - 전자 서명 : 비밀키로 암호화 하고 공개키로 해독
+  - 원본 복호화 여부
+    - 단방향(MessageDigest) : 해쉬함수를 써서 출력값(Digest)를 확인하여 무결성체크하는 방식. Checksum이라고도 불림
+      - 종류
+        - MD5, SHA는 보안이 약하고 과거 방식이라 비추천
+        - SHA2 (SHA256, SHA512)
+      - 기술
+        - salt : 동일한 값 다른 결과를 얻게하는 추가 요소. 실습시 secureRandom을 통해 생성해볼 수 있음.
+        - stretching : 보안 강화를 위한 재해쉬. 회수를 조정하여 브루트포스 공격을 효율적으로 막을 수 있음.
+    - 양방향
+      - Base64 : Java 표준 API
+      - URL Encoder : URL에서 사용할 문자들이 안전하게 전달되도록 브라우저가 인코딩
+        - 포맷 : 기존 문자열을 HEX(16진수)값으로 병경하고 %를 붙임
+- Bcrypt : Spring Security에서 기본으로 쓰는 암호화. salt 있음(적응형 함수)
+  - 블로피시 암호에 기반을 둔 암호화 해시함수. 가장 강력한 해시 알고리즘 중 하나
+  - SHA 경우는 GPU연산에 유리한 32비트 기반이라 공격자가 초당 억 단위의 공격이 가능
+  - PKDF2(Password-Based Key Derivation Function)를 써야하는 상황(ISO=27001 보안 규정을 준수해야하는 상황)이 아니라면, 구현이 쉽고 비교적 강력해 채택
