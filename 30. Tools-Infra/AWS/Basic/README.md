@@ -73,3 +73,18 @@
   - Neptune : AWS graphDB
     - graphDB : 그래프의 형태로 데이터를 표시하고 DB를 저장
   - QLDB(Quantum Ledger) : 원장 DB. 굳이 블록체인을 쓰지 않더라도 원장을 구현하여 투명하고 변경 불가능한 트랜잭션 로그를 제공.
+
+## 네트워크
+
+- 개요 : VPC. Virtual Private Cloud가 네트워크에 대응
+- 보안 : VPC > NACL(서브넷 단위) > 보안 그룹(EC2 단위) > 있다면 추가적인 서브파티
+- ELB : NLB(L4), ALB(L7), GWLB, CLB(Deprecated)
+  - 자세한건 [70. Computer Science\5.네트워크\01 AWS Certified Advanced Networking]에 정리
+- Route53 : 네임서버
+- 책임
+  - AWS 책임 : 기초 서비스, 글로벌 인프라
+  - 고객 책임 : 고객 데이터 관리
+- IAM(Identity and Access Management) : 사용자, 그룹, 역할에 권한을 할당하고 인증 및 권한 부여.
+  - 정책
+    - 자격증명 기반 : AM 사용자 , 그룹, 역할
+    - 리소스 기반 : S3 버킷 등의 리소스에 액세스할 수 있는 대상 및 해당 대상이 리소스에서 수행할 수 있는 작업을 지정
