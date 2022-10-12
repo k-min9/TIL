@@ -45,3 +45,31 @@
   - EKS(Elastic K8s Service) : 컨테이너 관리로 쿠버네티스를 활용한 AWS 쿠버네티스 관리 오케스트레이션 서비스
 - AWS lambda : 서버리스 컴퓨팅
   - 장점 : 서버 관리에 들어갈 리소스를 개발에만 집중할 수 있음. 트래픽 당 가격이기 때문에 일반적으로 24시간 구동이 되는 EC2 보다 저렴
+
+## 스토리지, DB
+
+- 스토리지 옵션
+  - S3  : 일반/오브젝트(객체) 스토리지. 파일 스토리지 아님. 높은 내구성. 이미지/비디오에 적합. EBS보다도 저렴
+    - 단위 : 버킷, 접근 방식이 계층적이 아니라 객체적
+    - 사용자 제어 및 액세스 로그 관리가 가능
+    - 데이터레이크(대량의 데이터를 저장, 처리, 보호하기 위한 중앙 집중식 저장소. 머신러닝, 분석, 보안 특화)로 사용하기 적당
+  - S3 Glacier : 장기 보관용 S3
+  - EFS(Elastic File System) : EC2용 관리형 파일 스토리지. 높은 가용성+보안. On-Promise의 NFS, NAS와 유사/동일한 서비스.
+    - NAS : 파일 서버. 파일 레벨로 액세스. 비구조적 데이터에 사용.
+  - EBS(Elastic Block System) : 하드 디스크. EC2에서 사용하는 디스크 저장소로 클라우드에서 SAN을 구축. EFS의 10% 정도의 가격
+    - SAN : 하드 디스크. 블록 레벨 데이터 저장 구조적 데이터에 사용.
+  - Storage Gateway : 클라우드 스토리지에 대한 On-promise의 액세스 권한 제공.
+- 데이터 베이스 : 기본적으로 완전 관리형(설정 인스턴스 등의 지정이 필요 없음)
+  - RDS : 관계형 DB. MySQL, Postgre등과 완전 호환, 아마존 오로라 제공
+  - DynamoDB : NoSQL. 자동 파티셔닝으로 짧은 지연시간을 보장.
+    - 파티셔닝 : DB를 분할하여 조회 성능을 올리고 관리를 쉽게 함.
+  - DocumentDB : 문서형 데이터 처리. MongoDB와 호환.
+    - MongoDB : JSON 형태의 동적 스키마형 문서(BSON)를 사용하는 NoSQL. Document, Collection이 각각 RDBMS의 row와 column의 대응
+      - ACID, 특히 일관성을 포기한 대신 같은 조건하에서 RDBMS보다 빠르다!
+  - ElasticCache : REDIS와 MEMCACHED를 사용하는 인메모리 캐쉬 서비스. 읽기와 고속 분석 특화
+    - Memcached : 유명한 분산 메모리 캐시 시스템
+    - Redis : String, Hash, List, Set, Sorted Set 등 다양한 데이터 형식을 제공하는 키-값(Key-Value) 데이터 저장소
+  - RedShift : AWS 데이터 웨어하우스
+  - Neptune : AWS graphDB
+    - graphDB : 그래프의 형태로 데이터를 표시하고 DB를 저장
+  - QLDB(Quantum Ledger) : 원장 DB. 굳이 블록체인을 쓰지 않더라도 원장을 구현하여 투명하고 변경 불가능한 트랜잭션 로그를 제공.
