@@ -250,6 +250,10 @@
   - 서버 -> 로컬
     - 송신 : FireClient, FireAllClients
     - 수신 : OnClientEvent:Connect
+- 팀 설정
+  - Teams 폴더에 Team 생성
+  - 각각의 Team에 TeamColor 부여
+  - 로비<>플레이 환경일 경우 플레이쪽의 AutoAssignable을 해제하여 팀 분배를 막을 수 있음.
 - 테스트
   - 서버 환경, 클라이언트 환경, 양쪽 환경에서 볼 수 있음
 
