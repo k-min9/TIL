@@ -151,3 +151,60 @@
   - illegalException : 잘못된 인수가 들어갈때 발생하는 Exception.
     - 기본 Unchecked(런타임) Exception이지만, Checked(컴파일) Exception처럼 명시적으로 throws 할 수 있음
     - checked Exception은 try ~ catch 해야해서 귀찮지만, 에러가 발생했을때의 대처법을 넣고 싶을때는 중요하다.
+
+## 아이템 3. 생성자나 열거 타입으로 싱글턴임을 보증하라
+
+- 배경 : 여러 인스턴스가 필요하지 않은 경우. 헷갈리지 않고 리소스도 줄이게 싱글턴을 사용.
+- 방법 1. private 생성자(외부 생성 불가) + public static field(인스턴스를 여기서 생성)
+
+  ```java
+  public class A {
+    public static final A INSTANCE = new A();
+
+    private A() {}
+  }
+  ```
+
+  - 문제점 1 : 인터페이스나 프록시를 쓸 수 없어서, 테스트시 full로 돌려야하는 불편함 발생
+  - 문제점 2 : 리플렉션 사용시 싱글턴을 깰 수 있음
+    - 대처 - static 변수로 flag를 만들어서 두번째 생성을 막을 수 있음
+  - 문제점 3 : 역직렬화에도 취약함.
+    - 대처 - readResolve시 INSTANCE를 반환하게 해서 역직렬화를 막아야 함
+  - 문제점 4 : 문제점 2~3 때문에 코드가 점점 더러워짐
+- 방법 2. private 생성자(외부 생성 불가) + 정적 팩토리 메서드
+
+  ```java
+  public class A {
+    public static final A INSTANCE = new A();
+    private A() {}
+
+    public static A getInstance() {return INSTANCE;}
+  }
+  ```
+
+  - 방법 1과 단점은 동일하지만 장점이 셋 있음
+    - API등의 변경 없이 static factory의 변경 많으로 쉽게 싱글턴을 해제할 수 있음
+    - 정적 팩토리 메서드를 제네릭으로 선언하면 각자 다른 타입으로 사용할 수 있음
+    - A::getInstance를 supplier의 매개변수처럼 사용할 수 있다.
+- 방법 3. 열거 타입을 사용
+
+  ```java
+  public enum A {
+    INSTANCE;
+
+    // 이하 로직
+  }
+  ```
+
+- Extra / 완벽 공략
+  - 메소드 참조 : 메소드 하나만 호출하는 람다 표현식을 쓰는 방법
+  - 함수형 인터페이스 : @FunctionInterface. 1개의 추상 메소드를 갖는 인터페이스.
+    - 람다식은 함수형 인터페이스로만 접근 됨
+    - 종류가 많지만, Function, Supplier, Consumer, Predicate 네 개를 우선적으로 체크
+  - 객체 직렬화 : 객체를 바이트스트림으로 상호변환하는 기술
+    - 객체를 파일로 저장하거나 네트워크를 통해 다른 시스템에 전송
+    - Serializable 인터페이스 구현
+    - transient : 직렬화 하지 않을 필드 지정
+    - serialVisionUID : Serializable시 자동 생성, Class의 필드 명 등이 바뀌면 숫자가 바뀌고, 역직렬화 되지 않는다.
+      - 선언(private static final long serialVisionUID = 1L;)하여 기존 UID를 유지하면,
+      바뀌기 전 직렬화 바이트 스트림으로도 역직렬화할 수 있음
