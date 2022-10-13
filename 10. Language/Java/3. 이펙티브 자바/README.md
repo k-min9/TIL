@@ -241,3 +241,25 @@
       - 문제점 : 외부 변경이 힘들어 테스트가 힘들고, DI 프레임워크 의존적
     - 수정자 주입 : [private Myservice myService;] 선언 후 Setter 메서드에 @Autowired
       - 문제점 : setter를 Public으로 열어둬야해서 멋대로 수정당할 수 있음
+
+## 아이템 6. 불필요한 객체 생성을 피해라
+
+- 대표 예시
+  - 문자열 : 동일한 객체라서 매번 새로 만들 필요가 없다.
+    - new String("자바") 쓰지 말고 "자바" 쓰자
+  - 정규식, Pattern : 생성비용이 비싸므로, 반복 생성보다는 캐싱하여 재사용하는 것이 좋음
+  - 오토박싱/언박싱 : int -> Integer, long -> Long 으로 상호 변환 해주는 기술
+    - 자동 변환을 해주는데 쓸데없이 premitive 타입과 Wrapper 타입을 왔다갔다하면 낭비
+- 주의 : 불필요하게 낭비되고 생성되는 객체 생성을 피하라는거지 일반적인 객체 생성은 많이많이 해도 된다.
+오히려 Static 넣고 코드 꼬이고 그런것보다 낫다.
+- Extra / 완벽 공략
+  - Deprecation : 사용 자제 권장 API, 전환 시간을 주고 언젠가는 사라질 기능
+  - 정규 표현식 쓰이는 곳
+    - String.Matches(regex)
+    - String.split(regex)
+      - 대안) Pattern.compile(regex).split(str)로 패턴 재활용 + 빠름
+      - 참고로 regex가 한글자면 split이 더 빠름
+    - String.replace(String regex, String replacement)
+      - 대안) Pattern.compile(regex).matcher(str).replaceAll(repl)
+  - 초기화 지연 기법 : Instance를 생성하는 시점을 그 Instance가 필요한 시점까지 최대한 늦춤 (아이템 83)
+  - 방어적 복사 : 새로운 객체를 만들때는 기존의 복사로 만들지 말고 완전히 새로 만들어라 (아이템 50)
