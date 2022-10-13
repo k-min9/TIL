@@ -208,3 +208,10 @@
     - serialVisionUID : Serializable시 자동 생성, Class의 필드 명 등이 바뀌면 숫자가 바뀌고, 역직렬화 되지 않는다.
       - 선언(private static final long serialVisionUID = 1L;)하여 기존 UID를 유지하면,
       바뀌기 전 직렬화 바이트 스트림으로도 역직렬화할 수 있음
+
+## 아이템 4. 인스턴스화를 막으려면 private 생성자를 사용하라
+
+- 배경 : 인스턴스화 / 살속등이 필요하지 않는 클래스도 있다.
+  - 정적 메서드로만 이루어져 있다던가...
+    - 우리는 이것을 유틸리티라고 부르기로 했어요
+    예시) StringUtils
