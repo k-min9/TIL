@@ -73,9 +73,81 @@
   - 정적 팩토리 메소드는 javadoc과 어울리지 않아 알아보기 힘들고, 문서 길이가 길어지게 한다.
     - 직접 입력하고 @see 등을 통해 명시해야 한다.
 - Extra / 완벽 공략
-  - Enum(열거타입) : 상수 목록을 담을 수 있는 데이터 타입. Type-Safety를 보장한다.
+  - Enum(열거타입) : 상수 목록을 담을 수 있는 데이터 타입. Type-Safety(중요!)를 보장한다.
   - Flyweight(가벼운 체급 패턴) : 객체를 가볍게 만들어 메모리 사용을 줄이는 패턴
     - 잘 변하지 않는 부분을 만들어두거나 cache해두어 최적화를 진행
   - 인터페이스에서도 default를 선언하여 인스턴스 용 메서드를 선언하고 사용할 수 있다.(자바 8 이상)
   - 리플렉션 : ClassLoader을 이용하여 읽어온 정보를 이용하여 값등을 사용할 수 있음
     - 해당 인스턴스를 선언하거나 만들지 않고도 인스턴스 메서드를 사용할 수 있음.
+
+## 아이템 2. 생성자에 매개변수가 많다면 빌더를 고려하라
+
+- 배경 : 입력 매개변수가 많고 이에 따라 생성자에 선택적 매개변수가 많을때
+  - 대안 1 : 생성자 체이닝. 적은 변수를 사용한 생성자를 포괄하는 쪽이 this()로 호출한다.
+  - 대안 2 : 자바빈즈 : 매개변수가 없는 생성자로 객체를 만든 후, Setter를 이용해 설정
+    - Set을 빼먹거나 선언 중간에 사용해버리는 일관성 문제가 발생할 수 있다.
+    - Setter를 사용하면 불변 객체로 사용할 수 없다.
+- 빌더 : 생성자 체이닝, 자바 빈즈 방식의 장점을 전부 취득할 수 있음
+- 구현
+  - 선언
+
+    ```java
+    // 빌더 패턴을 적용하고 싶은 클래스 내 선언
+    public static class Builder {
+      // 필수값
+      private final int servingSize;  
+      private final int servings;
+
+      // 선택 변수
+      private int calories = 0;
+      private int fat = 0;
+      private int sodium = 0;
+      private int carbohydrate = 0;
+
+      // 필수 값으로 가져야 함
+      public Builder(int servingSize, int servings) {
+        this,servingSize = serginsSize;
+        this.servings = servings;
+      }
+
+      public Builder fat(int val) {
+        fat = val;
+        return this;
+      }
+
+      public Builder sodium(int val) {
+        sodium = val;
+        return this;
+      }
+
+      public Builder carbohydrate(int val) {
+        carbohydrate = val;
+        return this;
+      }
+
+      public NutritionFacts build() {
+        return new NutritionFacts(this);
+    }
+    ```
+
+  - 사용
+
+    ```java
+    NutritionFacts cocaCola = new Builder(240, 8)
+            .calories(100)
+            .sodium(35)
+            .carbohydrate(27).build();
+    ```
+
+  - 단점
+    - 객체 코드가 복잡하고 길어짐
+      - Lombok의 @Builder를 쓰면 간결해지지만, 필수값 지정을 할 수 없음
+  - 기타
+    - @AllArgsConstructor(access == AccessLevel.PRIVATE)를 설정해두면 Builder에 의한 생성만 강제할 수 있음.
+    - 계층형 빌더 : Abstact Class에서 Builder를 재귀 하는 Builder를 선언하여 하위 클래스가 구현
+      - protected abstract T self();로 하위 메서드를 사용할 수 있게 됨
+- Extra / 완벽 공략
+  - 자바 빈즈 : Java로 작성된 소프트웨어 컴포넌트. JSP와 연관이 높음
+  - illegalException : 잘못된 인수가 들어갈때 발생하는 Exception.
+    - 기본 Unchecked(런타임) Exception이지만, Checked(컴파일) Exception처럼 명시적으로 throws 할 수 있음
+    - checked Exception은 try ~ catch 해야해서 귀찮지만, 에러가 발생했을때의 대처법을 넣고 싶을때는 중요하다.
