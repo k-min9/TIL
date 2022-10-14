@@ -151,7 +151,7 @@
   - illegalException : 잘못된 인수가 들어갈때 발생하는 Exception.
     - 기본 Unchecked(런타임) Exception이지만, Checked(컴파일) Exception처럼 명시적으로 throws 할 수 있음
     - checked Exception은 try ~ catch 해야해서 귀찮지만, 에러가 발생했을때의 대처법을 넣고 싶을때는 중요하다.
-`
+
 ## 아이템 3. 생성자나 열거 타입으로 싱글턴임을 보증하라
 
 - 배경 : 여러 인스턴스가 필요하지 않은 경우. 헷갈리지 않고 리소스도 줄이게 싱글턴을 사용.
@@ -291,6 +291,47 @@
   - 동작 중 예외 발생시 정리 작업이 처리되지 않을 수 있음
   - 심각한 성능 문제가 있음
   - finalizer는 보안 문제도 있음
+- 예시
+  - AutoCloseable 인터페이스
+
+    ```java
+    // Closeable 상속!
+    public class AutoClosableIsGood implements Closeable {
+
+        private BufferedReader reader;
+
+        public AutoClosableIsGood(String path) {
+            try {
+                this.reader = new BufferedReader(new FileReader(path));
+            } catch (FileNotFoundException e) {
+                throw new IllegalArgumentException(path);
+            }
+        }
+
+        @Override
+        public void close() {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    ```
+
+  - try-with-resource
+
+    ```java
+    public class App {
+
+        public static void main(String[] args) {
+            try(AutoClosableIsGood good = new AutoClosableIsGood("")) {
+                // 블록 처리 후 알아서 반납이 됨
+            }
+        }
+    }
+    ```
+
 - 결론
   - 반납할 자원이 있는 Class는 AutoCloseable을 구현하고 클라이언트에서 close하거나 try-with-resource를 사용하자.
   - cleaner은 등록한 AutoCloseable을 사용하지 않을때의 안전망 정도로만 쓰자.
