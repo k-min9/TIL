@@ -281,3 +281,17 @@
     - Optional은 리턴 값으로만 쓰자, 매개변수로 써도 의미 없고, Collection 감싸도 애초에 Collection에서 empty 체크 되고 의미가 없다.
     - Optional 쓸 경우 return null;이 아니라 return Optional.empty();
   - WeakHashMap : GC시 강하게 레퍼런스되는 곳이 없다면 해당 엔트리를 제거
+
+## 아이템 8. finalizer, cleaner 사용하지 마라
+
+- 개요 : 둘 다 객체 소멸 시 리소스 반환용 핸들러지만 쓰지 마라
+- 이유
+  - 즉시 수행이 보장되지 않음
+  - 실행자체가 안 될 수 있음
+  - 동작 중 예외 발생시 정리 작업이 처리되지 않을 수 있음
+  - 심각한 성능 문제가 있음
+  - finalizer는 보안 문제도 있음
+- 결론
+  - 반납할 자원이 있는 Class는 AutoCloseable을 구현하고 클라이언트에서 close하거나 try-with-resource를 사용하자.
+  - cleaner은 등록한 AutoCloseable을 사용하지 않을때의 안전망 정도로만 쓰자.
+ 
