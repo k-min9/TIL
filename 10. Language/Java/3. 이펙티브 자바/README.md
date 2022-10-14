@@ -263,3 +263,21 @@
       - 대안) Pattern.compile(regex).matcher(str).replaceAll(repl)
   - 초기화 지연 기법 : Instance를 생성하는 시점을 그 Instance가 필요한 시점까지 최대한 늦춤 (아이템 83)
   - 방어적 복사 : 새로운 객체를 만들때는 기존의 복사로 만들지 말고 완전히 새로 만들어라 (아이템 50)
+
+## 아이템 7. 다 쓴 객체 참조를 해제하라
+
+- 배경 : 객체에 대한 레퍼런스가 남아있다면 해당 객체는 가비지 컬렉션의 대상이 되지 않는다.
+- 개요 : 자기 메모리를 직접 관리하는 클래스라면 메모리 누수에 주의해야 한다.
+  - ex) 스택, 캐시(해쉬 맵으로 구현), 리스너 또는 콜백
+- 대안
+  - 직접 참조 객체를 null 처리하기
+  - 적절한 자료구조 사용하기 ex) WeakHashMap
+  - 직접 LRU 캐시 등을 사용하여 넣고 빼주기
+  - 주기적 클린업 작업
+    - ex) ScheduledThreadPoolExecutor 활용, 백그라운드 스레드를 이용하여 가장 오래된것을 삭제하기
+- Extra / 완벽 공략
+  - NPE 발생 사유 : 메소드에서 null을 리턴하기 때문에 && null 체크를 하지 않았기 때문에
+    - 메소드에서 적절한 값을 리턴할 수 없는 경우에 선택할 수 있는 대안 : Optional을 리턴하자
+    - Optional은 리턴 값으로만 쓰자, 매개변수로 써도 의미 없고, Collection 감싸도 애초에 Collection에서 empty 체크 되고 의미가 없다.
+    - Optional 쓸 경우 return null;이 아니라 return Optional.empty();
+  - WeakHashMap : GC시 강하게 레퍼런스되는 곳이 없다면 해당 엔트리를 제거
