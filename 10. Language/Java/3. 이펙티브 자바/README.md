@@ -151,7 +151,7 @@
   - illegalException : 잘못된 인수가 들어갈때 발생하는 Exception.
     - 기본 Unchecked(런타임) Exception이지만, Checked(컴파일) Exception처럼 명시적으로 throws 할 수 있음
     - checked Exception은 try ~ catch 해야해서 귀찮지만, 에러가 발생했을때의 대처법을 넣고 싶을때는 중요하다.
-
+`
 ## 아이템 3. 생성자나 열거 타입으로 싱글턴임을 보증하라
 
 - 배경 : 여러 인스턴스가 필요하지 않은 경우. 헷갈리지 않고 리소스도 줄이게 싱글턴을 사용.
@@ -294,4 +294,11 @@
 - 결론
   - 반납할 자원이 있는 Class는 AutoCloseable을 구현하고 클라이언트에서 close하거나 try-with-resource를 사용하자.
   - cleaner은 등록한 AutoCloseable을 사용하지 않을때의 안전망 정도로만 쓰자.
- 
+
+## 아이템 9. try-finally보다 try-with-resource를 써라
+
+- 배경 : try-finally는 더 이상 최선의 방법이 아니게 됨
+- 개요 : try-with-resource가 더 효율적이고 짧고 분명하며 예외도 뚜렷. 장점밖에 없음. 이거 써라.
+- 장점(추가) : 에러가 발생할때 try-finally는 최종 발생한 에러만 보여주지만, try-with-resource는 try 내부 에러도 볼 수 있음
+- Extra / 완벽 공략
+  - finally 사용시, finally문 마다 close를 하나 만 넣어줘야 close하다가 문제가 발생해도 다른 close를 시도해줄 수 있다.
