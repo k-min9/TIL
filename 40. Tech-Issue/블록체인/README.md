@@ -74,6 +74,7 @@
   ``` Solidity
   // ERC-721 인터페이스에서 구현해야 할 함수
   interface ERC721 {
+    // 소유권이전 관련 3가지 event
     event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
     event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
     event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
@@ -223,8 +224,9 @@
 - NFT 프로젝트 중 자주 썼던 Contract
   - ERC20.sol(이후 .sol생략) : ERC20 필수 함수를 구현한 컨트랙트.
   - ERC721 : ERC721 필수 함수를 구현한 컨트랙트.
-  - ERC721Enumerable : 민팅시 tokenId 자동 생성, 특정 계정이 소유하는 tokenId 탐색기능, 가스비가 비쌈
+  - ERC721Enumerable : ERC721 선택시 사용 가능한 Extention. 민팅시 tokenId 자동 생성, 특정 계정이 소유하는 tokenId 탐색기능, 가스비가 비쌈
     - tokenOfOwnerByIndex : 해당 소유자의 index번째 토큰ID
+  - ERC721Metadata : ERC721 선택시 사용 가능한 Extention. name과 symbol, tokenURI(토큰정보 웹 주소) 등을 정리하게 도와줌
   - IERC721Receiver : safeTransferFrom을 사용할 때, 필수적으로 구현되어야 하는 내용
   - Ownable
     - 생성자 함수가 owner에 msg.sender를 대입
@@ -331,6 +333,27 @@
       }
     ```
 
+## IPFS(InterPlanetary File System)
+
+- 개요 : 분산형 파일 시스템에 대용량 데이터를 저장하고 인터넷으로 공유하기 위한 프로토콜
+  - 블록체인과 아주 궁합이 좋음. IPFS에 파일을 저장하고 나온 hash값을 블록체인에 저장하는 방식으로 사용
+- 특징
+  - 분산화 : 하나의 기관이 관리하는 것이 아닌 분산된 환경의 여러장소에서 다운로드
+    - 노드가 많기 때문에 몇개의 노드가 망가져도 데이터를 단일 장애 지점없이 안전하게 저장
+  - 컨텐츠 어드레싱 : '어디에 위치해 있는지'가 아닌 '무엇이 있는지'를 나타내는 주소  
+    - 해당 페이지의 위치가 아닌 컨텐츠를 기반으로 정보를 찾음
+    - 주소의 형태 : ipfs/변환된 해쉬값
+  - 참여 : IPFS는 적극적으로 참여할때에 잘 동작한다.
+    - 보상 레이어로 '파일 코인'을 채택
+- 기대효과
+  - 탈중앙화 storage
+  - 데이터 분산 저장을 통한 안전성 및 보안 강화
+  - 저렴한 비용 및 빠른 속도 제공
+- 방식
+  - 데이터의 내용을 해시 값으로 변환하여 해시테이블을 생성
+  - 해시테이블은 정보를 키와 값의 쌍(key/value pairs)으로 저장
+- 구현 : TIL > 90. Projects > 02. NFTicket Plus README.md의 IPFS 클러스터 파트 참조
+
 ## 기타
 
 - ERC
@@ -371,3 +394,8 @@
   - BFT(Byzantine Fault Tolerance) : 그런 문제를 Tolerance(견딜 수 있음)하는 합의식 알고리즘.  
   비트코인으로 구현됨
   - PBFT(Practical BFT) : 동기식 네트워크에서만 합의 되던 BFT를 비동기 네트워크에서도 가능하게 함
+- Truffle : Solidity Smart Contract를 쉽게 컴파일, 테스트, 배포할 목적으로 만들어진 블록체인 프레임워크
+- 테스트용 네트워크
+  - Ganache : 간이 블록체인, 로컬 네트워크에서 손쉬운 배포와 테스트를 할 수 있음
+  - Ropsten : 이더리움 테스트 네트워크
+  - 기타 HyperLedger기반 특수목적 프라이빗 네트워크 (BESU)
