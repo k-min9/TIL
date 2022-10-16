@@ -215,6 +215,122 @@
   }
   ```
 
+## 오픈 제펠린
+
+- <https://github.com/OpenZeppelin/openzeppelin-contracts>
+- 안전한 smart contract 개발을 위한 유명한 library
+- 위에서 구현한 ERC-721 코드가 이미 구현되어있고, 검증되어 있음
+- NFT 프로젝트 중 자주 썼던 Contract
+  - ERC20.sol(이후 .sol생략) : ERC20 필수 함수를 구현한 컨트랙트.
+  - ERC721 : ERC721 필수 함수를 구현한 컨트랙트.
+  - ERC721Enumerable : 민팅시 tokenId 자동 생성, 특정 계정이 소유하는 tokenId 탐색기능, 가스비가 비쌈
+    - tokenOfOwnerByIndex : 해당 소유자의 index번째 토큰ID
+  - IERC721Receiver : safeTransferFrom을 사용할 때, 필수적으로 구현되어야 하는 내용
+  - Ownable
+    - 생성자 함수가 owner에 msg.sender를 대입
+    - 특정 함수에 오직 owner만 접근할 수 있도록 하는 modifier를 가짐
+  - Counters : 쉽게 값을 증감할 수 있게 하는 Utils
+  - SafeMath
+  - 기타
+    - ERC721Pausable: 토큰 전송 일시 중지
+    - ERC721Burnable: 토큰 소각
+    - ERC721URIStorage: 스토리지 기반 URI 관리
+    - ERC721Votes: 투표
+    - ERC721A: Azuki팀에서 만든 표준. 여러 최적화를 통해 가스비를 줄임.
+- 사용법
+  - 설치
+
+    ```shell
+    npm init
+    npm install @openzeppelin/contracts
+    ```
+
+  - 문법
+
+    ```solidity
+    // 선언
+    import "@openzeppelin/contracts/token/[Protocol]/[Contract Name].sol"
+    ex) import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol"
+
+    // 기본
+    contract MyNFT is [Contract Name] {} // 상속 
+    constructor() [Contract Name]([Token Name], [Token Symbol]) public {}  // 생성자
+
+    ex)     
+    contract TicketFactory is ERC721Full, ERC721Mintable {
+          ...
+          constructor() ERC721Full("MyTicket", "MTKT") public {
+            ...
+          }
+      }
+    ```
+
+  - 접근 제어 (Access Control) : 조폐 권한, 투표 권한, 전송 권한 등을 제어하여 시스템을 훔치지 못하도록 하는 것
+    - 소유권 기반 접근 제어 : Ownable Contract와 onlyOwner Modifier를 이용하여 접근을 제어함
+
+      ```solidity
+      # 선언
+      import "@openzeppelin/contracts/ownership/Ownable.sol"
+
+      # 상속
+      contract MyNFT is Ownable {}
+
+      # Modifier 사용
+      function onlyAdminFunction() public onlyOwner {}
+      ```
+
+    - 역할 기반 접근 제어 (RBAC) : Roles Contract와 Roles.Role를 이용하여 접근을 제어함
+      - 대부분의 소프트웨어 개발은 RBAC를 사용
+
+      ```solidity
+      # 선언
+      import "@openzeppelin/contracts/access/Roles.sol"
+      
+      # 사용
+      contract MyNFT {
+          using Roles for Roles.Role;
+          ...
+
+          # 역할 생성
+          Roles.Role private _minters;
+
+          ...
+      }
+
+      # 인가
+      function mint(...) {
+          require(_minters.has(msg.sender));
+          ...
+      }
+      ```
+
+  - ERC721 with openzeppelin 예제
+
+    ```solidity
+      # 선언
+      import "@openzeppelin/contracts/token/ERC721/ERC721Full.sol"
+      import "@openzeppelin/contracts/drafts/Counters.sol"
+
+      # 상속
+      contract MyTicket is ERC721Full {
+          using Counters for Counters.Counter;
+          Counters.Counter private _tokenIds;
+          
+          # 생성자
+          constructor() ERC721Full("MyTicket", "MTKT") public {}
+
+          function mintTicket(address to, string memory tokenURI) public returns (uint256) {
+              _tokenIds.increment();
+
+              uint256 newTicketId = _tokenIds.current();
+              _mint(to, newTicketId);
+              _setTokenURI(newTicketId, tokenURI);
+
+              return newTicketId;
+          }
+      }
+    ```
+
 ## 기타
 
 - ERC
@@ -250,3 +366,8 @@
       - 하이퍼레저 : 프라이빗 블록체인, 기업 중심 개발, 채굴 방식을 특정 숫자 노드로 극히 제한하여 성능 향상
     - 탈중앙성 + 확장성 : 검증 노드 수를 줄임 -> 보안성이 낮아짐
 - 샤딩 : 이더리움 트랜잭션 처리속도 증가를 위한 기술, 지분 증명의 검증자를 소규모 그룹(샤드)으로 분리해 각 그룹이 서로 다른 이더리움 트랜잭션을 동시다발적으로 처리하는 방식
+- 비잔티움 장군 문제 : 배신자가 있으면 여러 장군들이 받은 명령을 진실이라고 확정하기 어렵다  
+(=분산 컴퓨터 시스템에서 일부 노드의 장애와 해킹 공격이 있으면 시스템을 안정적으로 운영하기 어렵다)
+  - BFT(Byzantine Fault Tolerance) : 그런 문제를 Tolerance(견딜 수 있음)하는 합의식 알고리즘.  
+  비트코인으로 구현됨
+  - PBFT(Practical BFT) : 동기식 네트워크에서만 합의 되던 BFT를 비동기 네트워크에서도 가능하게 함
