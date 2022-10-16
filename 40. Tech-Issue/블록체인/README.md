@@ -42,3 +42,164 @@
       - 비교적 토큰을 빨리 만들 수 있음
       - 함수가 표준화 되어있으니 외부(지갑, 거래소)에서 쉽게 호환 가능
     - ex) ERC-721 Non-Fungible Token Standard
+
+## ERC-721 구현
+
+- 언어 : Solidity 사용
+  - TIL > 10. Language > Solidity 에서 기본적인 문법 학습 가능
+- 계정 만들기 : <https://baobab.wallet.klaytn.foundation/>
+  - 만든 계정에 Faucet으로 돈 받기
+- EIP 공식 깃허브에서 [ERC-721 Specification](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md) 읽고 복사
+
+  ``` Solidity
+  // ERC-721 인터페이스에서 구현해야 할 함수
+  interface ERC721 {
+    event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+    event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+    event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
+
+    function balanceOf(address _owner) external view returns (uint256);
+    function ownerOf(uint256 _tokenId) external view returns (address);
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) public;
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public;
+    function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
+    function approve(address _approved, uint256 _tokenId) external payable;
+    function setApprovalForAll(address _operator, bool _approved) external;
+    function getApproved(uint256 _tokenId) external view returns (address);
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool);
+  }
+
+  // 토큰 안전 전송(safeTransferFrom)을 위해 구현해야할 함수
+  interface ERC721TokenReceiver {
+    // external -> public으로 변경
+    function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes _data) public returns(bytes4);
+  }
+  ```
+
+- ERC-721 인터페이스를 상속하여 구현
+
+  ``` Solidity
+  contract ERC721Impl is ERC721 {
+    // mapping은 자료구조 map과 유사
+    mapping (uint256 => address) tokenOwner;  // tokenId 입력시 토큰 주인 지갑 주소 리턴
+    mapping (address => uint256) ownedTokensCount;  // 주소 입력시 보유 토큰 수 리턴
+    mapping (uint256 => address) tokenApprovals;   // tokenId 입력시 토큰 전송 승인 권한 가진 지갑 주소 리턴
+    mapping (address => mapping(address => bool)) operatorApprovals;  // 누가 누구에게 권한을 부여했는가를 저장
+
+    fuction mint(address _to, uint _tokenId) public {
+      tokenOwner[_tokenId] = _to;  // mapping tokenOwner 에 map
+      ownedTokensCount[_to] += 1;
+    }
+
+    // balanceOf : 해당 계정 토큰 소유 갯수
+    function balanceOf(address _owner) public view returns (uint256) {
+      return ownedTokensCount[_owner];
+    }
+
+     // ownerOf : 해당 토큰 소유자의 address
+    function ownerOf(address _tokenId) public view returns (address) {
+      return tokenOwner[_tokenId];
+    }
+
+    // safeTransferFrom : 토큰 안전 전송, ERC721 호환성을 체크하여 토큰 유실을 방지
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public {
+      transferFrom(_from, _to, _tokenId)
+
+      // 받는 사람 계정이 Contract 계정인지 확인
+      if (isContract(_to)) {
+        // 토큰을 받을 수 있는 Contract 인지 확인 
+        // [ERC721TokenReceiver] 인터페이스의 onERC721Received 확인
+        // [ERC721TokenReceiver]를 구현했을 뿐인데 Auction인지 확인을 안함
+        bytes4 returnValue = ERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, '');
+        require(returnValue == 0x150b7a02, "리턴값이 ERC721Received의 magic value가 아님");
+      }
+    }
+
+    // safeTransferFrom 보조 함수 : Contract 계정인지 확인
+    function isContract(address _addr) private view returns (bool) {
+      uint256 size;  // size가 0이면 일반 계정, 0보다 크면 contract 계정
+      assembly {size := extcodesize(_addr)}
+      return size >0;
+    }
+
+    // safeTransferFrom : 토큰 안전전송 2. 위의 safeTransferFrom에서 매개변수만 하나 추가
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId, bytes data) {
+      transferFrom(_from, _to, _tokenId)
+
+      // 받는 사람 계정이 Contract 계정인지 확인
+      if (isContract(_to)) {
+        // 토큰을 받을 수 있는 Contract 인지 확인 
+        // [ERC721TokenReceiver] 인터페이스의 onERC721Received 확인
+        // [ERC721TokenReceiver]를 구현했을 뿐인데 Auction인지 확인을 안함
+        // 위에서 '' 처리 한 부분에 data가 들어가 onERC721Received의 비지니스 로직에 쓰임
+        bytes4 returnValue = ERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, data);  
+        require(returnValue == 0x150b7a02, "리턴값이 ERC721Received의 magic value가 아님");
+      }  
+    }
+
+    // transferFrom : 토큰 전송
+    function transferFrom(address _from, address _to, uint256 _tokenId) public {
+      address owner = ownerOf(_tokenId)
+
+      // 유효성 검사
+      require(msg.sender == owner || 
+      msg.sender == getApproved(_tokenId) || 
+      isApprovedForAll(owner, msg.sender),  
+      "보내는 사람이 토큰 주인이 아니며 전송권한이 없음");
+      require(_from != address(0), "보내는 사람의 주소가 비어있음");
+      require(_to != address(0), "받는 사람의 주소가 비어있음");
+
+      ownedTokensCount[_from] -= 1;
+      tokenOwner[_tokenId] = address(0);
+
+      ownedTokensCount[_to] += 1;
+      tokenOwner[_tokenId] = _to;
+    }
+
+    // approve : 토큰 승인, 제 3자가 해당 코인을 다룰 수 있게 전송 권한 계정을 넘김
+    function approve(address _approved, uint256 _tokenId) public {
+      address owner = ownerOf(_tokenId);
+      require(_apperoved != owner, "토큰 주인과 받는 사람이 같으면 안됩니다.")
+      require(msg.sender == owner, "토큰 주인만 권한을 이용할 수 있습니다.")
+      tokenApprovals[_tokenId] = _approved
+    }
+
+    // setApprovalForAll : 토큰 전체 승인, 계정이 소유한 모든 토큰의 권한 이양
+    // @_operator : 모든 토큰을 대신 운영해 줄 계정
+    // @_approved : 권한 부여 여부
+    function setApprovalForAll(address _operator, bool _approved) external {
+      require(_apperoved != owner, "권한 부여자와 관리자가 같으면 안됩니다.")
+
+      operatorApprovals[msg.sender][_operator] = _approved;
+    }
+
+    // getApproved : 해당 토큰의 전송권한이 있는 주소를 리턴
+    function getApproved(uint256 _tokenId) external view returns (address) {
+      return tokenApprovals[_tokenId];
+    }
+
+    // isApprovedForAll : owner가 operator에게 권한을 주었는지 확인
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool) {
+      return operatorApprovals[_owner][_operator]; 
+    }
+  }
+
+  // SafeTransfer를 위한 ERC721TokenReceiver 인터페이스 구현체 이름은 적당히 지어도 알아서 가져옴
+  contract Auction is ERC721TokenReceiver {
+    function onERC721Received(address _operator, address _from, uint256 _tokenId, bytes _data) public returns(bytes4); {
+      // 비지니스 로직에 맞게 식별하는 함수...
+
+      // 문제 없을 경우 식별자값 리턴
+      return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))
+    }
+  }
+  ```
+
+## 기타
+
+- ERC
+  - 20 : Fungible Token Standard
+  - 165 : Contract가 어떤 interface를 상속받는지 확인
+  - 721 : Non-Fungible Token Standard
+- Notation
+  - magic value : 기대한 값
