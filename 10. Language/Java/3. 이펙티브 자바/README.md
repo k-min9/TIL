@@ -394,3 +394,14 @@
   - 해시코드 계산 규칙을 API에 노출하지 않는 것이 좋다.
 - 권장
   - 성능 편의상 Lombok의 @EqualsAndHashCode를 추천
+- Extra / 완벽 공략
+  - 해쉬 충돌이 자주 일어나서 버켓 내의 엔트리가 많이 늘어날 경우,  
+  구조가 연결리스트에서 이진트리로 변경된다.(O(N) -> O(logN))
+  - 스레드 안전(Thread-Safety) : 멀티 스레드 환경에서 안전한 코드
+    - 공유 접근 가능한 클래스나 메서드에 synchronized > 성능에 문제 있을 수 있음
+      - Double checked Lock : 변수에 volatile을 사용하고, 메서드 내부의 블록을 Synchronized
+        - volatile : 메모리에 저장, 가장 최신의 데이터를 받을 수 있음
+    - 자료구조
+      - HashMap : Thread-Safe하지 않음
+      - HashTable : API에 여기저게 synchronized를 넣어 Thread-Safe하지만 느림
+      - Concurrent : 쓰는 행위에만 버킷 단위로 Lock을 걸음. 동시 접속 허용.
