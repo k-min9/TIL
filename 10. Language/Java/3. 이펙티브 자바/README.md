@@ -405,3 +405,8 @@
       - HashMap : Thread-Safe하지 않음
       - HashTable : API에 여기저게 synchronized를 넣어 Thread-Safe하지만 느림
       - Concurrent : 쓰는 행위에만 버킷 단위로 Lock을 걸음. 동시 접속 허용.
+
+## 아이템 12. toString을 항상 재정의 하라
+
+- 배경 : toString을 기본적으로 유용한 정보가 아니다
+- 객체가 가진 정보를 읽기 쉽고 유익한 형태로 반환하게 하고, 이를 javadoc에 적어주는 것이 좋다.
