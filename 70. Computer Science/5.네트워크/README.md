@@ -51,3 +51,16 @@
       - 보완 기술 : 쿠키, 세션, 토큰
   - 연결성이면 1천명이 접속하고 있으면 1천개의 연결이 필요한데 1천명이 기껏해야 동시에 하는 요청은 수십건 정도
     - 트래픽이나 큰 규모의 서비스에서 한계가 뚜렷이 보임
+- Websocket : 실시간 상호작용을 위해 만들어진 스펙
+  - http는 TCP를 기반으로 한 프로토콜이고 Websocket도 그런 프로토콜 중 하나
+  - stomp는 Websocket 위에서 동작하는 서브 프로토콜
+    - websocket은 데이터 전송기술이지 규격이 없어서 규격이 있어야 해석이 쉬움
+  - Flow
+    - HTTP request를 통한 hand shaking으로 최초 접속
+      - 동일한 포트 환경 + CORS나 인증 과정등을 동일하게 가져가갈 수 있음
+    - 프론트에서 SockJS를 통하여 socket을 커넥트한다
+      - sockjs = 쓰기 편하게 + websocket 미지원 브라우저 대응 기능
+      - 스페셜 헤더를 사용하여 upgrade하고 nginx에서 이 사실을 받는다
+        - Connection: Upgrade를 통해 http를 ws로 변환
+    - 연결 이후 pub/sub 하여 이용한다.
+    - 접속 종료의 Handshake 후 연결을 종료한다.
