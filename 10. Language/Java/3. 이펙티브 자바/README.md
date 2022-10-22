@@ -426,3 +426,14 @@
   - 상속용 클래스는 Cloneable을 구현해서는 안 된다.
   - 가장 먼저 super.clone()을 호출한 후 필요한 필드를 적절하게 수정
     - 복제 기능은 생성자와 팩터리를 이용하는 게 최고
+- Extra / 완벽 공략
+  - Exception : 복구할수 있으면 Checked, 프로그래밍 Error면 Unchecked
+    - Checked : 컴파일 단계에 컴파일러가 체크하고 컴파일 에러를 던짐. throws를 통한 별도의 API
+      - IOException, SQLException.
+    - Unchecked : Runtime 예외. 예외 발생 시 트랜잭션 롤백함.
+      - NullPointerException, OutOfBoundsException.
+      - 왜 메소드나 throw 사용을 강제하지 않을까?
+        - 이미 복구할 수 없기 때문, Client가 할 수 있는게 없음
+  - TreeSet : 오름차순 정렬된 Collection
+    - compare을 사용한 natural order 정렬
+    - 스레드 안전하지 않음 > Synchronized가 적용된 set을 적용하면 됨
