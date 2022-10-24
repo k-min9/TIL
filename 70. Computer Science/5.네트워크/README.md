@@ -64,3 +64,19 @@
         - Connection: Upgrade를 통해 http를 ws로 변환
     - 연결 이후 pub/sub 하여 이용한다.
     - 접속 종료의 Handshake 후 연결을 종료한다.
+
+- REST API
+  - REST(Representational State Transfer) : HTTP URI 를 통해 자원 (Resources)을 명시하고 HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 CRUD Operation을 적용하는 것
+    - 웹의 장점을 살리기 위한 아키텍쳐를 따르는 API
+    - HTTP URI를 통해 자원(Resource)을 명시하고, HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 CRUD Operation을 적용
+  - 개요 : 자원(URI), 행위(HTTP메소드), 표현(Represental)로 구성
+    - URI로 정보의 자원을 표현
+      - URI(Uniform Resource Identifier) : 인터넷 자원을 나타내는 고유 식별자, URN, URL등으로 나뉠수 있음
+    - HTTP 메소드로 자원에 대한 행위를 표현
+  - 특징
+    - 무상태성 : 작업을 위한 별도의 상태정보를 저장, 관리하지 않음
+    - Cacheable : HTTP의 특징 중 하나인 캐싱 기능사용이 가능
+    - 서버 - 클라이언트 : 서버와 클라이언트의 역할이 명확히 분리되어 의존성이 감소
+    - 계층 관계 : 슬래시(/)로 다중 계층을 구성할 수 있어, 보안, 로드밸런싱, 암호화계층등의 유연성을 두기 쉽다.
+    - Uniform Interface : URI로 지정한 리소스에 대한 조작을 통일되고 한정적인 인터페이스로 수행
+      - 자원의 식별이나 자신의 처리에 대한 내용이 기술되어 있어야 함
