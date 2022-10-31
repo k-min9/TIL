@@ -437,3 +437,22 @@
   - TreeSet : 오름차순 정렬된 Collection
     - compare을 사용한 natural order 정렬
     - 스레드 안전하지 않음 > Synchronized가 적용된 set을 적용하면 됨
+
+## 아이템 14. Comparable을 구현할지 고민해라
+
+- Comparable : 자연적인 순서(Natural Order)를 정하는데 사용, 순서를 비교하거나 Generic을 지원
+- 규약
+  - 자기 자신이 compareTo에 전달된 객체보다 작으면 음수, 같으면 0, 크면 양수
+  - 반사성 : a.compareTo(a) == 0
+  - 대칭성, 추이성을 만족해야함
+  - 권장사항 : compareTo가 0이라면 equals는 true인것이 좋다.
+- 구현법
+  1. implements Comparable<T\> 선언
+  2. compareTo 메서드 재정의
+- 감상 : 정말 Compare 연산이 많은 정도가 아니라면, 있는거 쓰자...
+  - 거의 CPU단 연산을 사용하여 성능을 20% 이상 상승시키고 그럴거 아니면
+- 완벽공략
+  - 제너릭이므로 컴파일타임에 타입을 체크해준다.
+    - 런타임에 발생할 ClassCastException을 컴파일 타임에 체크 가능
+    - 타입 체크와 형변환을 생략할 수 있으므로 코드가 간결해짐
+    - 비슷한 기능일 경우 코드의 재사용성이 높아짐
