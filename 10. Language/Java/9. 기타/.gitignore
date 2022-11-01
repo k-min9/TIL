@@ -1,0 +1,7 @@
+@@sample.py
+@@sample.cpp
+sample.java
+*.exe
+*.json
+.vscode
+*.class
