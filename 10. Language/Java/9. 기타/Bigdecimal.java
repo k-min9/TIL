@@ -57,8 +57,13 @@ public class Bigdecimal {
 
     // 기타
     System.out.println("엄청 긴 정수 : " + new BigInteger("123456789012345678901234567890"));  // 기껏해야 19자리까지나 표현이되는 long보다 많은 표현이 가능
-
-
+    
+    // BigDecimal이던지 String이던지 안전하게 출력 Type 맞추려면 toString 쓰는게 좋다.
+    String result = "";
+    result = n1.toString();
+    System.out.println("BigDecimal 출력 :" + result);
+    String temp = "27.125";
+    System.out.println("String 출력 :" + temp.toString());
 
   }
 }
