@@ -47,7 +47,9 @@ public class Bigdecimal {
     System.out.println("실수 : " + n1.floatValue());
     
     // 연산
-    System.out.println("비교 : " + n1.compareTo(n2));
+    n1 = new BigDecimal("1000000.00");  // decimal의 D는 대문자임
+    n2 = new BigDecimal("1000000.0");
+    System.out.println("비교 : " + n1.compareTo(n2));  //100과 100.00은 다르다!
     System.out.println("동일 : " + n1.equals(n2));
 
     // 다른 선언
