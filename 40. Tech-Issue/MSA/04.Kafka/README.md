@@ -1,7 +1,8 @@
 # Kafka
 
-Messaging Channels, Streaming & messaging 담당
-이것만으로도 하나의 강좌가 나올 정도로 방대하므로 주의!
+Messaging Channels, Streaming & messaging 담당  
+이것만으로도 하나의 강좌가 나올 정도로 방대하므로 주의!  
+!자세한 내용을 30.Tools-Infra>DB>Kafka에 수록
 
 - 참조 링크 모음
   - Kafka 홈페이지 : <http://kafka.apache.org>
