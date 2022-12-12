@@ -22,6 +22,11 @@ public class Bigdecimal {
 
   public static void main(String[] args) {
 
+    Object o1 = "1";
+    Object o2 = 1;
+    BigDecimal n0 = new BigDecimal((String)o2);
+    System.out.println("Object 변환 : " + n0);
+
     BigDecimal n1 = new BigDecimal("27.125");  // decimal의 D는 대문자임
     BigDecimal n2 = new BigDecimal("55.5555");
     BigDecimal n3 = new BigDecimal(10000);
