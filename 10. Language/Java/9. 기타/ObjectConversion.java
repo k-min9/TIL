@@ -7,7 +7,7 @@ public class ObjectConversion {
     Object c = true;
     Object d  = 11;
     Object e  = new BigDecimal("11");
-    BigDecimal f = BigDecimal.valueOf(e);
+    // BigDecimal f = BigDecimal.valueOf(e);  // 요러면 에러남
 
     System.out.println(a instanceof String);
     System.out.println(b instanceof String);
