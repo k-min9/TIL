@@ -64,9 +64,38 @@
      - Flexible : 지정된 공간을 차지하고 남는 공간을 버림
        - Flex : 숫자를 입력(기본값1). 버리는 공간의 비율을 조절할 수 있음
 
+### 03. Web View
+
+- 개요 : Web 사이트를 앱에다가 패키징
+- 체크사항
+  - WebView
+  - AppBar : App의 상단 디자인
+  - pub.dev : 외부 패키지 활용
+
+1. 프로젝트에 Webview 패키지 추가하기
+   1. <https://pub.dev/> 사이트 접속
+   2. Webview 검색후 Likes, Pub, Popularity를 참고해서 선택
+      - 업로더가 flutter.dev이면 Flutter 제작팀이 올린 공식 오픈소스
+   3. 들어간 후 이름을 copy 하고, 프로젝트의 pubspec.yaml의 dependencies에 입력
+   4. 사이트로 돌아가 README의 사용법 외에도 필요한 설정 등 확인하여 적용
+2. WebView 써보기
+   - 사용 속성
+     - 주소입력 : initialUrl: 'https://github.com/k-min9/TIL'
+     - js활성화 : javascriptMode: JavascriptMode.unrestricted
+3. Appbar 추가
+   1. Appbar에 backgroundColor, title 등 속성 넣기
+   2. actions에 IconButton으로 누르면 home으로 돌아가는 버튼을 만들어보자
+4. Controller : WebView를 프로그램적으로 조종해보자
+   1. onWebViewCreated event 생성시 controller 설정
+   (WebViewController controller) {this.controller = controller;}
+   2. 3.2.에서 미리 만든 IconButton 누를때 이 controller을 이용하여 Webview를 제어할 수 있음  
+   (controller!.loadUrl(homeUrl);)  
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
 - Reformat Code with 'dart format' : 코드 자동 정리
 - Setting > Keymap에서 원하는 동작에 단축키를 등록할 수 있음
 - MaterialApp에 debugShowCheckedModeBanner: false 입력시 디버그 모드 표시 사라짐
+- PlatformException 에러 발생시 console에 flutter clean 입력하고 재실행
+- https가 아닌 http를 부르면 별도의 설정이 필요하다는 사실만 기억해 두자.
