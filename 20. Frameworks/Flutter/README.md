@@ -5,10 +5,19 @@
 ### 01. Hello, World
 
 - 개요 : 첫 프로젝트를 만들어보자.
+
+<details>
+<summary>상세</summary>
+
 - Widget Tree : Widget들의 부모, 자식관계를 나타내는 Tree
   - Widget : 클래스의 일종. 불변객체
+- 작업공간
+  - lib > main.dart
+  - MaterialApp > home:Scaffold 의 간단한 구조 만들어보기
 
-### [02. Splash Screen](/02.splash_screen/README.md)
+</details>
+
+### 02. Splash Screen
 
 - 개요 : 처음 앱을 시작하면 켜지는 로딩화면
 - 체크사항
@@ -80,6 +89,9 @@
   - AppBar : App의 상단 디자인
   - pub.dev : 외부 패키지 활용
 
+<details>
+<summary>상세</summary>
+
 1. 프로젝트에 Webview 패키지 추가하기
    1. <https://pub.dev/> 사이트 접속
    2. Webview 검색후 Likes, Pub, Popularity를 참고해서 선택
@@ -98,6 +110,8 @@
    (WebViewController controller) {this.controller = controller;}
    2. 3.2.에서 미리 만든 IconButton 누를때 이 controller을 이용하여 Webview를 제어할 수 있음  
    (controller!.loadUrl(homeUrl);)  
+
+</details>
 
 ### 기타 Tip
 
