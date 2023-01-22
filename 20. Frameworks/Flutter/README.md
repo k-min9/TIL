@@ -188,6 +188,52 @@
 
 </details>
 
+### 05. 특정날짜로부터 X일
+
+- 개요 : 특정 일로부터 몇일이 지났는지 확인하기
+- 체크사항
+  - Font(글꼴) 적용하기
+  - DatePicker : 날짜 고르기
+  - 날짜 연산
+  - 테마 적용하기 : Widget에 직접 Style을 넣지 말고 Default 디자인 사용
+
+<details>
+<summary>상세</summary>
+
+1. 폰트-Asset
+   1. 폰트 고르기 : Google Font에서 무료 Font 많음
+   2. 폰트 asset>font에 넣고, pubspec.yaml에 등록
+
+      ```Yaml
+      fonts:
+         - family: parisienne
+            fonts:
+            - asset: asset/font/Parisienne-Regular.ttf
+
+         - family: sunflower
+            fonts:
+            - asset: asset/font/Sunflower-Light.ttf
+            - asset: asset/font/Sunflower-Medium.ttf
+               weight: 500 # 글꼴 두께
+            - asset: asset/font/Sunflower-Bold.ttf
+               weight: 700
+      ```
+
+   3. Text내에 text:TextStyle 설정
+2. DatePicker 사용하기
+   1. cupertino.dart 패키지 부르기 : IOS틱한 디자인 지원
+   2. onPress 이벤트에 showCupertinoDialog 함수를 사용
+      1. 이때 barrierDismissible: true 설정시 밖 화면 클릭으로 창 닫힘
+   3. CupertinoDatePicker에 적절한 입력  
+   (mode: CupertinoDatePickerMode.date, onDateTimeChanged:...)  
+   4. onDateTimeChanged: (DateTime date){} 함수에 date 갱신
+3. 테마 적용하기 : 글꼴을 분류해서 적용해보자
+   1. main.dart에 theme:ThemeData()를 넣자.
+   2. 자유롭게 이름을 짓고, build쪽에 final theme = Theme.of(context);
+   3. 기존 style에서 style: textTheme.headline1 이런식으로 사용
+
+</details>
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
