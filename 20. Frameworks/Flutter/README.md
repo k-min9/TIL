@@ -115,6 +115,8 @@
 
 ### 04. Image Carousel
 
+<프로젝트 생략>
+
 - 개요 : 스와이프로 이미지 전환이 되고, 4초마다 다음 이미지를 보여주는 전자액자
 - 체크사항
   - PageView : 스와이프 기능, 좌,우 스크롤
@@ -234,6 +236,75 @@
 
 </details>
 
+### 06. 랜덤 숫자 생성기
+
+<프로젝트 생략>
+
+- 개요 : 랜덤한 숫자를 만들어보자.
+- 체크사항
+  - Navigation : 화면 이동
+  - Button
+  - Slider
+  - 난수생성
+
+<details>
+<summary>상세</summary>
+
+1. 난수 생성
+   1. math 라이브러리 import
+   2. 코드 작성
+
+      ```Dart
+      final rand = Random();
+
+      final Set<int> newNumbers = {};
+
+      // 중복 없이
+      while (newNumbers.length != 3) {
+         final number = rand.nextInt(maxNumber);
+
+         newNumbers.add(number);
+      }
+
+      setState(() {
+         randomNumbers = newNumbers.toList();
+      });
+      ```
+
+2. Navigation으로 화면 이동
+   1. Navigator.of(context).push() : route 스택에 이동할 곳을 넣음
+
+      ```Dart
+      // pop시 parameter을 돌려 받는 값
+      final int? result = await Navigator.of(context).push<int>(
+         MaterialPageRoute(
+         builder: (BuildContext context) {
+            return SettingsScreen(
+               maxNumber: maxNumber,
+               );
+            },
+         ),
+      );
+      ```
+
+   2. Navigator.of(context).pop(전달 param) : route 스택에서 현 위치를 뺌 = 뒤로가기
+3. Slider : SliderWidget 사용
+
+      ```Dart
+      Slider(
+            value: maxNumber,
+            min: 1000,
+            max: 100000,
+            onChanged: (double val) {
+               setState(() {
+                  maxNumber = val;
+               })
+            },
+         ),
+      ```
+
+</details>
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
@@ -244,3 +315,4 @@
 - https가 아닌 http를 부르면 별도의 설정이 필요하다는 사실만 기억해 두자.
 - SystemChrome으로 제어 기존 UI 제어 가능  
   - ex) SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+- Widget을 const로 지정해두면 build 함수에 따른 재실행을 막을 수 있음
