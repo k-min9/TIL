@@ -113,6 +113,81 @@
 
 </details>
 
+### 04. Image Carousel
+
+- 개요 : 스와이프로 이미지 전환이 되고, 4초마다 다음 이미지를 보여주는 전자액자
+- 체크사항
+  - PageView : 스와이프 기능, 좌,우 스크롤
+  - Timer : 시간마다 지정 함수 실행
+  - StatefulWidget, LifeCycle
+
+<details>
+<summary>상세</summary>
+
+1. PageView 위젯 사용
+   1. asset에 이미지 넣고 pubspec.yaml 등록
+   2. Pageview 사용하여 이미지 등록 + BoxFit.cover로 규격 맞추기
+
+      ```Dart
+         body: PageView(
+         controller: controller,  // PageController 생성시 여기 붙음
+         children: [1, 2, 3, 4, 5]
+               .map(
+               (e) => Image.asset(
+                  'asset/img/image_$e.jpeg',
+                  fit: BoxFit.cover,
+               ),
+               )
+               .toList(),
+            )
+      ```
+
+2. Timer 사용하기
+   1. dart:async패키지를 불러오고 타이머 선언 : Timer? timer;
+   2. timer = Timer.periodic(Duration(seconds: 4), (timer) {원하는 동작}
+   3. memoryleak을 막기 위해 dispose 구현
+
+      ```Dart
+         @override
+         void dispose() {
+            if (timer != null) {
+               timer!.cancel();  // 타이머 취소로 메모리 확보
+            }
+            super.dispose();
+         }
+      ```
+
+3. PageController : Pageview를 위한 전용 Controller를 만들어야 함
+   1. Build쪽 Pageview controller에 알아서 붙음
+
+      ```Dart
+         @override
+         void dispose() {
+            controller.dispose();
+            if (timer != null) {
+               timer!.cancel();  // 타이머 취소로 메모리 확보
+            }
+            super.dispose();
+         }
+      ```
+
+   2. 이후 알아서 controller 제어
+
+      ```Dart
+         controller.animateToPage(
+         nextPage,
+         duration: Duration(milliseconds: 400),
+         curve: Curves.linear,
+         );
+      ```
+
+   3. controller도 잊지 않고 dispose에 설정 : controller.dispose();
+4. DateTime 및 Duration
+   - DateTime : 날짜
+   - Duration : 기간
+
+</details>
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
@@ -121,3 +196,5 @@
 - MaterialApp에 debugShowCheckedModeBanner: false 입력시 디버그 모드 표시 사라짐
 - PlatformException 에러 발생시 console에 flutter clean 입력하고 재실행
 - https가 아닌 http를 부르면 별도의 설정이 필요하다는 사실만 기억해 두자.
+- SystemChrome으로 제어 기존 UI 제어 가능  
+  - ex) SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
