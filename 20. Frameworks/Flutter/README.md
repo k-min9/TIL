@@ -6,18 +6,24 @@
 
 - 개요 : 첫 프로젝트를 만들어보자.
 - Widget Tree : Widget들의 부모, 자식관계를 나타내는 Tree
-  - Widget : 클래스의 일종
+  - Widget : 클래스의 일종. 불변객체
 
-### 02. Splash Screen
+### [02. Splash Screen](/02.splash_screen/README.md)
 
 - 개요 : 처음 앱을 시작하면 켜지는 로딩화면
 - 체크사항
   - Asset 추가하기 : 이미지 추가하기
-  - StatelessWidget 생성하기
+  - StatelessWidget 생성하기 : 상태를 관리할 수 없는 Widget
     - 사용자 정의 Widget
+    - Build가 작동
+    - StatefulWidget : 상태(State)를 관리할 수 있음
+      - CreateState/setState가 작동
   - Column 위젯
   - CircularProgressIndicator 위젯
   - Image 위젯
+
+<details>
+<summary>상세</summary>
 
 1. Asset 추가하기
    1. pubspec.yaml 열기
@@ -63,6 +69,8 @@
        - Flex : 숫자를 입력(기본값1). Expanded간 비율을 조절할 수 있음
      - Flexible : 지정된 공간을 차지하고 남는 공간을 버림
        - Flex : 숫자를 입력(기본값1). 버리는 공간의 비율을 조절할 수 있음
+
+</details>
 
 ### 03. Web View
 
