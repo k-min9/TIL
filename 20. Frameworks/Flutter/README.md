@@ -316,13 +316,82 @@
   - Stack 위젯
   - AspectRatio 위젯
 
-<details open>
+<details>
 <summary>상세</summary>
 
 1. 권한 부여
    1. IOS : ios>Runner>info.plist에 권한 및 description 추가
    2. android : 인터넷 Permission 필요 (http 영상 사용할때와 비슷)
 2. imagePicker : Xfile 형태의 파일을 받아서 사용
+
+</details>
+
+### 08. 지도거리 앱
+
+- 개요 : 지도에 마커를 새기고 거리가 가까우면 원 색이 변함
+- 체크사항
+  - Google Maps 지도 사용하기
+  - 지도에 마커 표시하기
+  - 지도에 동그마리 표시하기
+  - 현재 위치 표시하고 위도, 경도 구하기
+  - 위도, 경도간 거리 구하기
+
+<details>
+<summary>상세</summary>
+
+1. 사용할 플러그인
+   1. google_maps_flutter : 공식 구글 맵 아웃소스
+   2. geolocator : 현재 위치 계산
+      1. 권한 설정하기 : 정밀한 위치, 백그라운드 실행
+2. 구글맵 API 키 받기
+   1. google_map_flutter 링크 타고 가서 Get Started
+   2. 기타 Google 제품 > Google Maps Platform
+   3. 사용설정 API에서 Maps SDK for iOS와 Android 확인
+   4. API 키는 사용자 인증정보에서 확인 가능
+   5. 이후 pub.dev의 설명서 대로 세팅
+3. 앱 권한 관리하기
+   1. 위치 권한 관련 함수 제작
+
+      ```Dart
+      Future<String> checkPermission() async {
+         final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+
+         if (!isLocationEnabled) {
+            return '위치 서비스를 활성화 해주세요.';
+         }
+
+         LocationPermission checkedPermission = await Geolocator.checkPermission();
+
+         if (checkedPermission == LocationPermission.denied) {
+            checkedPermission = await Geolocator.requestPermission();
+
+            if (checkedPermission == LocationPermission.denied) {
+            return '위치 권한을 허가해주세요.';
+            }
+         }
+
+         // 영원히 앱에서 요청을 허가할 수 없음. 직접 세팅에서 해야 함
+         if (checkedPermission == LocationPermission.deniedForever) {
+            return '앱의 위치 권한을 세팅에서 허가해주세요.';
+         }
+
+         return '위치 권한이 허가 되었습니다.';
+      }
+      ```
+
+   2. FutureBuilder 위젯을 사용.  
+   future에 함수를 등록하고, 위 함수의 return이 해당 위젯 빌더의 snapshot에 담김
+   3. future가 변경될때마다 build가 실행되므로 해당 내용을 반영
+4. 지도 설정
+   1. Circle을 이용해서 중심으로부터 일정 거리를 가지는 원 표시
+   2. 타겟의 위치를 표시해 줄 Marker를 만들기
+5. StreamBuilder를 이용해 지도에서의 위치 변경을 반영함
+   1. stream이 변경시 아래의 builder가 실행되고 snapshot에 stream값이 담김
+6. MapController을 만들어 이벤트 제어
+   1. 최상단에 구글 맵 컨트롤러 생성
+   2. 구글 맵 생성시 state로 저장하는 함수 생성
+   3. 렌더링하는 쪽에서 onMapCreated: [함수이름]으로 함수 호출
+   4. 렌더링되는 StatelessWidget쪽에서 맵 변수로 받음
 
 </details>
 
