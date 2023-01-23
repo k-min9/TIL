@@ -305,6 +305,27 @@
 
 </details>
 
+### 07. 동영상 플레이어
+
+<프로젝트 생략> : 별 것 없음
+
+- 개요 : 영상 플레이어
+- 체크사항
+  - video_player 플러그인
+  - image_player 플러그인
+  - Stack 위젯
+  - AspectRatio 위젯
+
+<details open>
+<summary>상세</summary>
+
+1. 권한 부여
+   1. IOS : ios>Runner>info.plist에 권한 및 description 추가
+   2. android : 인터넷 Permission 필요 (http 영상 사용할때와 비슷)
+2. imagePicker : Xfile 형태의 파일을 받아서 사용
+
+</details>
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
