@@ -12,20 +12,21 @@ import 'package:google_maps_webservice/src/places.dart';  // Prediction
 import 'package:http/http.dart' as http;
 
 class LocationController extends GetxController{
-  bool _loading = false;
-  late Position _pickPosition;
+  bool _loading = false; // 어딘가를 고름
+  bool get loading => _loading;
 
   Placemark _pickPlaceMark = Placemark();
   Placemark get pickPlaceMark => _pickPlaceMark;
+
+  LatLng _pickLatLng = LatLng(37.5233273,126.921252);
+  LatLng get pickLatLng => _pickLatLng;
 
   // 검색시 예상 이름 리스트들
   List<Prediction> _predictionList = [];
 
   Future<List<Prediction>> searchLocation(BuildContext context, String text) async {
     if(text != null && text.isNotEmpty) {
-      http.Response response = await getLocationData(text);
-      print('response.body.toString()');
-      print(response.body.toString());
+      http.Response response = await getSearchData(text);
       var data = jsonDecode(response.body.toString());
 
       if (data['status'] == 'OK') {
@@ -37,5 +38,20 @@ class LocationController extends GetxController{
       }
     }
     return _predictionList;
+  }
+
+  // PlaceMarker 설정
+  void setLocation (String placeId, String mainText, String description, GoogleMapController? mapController) async {
+    _loading = true;
+
+    _pickPlaceMark = Placemark(name: mainText);
+
+    List<Location> location = await locationFromAddress(description);
+    _pickLatLng = LatLng(
+      location.last.latitude,
+      location.last.longitude,
+    );
+
+    update();
   }
 }
