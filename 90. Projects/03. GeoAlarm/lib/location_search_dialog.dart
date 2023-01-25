@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geo_alarm/location_controller.dart';
+import 'package:geo_alarm/screen/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -65,7 +66,10 @@ class LocationSearchDialog extends StatelessWidget {
           onSuggestionSelected: (Prediction suggestion) {
             // print("여기 고름 : "+suggestion.structuredFormatting!.mainText);
             print("여기 고름 : "+suggestion.placeId!);
-            // Get.find<LocationController>().setLocation(suggestion.placeId!, suggestion.description!, mapController);
+            print(suggestion.toJson().toString());
+            print(suggestion.structuredFormatting!.toJson().toString());
+            print(suggestion.terms[0]!.toJson().toString());
+            Get.find<LocationController>().setLocation(suggestion.placeId!, suggestion.structuredFormatting!.mainText, suggestion.description!, mapController);
             Get.back();
           },
         )),
