@@ -15,6 +15,9 @@ class LocationController extends GetxController{
   bool _loading = false; // 어딘가를 고름
   bool get loading => _loading;
 
+  bool _ismarked = false;
+  bool get ismarked => _ismarked;
+
   Placemark _pickPlaceMark = Placemark();
   Placemark get pickPlaceMark => _pickPlaceMark;
 
@@ -43,6 +46,7 @@ class LocationController extends GetxController{
   // PlaceMarker 설정
   void setLocation (String placeId, String mainText, String description, GoogleMapController? mapController) async {
     _loading = true;
+    _ismarked = false;
 
     _pickPlaceMark = Placemark(name: mainText);
 
@@ -54,4 +58,10 @@ class LocationController extends GetxController{
 
     update();
   }
+
+  // 마크 완료 후 보고
+  void setIsMakred () {
+    _ismarked = true;
+  }
+
 }
