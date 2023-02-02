@@ -1,10 +1,15 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:geo_alarm/location_controller.dart';
 import 'package:geo_alarm/location_search_dialog.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:vibration/vibration.dart';
+import 'package:geo_alarm/main.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,6 +21,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // 구글 맵 컨트롤러 최상단에 생성하고 이벤트 제어
   GoogleMapController? mapController;
+
+  final Location location = new Location();
+  static late LocationData myLocationData;
 
   static bool isAlarmOn = false;
   static int alarmId = 1;
@@ -74,14 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     return;
                   }
 
-                  final location = await Geolocator.getCurrentPosition();
+                  myLocationData = await location.getLocation();
 
                   // 맵 컨트롤러로 카메라 위치 이동
                   mapController!.animateCamera(
                     CameraUpdate.newLatLng(
                       LatLng(
-                        location.latitude,
-                        location.longitude,
+                          myLocationData.latitude!,
+                          myLocationData.longitude!
                       ),
                     ),
                   );
@@ -109,9 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   if (snapshot.data == '위치 권한이 허가 되었습니다.') {
-                    return StreamBuilder<Position>(
-                      stream: Geolocator
-                          .getPositionStream(), // position 값을 받아 snapshot에 넣음
+                    return StreamBuilder<LocationData>(
+                      stream: location.onLocationChanged, // position 값을 받아 snapshot에 넣음
                       builder: (context, snapshot) {
                         // 범위 안에 있나 체크
                         bool isWithinRange = false;
@@ -121,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           targetLatLng = locationController.pickLatLng;
                           final start = snapshot.data!;
                           final end = targetLatLng;
-                          
+
                           // 맵 컨트롤러로 카메라 위치 이동
                           if (locationController.loading == true){
                             // 마커 만들기
@@ -144,8 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             mapController?.animateCamera(
                               CameraUpdate.newLatLngZoom(
                                 LatLng(
-                                  start.latitude,
-                                  start.longitude,
+                                  start.latitude!,
+                                  start.longitude!,
                                 ),
                                 16
                               ),
@@ -153,8 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
 
                           final distance = Geolocator.distanceBetween(
-                            start.latitude,
-                            start.longitude,
+                            start.latitude!,
+                            start.longitude!,
                             end.latitude,
                             end.longitude,
                           );
@@ -169,11 +176,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           // } else {
                           //   _circles = Set.from([circleNotWithIn]);
                           // }
-                          
+
                           // 알람이 켜져있으면 발동 (일단 test)
+                          // print('alarm');
+                          // print(isWithinRange);
                           if (isWithinRange == true && isAlarmOn == true) {
                             isAlarmOn = false;
-                            AndroidAlarmManager.oneShot(Duration(seconds: 1), alarmId, fireAlarm);
+                            fireAlarm();
                           }
                         }
 
@@ -222,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   right: 20,
                   child: GestureDetector(
                       onTap: () {
+                        Vibration.vibrate();
                         Get.dialog(
                             LocationSearchDialog(mapController: mapController));
                       },
@@ -285,9 +295,15 @@ class _HomeScreenState extends State<HomeScreen> {
       return '앱의 위치 권한을 세팅에서 허가해주세요.';
     }
 
-    print('????');
+
     // 알람 await 5초마다 확인
-    await AndroidAlarmManager.periodic(const Duration(seconds: 1), 999, fireAlarm, startAt: DateTime.now(), allowWhileIdle: true, wakeup: true);
+    // await AndroidAlarmManager.periodic(
+    //     const Duration(seconds: 1),
+    //     998,
+    //     fireAlarm,
+    //     // startAt: DateTime.now(),
+    //     allowWhileIdle: true,
+    //     wakeup: true);
 
     return '위치 권한이 허가 되었습니다.';
   }
@@ -338,7 +354,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     _circles.add(circleWithIn);
 
-    AndroidAlarmManager.oneShot(Duration(seconds: 3), alarmId, fireAlarm);
+    fireAlarm();
+
+    // AndroidAlarmManager.oneShot(Duration(seconds: 3), alarmId, fireAlarm);
   }
 
   Set<Circle> setCircleOnPos(bool isWithin) {
@@ -368,8 +386,26 @@ class _HomeScreenState extends State<HomeScreen> {
   onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+
+  void fireAlarm() async {
+    print('Test Fired');
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm_notif',
+      'alarm_notif',
+      channelDescription: 'Channel for Alarm notification',
+      icon: 'logo',
+      // sound: RawResourceAndroidNotificationSound('bgm1'),
+      largeIcon: DrawableResourceAndroidBitmap('logo'),
+    );
+
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics
+    );
+
+    await flutterLocalNotificationsPlugin.show(0, 'title', 'body', platformChannelSpecifics);
+
+  }
 }
 
-void fireAlarm() {
-  print('Test Fired');
-}
+
