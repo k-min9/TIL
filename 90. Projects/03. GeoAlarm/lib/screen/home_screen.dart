@@ -1,7 +1,5 @@
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:geo_alarm/location_controller.dart';
 import 'package:geo_alarm/location_search_dialog.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,11 +19,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // 구글 맵 컨트롤러 최상단에 생성하고 이벤트 제어
   GoogleMapController? mapController;
+  LocationController? locationController;
 
   final Location location = new Location();
   static late LocationData myLocationData;
 
   static bool isAlarmOn = false;
+  static bool isAlarmStateChanged = false; // 갱신 flag 용
   static int alarmId = 1;
 
   // 카메라 중간위치 : latitude - 위도 , longitude - 경도
@@ -39,26 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: _zoom, // 카메라 확대 정도
   );
 
-  // 거리 내 원 만들기
-  static Set<Circle> _circles = {};
+  // 구글 맵 상수
   static double distRadius = 100;
-  static Circle circleWithIn = Circle(
-      circleId: CircleId('circleWithIn'), // circle간 식별자
-      center: targetLatLng,
-      fillColor: Colors.red.withOpacity(0.5), // 원 색
-      strokeColor: Colors.red, // 테두리 색
-      strokeWidth: 1, // 테두리 두께
-      radius: distRadius);
-  static Circle circleNotWithIn = Circle(
-      circleId: CircleId('circleNotWithIn'), // circle간 식별자
-      center: targetLatLng,
-      fillColor: Colors.blue.withOpacity(0.5), // 원 색
-      strokeColor: Colors.blue, // 테두리 색
-      strokeWidth: 1, // 테두리 두께
-      radius: distRadius);
-
-  // 타겟에 꽂을 마커
-  static final Set<Marker> _markers = {};
+  static final Set<Circle> _circles = {}; // 원
+  static final Set<Marker> _markers = {}; // 마커
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return;
                   }
 
+                  // 초기 세팅
                   myLocationData = await location.getLocation();
 
                   // 맵 컨트롤러로 카메라 위치 이동
@@ -105,11 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Stack(
             children: [
               FutureBuilder<String>(
-                future: checkPermission(), // 이 함수의 return이 snapshot에 담김
+                future: checkPermission(), // 이 함수의 return이 snapshot에 담김 $$$ location은??
                 // future가 변경될때마다 builder가 재실행
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   // 최초 로딩 중에 원형 로딩 indicator
-                  // if (snapshot.connectionState == ConnectionState.waiting) {
                   if (!snapshot.hasData) {
                     return Center(
                       child: CircularProgressIndicator(),
@@ -117,46 +101,53 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   if (snapshot.data == '위치 권한이 허가 되었습니다.') {
+                    setLocationController(locationController);
                     return StreamBuilder<LocationData>(
                       stream: location.onLocationChanged, // position 값을 받아 snapshot에 넣음
                       builder: (context, snapshot) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) => onAfterStreamBuild(context)); // StreamBuilder 중 setState관련 문제 해결 
                         // 범위 안에 있나 체크
                         bool isWithinRange = false;
 
                         if (snapshot.hasData) {
 
-                          targetLatLng = locationController.pickLatLng;
-                          final start = snapshot.data!;
-                          final end = targetLatLng;
+                          // 검색으로 타겟을 잡은 경우, 타겟 지점 갱신
+                          if(locationController.isSearched == true) {
+                            targetLatLng = locationController.pickLatLng;
+                            // setMarkerOnPos(targetLatLng);
+                          }
 
-                          // 맵 컨트롤러로 카메라 위치 이동
-                          if (locationController.loading == true){
-                            // 마커 만들기
-                            if (locationController.ismarked == false){
-                              setMarkerOnPos(end);
-                              locationController.setIsMakred();
+                          final start = snapshot.data!; // 내 위치
+                          final end = targetLatLng; // 타겟 장소
+
+                          // 알람이 켜져있을때 (나와 대상의 위치를 같이 보여주거나, 처음시작점과 대상의 위치를 같이 보여줌)
+                          if (isAlarmOn == true) {
+
+                          // 알람이 꺼져있을때
+                          } else {
+                            // 검색이나 마킹한 대상이 있으면 타겟을 보여줌
+                            if (locationController.isSearched == true || locationController.ismarked == true) {
+                              mapController!.animateCamera(
+                                CameraUpdate.newLatLngZoom(
+                                    LatLng(
+                                      end.latitude,
+                                      end.longitude,
+                                    ),
+                                    16
+                                ),
+                              );
+                            // 없으면 현재 위치(자신)을 보여줌
+                            } else {
+                              mapController?.animateCamera(
+                                CameraUpdate.newLatLngZoom(
+                                    LatLng(
+                                      start.latitude!,
+                                      start.longitude!,
+                                    ),
+                                    16
+                                ),
+                              );
                             }
-                            // 선택된 장소가 있음
-                            mapController!.animateCamera(
-                              CameraUpdate.newLatLngZoom(
-                                LatLng(
-                                  end.latitude,
-                                  end.longitude,
-                                ),
-                                16
-                              ),
-                            );
-                          } else if (isAlarmOn == false) {
-                            // 고른것도 없으면, 일단 현재 위치로
-                            mapController?.animateCamera(
-                              CameraUpdate.newLatLngZoom(
-                                LatLng(
-                                  start.latitude!,
-                                  start.longitude!,
-                                ),
-                                16
-                              ),
-                            );
                           }
 
                           final distance = Geolocator.distanceBetween(
@@ -166,22 +157,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             end.longitude,
                           );
 
+
                           if (distance < distRadius) {
                             isWithinRange = true;
                           }
-                          // 원 설정
-                          // _circles.clear();
-                          // if (isWithinRange == true) {
-                          //   _circles = Set.from([circleWithIn]);
-                          // } else {
-                          //   _circles = Set.from([circleNotWithIn]);
-                          // }
 
                           // 알람이 켜져있으면 발동 (일단 test)
-                          // print('alarm');
-                          // print(isWithinRange);
                           if (isWithinRange == true && isAlarmOn == true) {
                             isAlarmOn = false;
+                            _circles.clear();
+                            _circles.add(Circle(
+                                circleId: CircleId('circleNormal'),
+                                // circle간 식별자
+                                center: targetLatLng,
+                                fillColor: Colors.blue.withOpacity(0.5), // 원 색
+                                strokeColor: Colors.blue, // 테두리 색
+                                strokeWidth: 1,
+                                // 테두리 두께
+                                radius: distRadius));
                             fireAlarm();
                           }
                         }
@@ -195,7 +188,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 initialCameraPosition: _cameraPosition,
                                 myLocationEnabled: true,
                                 myLocationButtonEnabled: true,
-                                // circles: setCircleOnPos(isWithinRange),
                                 circles: _circles,
                                 markers: _markers,
                                 onMapCreated: onMapCreated,
@@ -210,6 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   onChanged: (value) {
                                     setState(() {
                                       isAlarmOn = value;
+                                      isAlarmStateChanged = true; // flag
                                     });
                                   },
                                 )
@@ -272,6 +265,42 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // StreamBuild의 setState관련
+  void onAfterStreamBuild(BuildContext context) {
+    // locationController의 검색 갱신을 여기서 확인
+    if(locationController?.isSearched == true) {
+      setMarkerOnPos(targetLatLng);
+    // 알람 관련 체크 : 원 갱신
+    } else if(isAlarmStateChanged == true) {
+      isAlarmStateChanged = false;
+      if (_circles.isNotEmpty) {
+        _circles.clear();
+      }
+
+      // 알람 켜져있으면 붉게
+      if (isAlarmOn == true) {
+        _circles.add(Circle(
+            circleId: CircleId('circleAlarm'), // circle간 식별자
+            center: targetLatLng,
+            fillColor: Colors.red.withOpacity(0.5), // 원 색
+            strokeColor: Colors.red, // 테두리 색
+            strokeWidth: 1, // 테두리 두께
+            radius: distRadius));
+      } else {
+        _circles.add(Circle(
+            circleId: CircleId('circleNormal'),
+            // circle간 식별자
+            center: targetLatLng,
+            fillColor: Colors.blue.withOpacity(0.5), // 원 색
+            strokeColor: Colors.blue, // 테두리 색
+            strokeWidth: 1,
+            // 테두리 두께
+            radius: distRadius));
+      }
+      locationController?.updateMap();
+    }
+  }
+
   // 권한 관련은 다 여기서 작업. always일때는 background에서도 동작
   Future<String> checkPermission() async {
     final isLocationEnabled = await Geolocator.isLocationServiceEnabled();
@@ -295,96 +324,66 @@ class _HomeScreenState extends State<HomeScreen> {
       return '앱의 위치 권한을 세팅에서 허가해주세요.';
     }
 
-
-    // 알람 await 5초마다 확인
-    // await AndroidAlarmManager.periodic(
-    //     const Duration(seconds: 1),
-    //     998,
-    //     fireAlarm,
-    //     // startAt: DateTime.now(),
-    //     allowWhileIdle: true,
-    //     wakeup: true);
-
     return '위치 권한이 허가 되었습니다.';
   }
 
-  // tap 한곳에 마커 추가
+  // tap 한곳에 마커 추가. setState 관련 삭제
   void setMarkerOnPos(LatLng latlang) async {
-    setState(() {
-      // Position과 마커 갱신
-      targetLatLng = latlang;
-      _cameraPosition = CameraPosition(
-        target: targetLatLng,
-        zoom: _zoom, // 카메라 확대 정도
-      );
-      circleWithIn = Circle(
-          circleId: CircleId('circleWithIn'), // circle간 식별자
-          center: targetLatLng,
-          fillColor: Colors.red.withOpacity(0.5), // 원 색
-          strokeColor: Colors.red, // 테두리 색
-          strokeWidth: 1, // 테두리 두께
-          radius: distRadius);
-      circleNotWithIn = Circle(
-          circleId: CircleId('circleNotWithIn'), // circle간 식별자
-          center: targetLatLng,
-          fillColor: Colors.green.withOpacity(0.5), // 원 색
-          strokeColor: Colors.blue, // 테두리 색
-          strokeWidth: 1, // 테두리 두께
-          radius: distRadius);
+    targetLatLng = latlang;
+    // 마킹 되었다고 체크
+    locationController?.setIsMakred();
 
-      // 마커 갱신
-      if (_markers.isNotEmpty) {
-        _markers.clear();
-      }
-      _markers.add(Marker(
-        draggable: true,
-        markerId: MarkerId('target'),
-        position: latlang,
-        infoWindow: InfoWindow(
-          title: '타겟',
-          snippet: '스니펫',
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ));
-    });
+    // 마커 갱신
+    if (_markers.isNotEmpty) {
+      _markers.clear();
+    }
+    _markers.add(Marker(
+      draggable: true,
+      markerId: MarkerId('target'),
+      position: latlang,
+      infoWindow: InfoWindow(
+        title: '타겟',
+        snippet: '스니펫',
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    ));
 
     // 원 갱신
     if (_circles.isNotEmpty) {
       _circles.clear();
     }
-    _circles.add(circleWithIn);
 
-    fireAlarm();
-
-    // AndroidAlarmManager.oneShot(Duration(seconds: 3), alarmId, fireAlarm);
-  }
-
-  Set<Circle> setCircleOnPos(bool isWithin) {
-    // circleWithIn = Circle(
-    //     circleId: CircleId('circleWithIn'), // circle간 식별자
-    //     center: targetLatLng,
-    //     fillColor: Colors.red.withOpacity(0.5), // 원 색
-    //     strokeColor: Colors.red, // 테두리 색
-    //     strokeWidth: 1, // 테두리 두께
-    //     radius: distRadius);
-    // circleNotWithIn = Circle(
-    //     circleId: CircleId('circleNotWithIn'), // circle간 식별자
-    //     center: targetLatLng,
-    //     fillColor: Colors.blue.withOpacity(0.5), // 원 색
-    //     strokeColor: Colors.blue, // 테두리 색
-    //     strokeWidth: 1, // 테두리 두께
-    //     radius: distRadius);
-
-    if (isWithin == true) {
-      return Set.from([circleWithIn]);
+    // 알람 켜져있으면 붉게
+    if (isAlarmOn == true) {
+      _circles.add(Circle(
+          circleId: CircleId('circleAlarm'), // circle간 식별자
+          center: targetLatLng,
+          fillColor: Colors.red.withOpacity(0.5), // 원 색
+          strokeColor: Colors.red, // 테두리 색
+          strokeWidth: 1, // 테두리 두께
+          radius: distRadius));
     } else {
-      return Set.from([circleNotWithIn]);
+      _circles.add(Circle(
+          circleId: CircleId('circleNormal'),
+          // circle간 식별자
+          center: targetLatLng,
+          fillColor: Colors.blue.withOpacity(0.5), // 원 색
+          strokeColor: Colors.blue, // 테두리 색
+          strokeWidth: 1,
+          // 테두리 두께
+          radius: distRadius));
     }
+    locationController?.updateMap();
   }
-
+  
   // 구글 맵 생성시 GoogleMapController를 state로 저장
   onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+  
+  // locationController 세팅
+  setLocationController(LocationController controller) {
+    locationController = controller;
   }
 
   void fireAlarm() async {
@@ -407,5 +406,3 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 }
-
-
