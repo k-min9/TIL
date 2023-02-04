@@ -5,17 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:geo_alarm/location_service.dart';
 import 'package:geo_alarm/screen/home_screen.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/src/places.dart';  // Prediction
 import 'package:http/http.dart' as http;
 
 class LocationController extends GetxController{
-  bool _loading = false; // 어딘가를 고름
-  bool get loading => _loading;
+  bool _isSearched = false; // 검색으로 타겟 선정 후 flag로 사용하여 homeController 쪽에서 마커 세팅
+  bool get isSearched => _isSearched;
 
-  bool _ismarked = false;
+  bool _ismarked = false;  // 탭으로 타겟 선정
   bool get ismarked => _ismarked;
 
   Placemark _pickPlaceMark = Placemark();
@@ -45,7 +44,7 @@ class LocationController extends GetxController{
 
   // PlaceMarker 설정
   void setLocation (String placeId, String mainText, String description, GoogleMapController? mapController) async {
-    _loading = true;
+    _isSearched = true;
     _ismarked = false;
 
     _pickPlaceMark = Placemark(name: mainText);
@@ -55,13 +54,18 @@ class LocationController extends GetxController{
       location.last.latitude,
       location.last.longitude,
     );
-
     update();
   }
 
-  // 마크 완료 후 보고
+  // 마킹 완료 후 flag 끄고 보고
   void setIsMakred () {
+    _isSearched = false;
     _ismarked = true;
+  }
+
+  // 화면 갱신
+  void updateMap() {
+    update();
   }
 
 }
