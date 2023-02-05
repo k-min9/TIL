@@ -157,18 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     16
                                 ),
                               );
-                            // 없으면 현재 위치(자신)을 보여줌
-                            } else {
-                              mapController?.animateCamera(
-                                CameraUpdate.newLatLngZoom(
-                                    LatLng(
-                                      start.latitude!,
-                                      start.longitude!,
-                                    ),
-                                    16
-                                ),
-                              );
+
                             }
+                            // 없으면 현재 위치(자신)을 보여줌... 필요한가?
+                            // else {
+                            //   mapController?.animateCamera(
+                            //     CameraUpdate.newLatLngZoom(
+                            //         LatLng(
+                            //           start.latitude!,
+                            //           start.longitude!,
+                            //         ),
+                            //         16
+                            //     ),
+                            //   );
+                            // }
                           }
                         }
 
@@ -192,6 +194,45 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                                 child: Column(
                                   children: [
+                                    SizedBox(width: 5),
+                                    Row(
+                                      children: [
+                                        Expanded(child: Slider(
+                                          value: distRadius,
+                                          min: 50,
+                                          max: 1000,
+                                          onChanged: onSliderChanged,
+                                        )),
+                                        Text(distRadius.toInt().toString() + 'm')
+                                      ],
+                                    ),
+                                    SizedBox(width: 5),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: ElevatedButton(onPressed: () async {}, child: Text('위치 저장')),
+                                        ),
+                                        Expanded(
+                                          child: isAlarmOn?
+                                          ElevatedButton(
+                                              onPressed: () async {setState(() {
+                                                isAlarmOn = false;
+                                                isAlarmStateChanged = true; // flag
+                                          });},
+                                              child: Text('알람 중지')):
+                                          ElevatedButton(
+                                              onPressed: () async {setState(() {
+                                            isAlarmOn = true;
+                                            isAlarmStateChanged = true; // flag
+                                          });},
+                                              child: Text('알람 시작'))
+                                        ),
+                                        Expanded(
+                                            child: ElevatedButton(onPressed: () async {}, child: Text('검색 초기화'))
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(width: 5),
                                     Switch(
                                       value: isAlarmOn,
                                       onChanged: (value) {
@@ -207,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     //     width: 200,
                                     //     child: adContainer
                                     // ),
-                                    Center(
+                                    Container(
                                       child: Container(
                                         child: AdmobBanner(
                                           adUnitId: "ca-app-pub-8480822096988962/6768547151",
@@ -275,6 +316,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           )))),
             ],
           ));
+    });
+  }
+
+  // Slider 구현
+  void onSliderChanged(double val){
+    isAlarmStateChanged = true;  // 지금은 살짝 편법
+    setState(() {
+      distRadius = val;
     });
   }
 
