@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:geo_alarm/location_service.dart';
-import 'package:geo_alarm/screen/home_screen.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,6 +15,9 @@ class LocationController extends GetxController{
 
   bool _ismarked = false;  // 탭으로 타겟 선정
   bool get ismarked => _ismarked;
+
+  bool _shouldCameraMove = true; // 검색 또는 마킹으로 인한 카메라 이동 필요. true면 초기위치도 잡아줌
+  bool get shouldCameraMove => _shouldCameraMove;
 
   Placemark _pickPlaceMark = Placemark();
   Placemark get pickPlaceMark => _pickPlaceMark;
@@ -44,6 +46,7 @@ class LocationController extends GetxController{
 
   // PlaceMarker 설정
   void setLocation (String placeId, String mainText, String description, GoogleMapController? mapController) async {
+    _shouldCameraMove = true;
     _isSearched = true;
     _ismarked = false;
 
@@ -61,6 +64,18 @@ class LocationController extends GetxController{
   void setIsMakred () {
     _isSearched = false;
     _ismarked = true;
+  }
+
+  void setInitialize() {
+    _isSearched = false;
+    _ismarked = false;
+    _shouldCameraMove = true;
+    _pickPlaceMark = Placemark();
+  }
+
+  // 카메라 초기 설정
+  void setShouldCameraMove (bool value) {
+    _shouldCameraMove = value;
   }
 
   // 화면 갱신
