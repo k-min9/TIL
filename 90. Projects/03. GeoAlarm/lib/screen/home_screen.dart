@@ -46,16 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
   static bool isAlarmStateChanged = false; // 갱신 flag 용
   static int alarmId = 1;
 
+
+
   // 카메라 중간위치 : latitude - 위도 , longitude - 경도
   static LatLng targetLatLng = LatLng(
     37.5233273,
     126.921252,
   );
-  static double _zoom = 15;
+  static double _zoom = 16;
   static CameraPosition _cameraPosition = CameraPosition(
     target: targetLatLng,
     zoom: _zoom, // 카메라 확대 정도
   );
+  static bool shouldCameraMove = false; // true시 카메라 이동 flag
 
   // 구글 맵 상수
   static double distRadius = 100;
@@ -80,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             backgroundColor: Colors.white,
             actions: [
+              // 현재 위치로 이동하는 버튼 (여기에 검색 초기화도 넣을까?)
               IconButton(
                 onPressed: () async {
                   // 아직 구글 맵 생성 안 됨
@@ -89,16 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   // 초기 세팅
                   myLocationData = await location.getLocation();
-
-                  // 맵 컨트롤러로 카메라 위치 이동
-                  mapController!.animateCamera(
-                    CameraUpdate.newLatLng(
-                      LatLng(
-                          myLocationData.latitude!,
-                          myLocationData.longitude!
-                      ),
-                    ),
-                  );
+                  locationController.setShouldCameraMove(true); // 이제 카메라 이동할거임
                 },
                 color: Colors.blue,
                 icon: Icon(
@@ -136,41 +131,46 @@ class _HomeScreenState extends State<HomeScreen> {
                           // 검색으로 타겟을 잡은 경우, 타겟 지점 갱신
                           if(locationController.isSearched == true) {
                             targetLatLng = locationController.pickLatLng;
+                            _zoom = 16; // zoom 거리도 초기화
                           }
 
                           final start = snapshot.data!; // 내 위치
                           final end = targetLatLng; // 타겟 장소
+                          
+                          // 카메라가 이동할 필요가 있음
+                          if (locationController.shouldCameraMove == true) {
+                            locationController.setShouldCameraMove(false);
+                            // 알람이 켜져있을때 (나와 대상의 위치를 같이 보여주거나, 처음시작점과 대상의 위치를 같이 보여줌)
+                            if (isAlarmOn == true) {
 
-                          // 알람이 켜져있을때 (나와 대상의 위치를 같이 보여주거나, 처음시작점과 대상의 위치를 같이 보여줌)
-                          if (isAlarmOn == true) {
+                              /// TODO...
 
-                          // 알람이 꺼져있을때
-                          } else {
-                            // 검색이나 마킹한 대상이 있으면 타겟을 보여줌
-                            if (locationController.isSearched == true || locationController.ismarked == true) {
-                              mapController!.animateCamera(
-                                CameraUpdate.newLatLngZoom(
-                                    LatLng(
-                                      end.latitude,
-                                      end.longitude,
-                                    ),
-                                    16
-                                ),
-                              );
-
-                            }
-                            // 없으면 현재 위치(자신)을 보여줌... 필요한가?
-                            // else {
-                            //   mapController?.animateCamera(
-                            //     CameraUpdate.newLatLngZoom(
-                            //         LatLng(
-                            //           start.latitude!,
-                            //           start.longitude!,
-                            //         ),
-                            //         16
-                            //     ),
-                            //   );
-                            // }
+                              // 알람이 꺼져있을때
+                            } else {
+                              // 검색이나 마킹한 대상이 있으면 타겟을 보여줌
+                              if (locationController.isSearched == true || locationController.ismarked == true) {
+                                mapController!.animateCamera(
+                                  CameraUpdate.newLatLngZoom(
+                                      LatLng(
+                                        end.latitude,
+                                        end.longitude,
+                                      ),
+                                      _zoom
+                                  ),
+                                );
+                              // 없으면 현재 위치(자신)을 보여줌, 초기위치 설정에 사용
+                              } else {
+                                mapController?.animateCamera(
+                                  CameraUpdate.newLatLngZoom(
+                                      LatLng(
+                                        start.latitude!,
+                                        start.longitude!,
+                                      ),
+                                      _zoom
+                                  ),
+                                );
+                              }
+                            }                            
                           }
                         }
 
@@ -219,12 +219,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 isAlarmOn = false;
                                                 isAlarmStateChanged = true; // flag
                                           });},
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                              ),
                                               child: Text('알람 중지')):
                                           ElevatedButton(
                                               onPressed: () async {setState(() {
                                             isAlarmOn = true;
                                             isAlarmStateChanged = true; // flag
                                           });},
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                              ),
                                               child: Text('알람 시작'))
                                         ),
                                         Expanded(
@@ -232,17 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(width: 5),
-                                    Switch(
-                                      value: isAlarmOn,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isAlarmOn = value;
-                                          isAlarmStateChanged = true; // flag
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(width: 5),
+                                    SizedBox(width: 20, height: 30),
                                     // Container(
                                     //     height: 50,
                                     //     width: 200,
@@ -328,7 +324,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // StreamBuild의 setState관련
-  void onAfterStreamBuild(BuildContext context) {
+  void onAfterStreamBuild(BuildContext context) async {
+    _zoom = await mapController!.getZoomLevel();
     // locationController의 검색 갱신을 여기서 확인
     if(locationController?.isSearched == true) {
       setMarkerOnPos(targetLatLng);
@@ -465,6 +462,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // 테두리 두께
           radius: distRadius));
     }
+
+    locationController?.setShouldCameraMove(true);
     locationController?.updateMap();
   }
   
@@ -505,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> {
         android: androidPlatformChannelSpecifics
     );
 
-    await flutterLocalNotificationsPlugin.show(0, '도착하였습니다.', '설정 : 목적지까지 100m', platformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, '도착하였습니다.', '설정 : 목적지까지 '+ distRadius.toInt().toString() +'m', platformChannelSpecifics);
 
   }
 }
