@@ -2,15 +2,11 @@
 
 alarm based on distance
 
-## Getting Started
+## 감상
 
-This project is a starting point for a Flutter application.
+- 개요 : 프로젝트 상용화 후 Flutter 감상
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Flutter는 화면 단위, Indention 위주라 코드 읽기가 점점 난해해진다. 이는 잘 모듈화를 하여도 변하지 않는 문제이다.
+2. 라이브러리들이 자체적으로 build.gradle을 가지고 있어서 버전이 통일되지 않고 충돌한다.
+3. Android, IOS 양쪽을 한번에 구현하는 것을 장점으로 삼지만, 핵심 라이브러리가 한쪽을 지원하지 않는 경우 의미가 없어진다.  
+이럴경우, 수많은 패키지를 활용할 수 있다는 것이 오히려 단점으로 작동한다.
