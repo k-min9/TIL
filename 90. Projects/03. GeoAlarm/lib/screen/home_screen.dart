@@ -73,10 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return GetBuilder<LocationController>(builder: (locationController) {
       return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(
-              'GeoAlarm',
+              '거리 알람',
               style: TextStyle(
-                  color: Colors.blue,
+                  color: Colors.brown,
                   fontSize: 26,
                   fontWeight: FontWeight.w900),
               textAlign: TextAlign.center,
@@ -200,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Expanded(child: Slider(
                                           value: distRadius,
                                           min: 50,
-                                          max: 1000,
+                                          max: 2000,
                                           onChanged: onSliderChanged,
                                         )),
                                         Text(distRadius.toInt().toString() + 'm')
@@ -210,35 +211,51 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Row(
                                       children: [
                                         Expanded(
-                                            child: ElevatedButton(onPressed: () async {}, child: Text('위치 저장')),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: ElevatedButton(onPressed: () async {}, child: Text('위치 저장'))
+                                            ),
                                         ),
                                         Expanded(
-                                          child: isAlarmOn?
-                                          ElevatedButton(
-                                              onPressed: () async {setState(() {
-                                                isAlarmOn = false;
-                                                isAlarmStateChanged = true; // flag
-                                          });},
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
-                                              ),
-                                              child: Text('알람 중지')):
-                                          ElevatedButton(
-                                              onPressed: () async {setState(() {
-                                            isAlarmOn = true;
-                                            isAlarmStateChanged = true; // flag
-                                          });},
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                              ),
-                                              child: Text('알람 시작'))
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                                            child: isAlarmOn?
+                                            ElevatedButton(
+                                                onPressed: () async {setState(() {
+                                                  isAlarmOn = false;
+                                                  isAlarmStateChanged = true; // flag
+                                                });},
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                                child: Text('알람 중지')):
+                                            ElevatedButton(
+                                                onPressed: () async {setState(() {
+                                                  isAlarmOn = true;
+                                                  isAlarmStateChanged = true; // flag
+                                                });},
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                                child: Text('알람 시작'))
+                                          )
                                         ),
                                         Expanded(
-                                            child: ElevatedButton(onPressed: () async {}, child: Text('검색 초기화'))
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    _circles.clear();
+                                                    _markers.clear();
+                                                    locationController.setInitialize();
+                                                  },
+                                                  child: Text('상태 초기화')
+                                              )
+                                            )
                                         ),
                                       ],
                                     ),
-                                    SizedBox(width: 20, height: 30),
+                                    SizedBox(width: 20, height: 15),
                                     // Container(
                                     //     height: 50,
                                     //     width: 200,
