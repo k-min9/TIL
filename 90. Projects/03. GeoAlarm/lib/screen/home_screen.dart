@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:geo_alarm/location_controller.dart';
 import 'package:geo_alarm/location_search_dialog.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,6 +12,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:location/location.dart';
 import 'package:geo_alarm/main.dart';
+import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -248,6 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     _circles.clear();
                                                     _markers.clear();
                                                     locationController.setInitialize();
+                                                    FlutterRingtonePlayer.stop();
+                                                    Vibration.cancel();
                                                   },
                                                   child: Text('상태 초기화')
                                               )
@@ -495,18 +499,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void fireAlarm() async {
-    print('Test Fired');
-
-    // var vibrationPattern = new Int64List(8);
-    // vibrationPattern[0] = 500;
-    // vibrationPattern[1] = 1000;
-    // vibrationPattern[2] = 500;
-    // vibrationPattern[3] = 2000;
-    // vibrationPattern[4] = 500;
-    // vibrationPattern[5] = 3000;
-    // vibrationPattern[6] = 500;
-    // vibrationPattern[7] = 500;
-
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
@@ -514,14 +506,23 @@ class _HomeScreenState extends State<HomeScreen> {
       // icon: 'app_icon',
       // sound: RawResourceAndroidNotificationSound('bgm1'),
       // largeIcon: DrawableResourceAndroidBitmap('logo'),
-      // vibrationPattern: vibrationPattern,
     );
 
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics
     );
 
+    FlutterRingtonePlayer.play(
+      android: AndroidSounds.alarm,
+      looping: true, // Android only - API >= 28
+      volume: 0.3, // Android only - API >= 28
+      asAlarm: true, // Android only - all APIs
+    );
+
+    Vibration.vibrate(pattern: [100, 200, 400], repeat: 1);
+
     await flutterLocalNotificationsPlugin.show(0, '도착하였습니다.', '설정 : 목적지까지 '+ distRadius.toInt().toString() +'m', platformChannelSpecifics);
+
 
   }
 }
