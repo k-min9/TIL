@@ -1,0 +1,10 @@
+import java.util.Arrays;
+import java.util.List;
+
+public class InfoKor implements InfoFactory{
+
+  @Override
+  public List<String> getInfoData(String keyword) {
+    return Arrays.asList("apple", "banana", "melon");
+  }
+}
