@@ -6,8 +6,6 @@
 
 [함수 활용](BOJ/@@functions.py)
 
-
-
 - 내가 알고리즘을 기본적으로 python으로 푸는 이유
 - C++가 또 하나의 선택지가 될 수 있는 이유
 
@@ -17,18 +15,28 @@ pypy는 기본적으로 메모리를 많이 쓰는 대신에 빠르다. (메모�
 
 다만 pypy는 재귀에 약하기 때문에, 재귀가 많을 경우 그냥 python3가 유리하다.
 
+- 힌트
+  - dir(객체) : 사용할 수 있는 메서드 등을 정리
+    - dir('234')
+  - help(패키지) : 패키지 관련 설명 및 옵션 제공
+    - help([].sort)
+    - help(collections)
+    - help(collections.defaultdict)
+
 ## 정리
 
 ### Python
 
 #### 계산, 문자열 전처리
 
-```
+```python
 from math import gcd
-ia a^b: 둘이 같지 않으면
+if a^b: 둘이 같지 않으면
 eval() : 안의 내용을 연산함(속도 주의)
 ''.join(내용물) : 합치기
+[].sort(reverse=True)
 words = words.replace('..','') : 문자열 바꾸기, (while '..' in words)와 조합해서 엄청 많이 씀
+ord(문자) / chr(정수)
 ```
 
 #### 자료형, 함수 및 라이브러리
@@ -36,6 +44,7 @@ words = words.replace('..','') : 문자열 바꾸기, (while '..' in words)와 �
 ```python
 s[:] = ~ : 얕은 복사 하는 법
 zip() : 대각선 뒤집기에 자주 쓰임
+collections.deque : append, appendleft, pop, popleft
 collections.defaultdict(<list>) : default값을 빈 list로 가져서 관리가 편한 dictionary
 collections.Counter(list) : 아이템 갯수를 계산해 딕셔너리 리턴 -> .most_common(순위)와 조합
 for idx, num in enumerate(list, 시작 idx번호): 리스트의 내용물을 순서와 함께 반복
@@ -55,6 +64,24 @@ from bisect import bisect_left : 이진 검색, 사용전 sort 주의
 #### DFS
 
 준비물 : visited
+
+```python
+def dfs(cnt, answer):
+    global answer_max, answer_min
+
+    # 도달
+    if cnt == N+1:
+        answer_max = max(answer_max, answer)
+        answer_min = min(answer_min, answer)
+        return
+
+    for i in range(10):
+        if not chk[i]: 
+            if cnt==0 or eval(answer[-1] + exp[cnt-1] + str(i)):
+                chk[i] = 1
+                dfs(cnt+1, answer + str(i)) 
+                chk[i] = 0
+```
 
 #### DP
 
@@ -149,7 +176,7 @@ for m in range(1,n+1):
 
 예시)
 
-```
+```python
 def union(a, b):
     a = find(a)
     b = find(b)
@@ -178,16 +205,10 @@ for weight, start, end in edges:
 print(answer)
 ```
 
-
-
 #### 트라이
 
 개요 : 문자열 검색 특화, 삼성 역량 테스트 B형 수준
 
-
-
 #### 비트마스크 완전탐색
-
-
 
 #### 2-SAT
