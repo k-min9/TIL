@@ -22,7 +22,7 @@ public class Showpay {
 
   String payDt;
 
-  String payCost;
+  int payCost;
 
   String payMethodCd;
 

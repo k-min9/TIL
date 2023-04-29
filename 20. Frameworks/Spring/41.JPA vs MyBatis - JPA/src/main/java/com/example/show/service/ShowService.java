@@ -1,11 +1,16 @@
 package com.example.show.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.show.dto.ShowDetailDto;
 import com.example.show.dto.ShowDto;
 import com.example.show.entity.Show;
+import com.example.show.entity.Showpay;
 import com.example.show.repository.ShowRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -35,4 +40,30 @@ public class ShowService {
     return result;
   }
 
+
+  private Map<String, Object> getShowList(String user_no, String start_dt) {
+    Map<String, Object> result = new HashMap<>();
+    List<ShowDetailDto> dtos = new ArrayList<>();
+
+    List<Show> shows = showRepository.findShowJoinPay(user_no, start_dt);
+    for (Show show : shows) {
+      ShowDetailDto dto = new ShowDetailDto();
+      dto.setShow_no(show.getShowNo());
+      dto.setShow_time(show.getShowTime());
+      dto.setShow_start_dt(show.getStartDt());
+      dto.setShow_end_dt(show.getEndDt());
+      for (Showpay showpay: show.getShowpays()) {
+        dto.setShow_pay_dt(showpay.getPayDt());
+        if ("C".equals(showpay.getPayMethodCd())) {
+          dto.setCard_pay(dto.getCard_pay()+showpay.getPayCost());
+        } else {
+          dto.setPoint_pay(dto.getPoint_pay()+showpay.getPayCost());
+        }
+      }
+      dtos.add(dto);
+    }
+    result.put("list", dtos);
+
+    return result;
+  }
 }
