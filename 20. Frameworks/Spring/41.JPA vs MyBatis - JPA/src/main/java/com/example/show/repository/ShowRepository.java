@@ -15,7 +15,7 @@ public interface ShowRepository extends JpaRepository<Show, String> {
   List<Show> findShowCustom(@Param("userNo") String userNo, @Param("startDt") String startDt);
 
   // 특정 인물이 특정 날짜 이래로 본 쇼와 결제 금액 전부
-  @Query("select s from Show join fetch s.pays su where s.user.userNo = :userNo and s.startDt >= :startDt")
+  @Query("select s from Show join fetch s.pays su where s.user.userNo = :userNo and s.startDt >= :startDt order by s.startDt")
   List<Show> findShowJoinPay(@Param("userNo") String userNo, @Param("startDt") String startDt);
 
 }
