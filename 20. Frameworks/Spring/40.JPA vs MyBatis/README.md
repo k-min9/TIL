@@ -19,7 +19,8 @@
 2. Entity 구성
    - class 위에 @Entity @Table(name="t_user") @Getter @Setter @NoargsConstructor      ; Entity는 @Data 사용시 toString 무한루프 발생
    - @Id @Column(name="USER_NO") String userNo;                                      ; 언더바(_)없이 카멜케이스로
-
+3. DTO 구성
+   - class 위에 @Data @NoargsConstructor                                              ; DTO는 바로 @Data 사용해버리기
 
 ## Mybatis
 
