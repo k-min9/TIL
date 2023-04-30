@@ -41,7 +41,7 @@ public class ShowService {
   }
 
 
-  private Map<String, Object> getShowList(String user_no, String start_dt) {
+  public Map<String, Object> getShowList(String user_no, String start_dt) {
     Map<String, Object> result = new HashMap<>();
     List<ShowDetailDto> dtos = new ArrayList<>();
 
