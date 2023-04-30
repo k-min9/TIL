@@ -21,6 +21,8 @@
    - @Id @Column(name="USER_NO") String userNo;                                      ; 언더바(_)없이 카멜케이스로
 3. DTO 구성
    - class 위에 @Data @NoargsConstructor                                              ; DTO는 바로 @Data 사용해버리기
+4. Service(Impl) 작성
+5. Controller 작성
 
 ## Mybatis
 
