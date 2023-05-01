@@ -28,3 +28,9 @@
 
 1. application.properties 구성
    - spring.datasource.url=jdbc:mariadb://localhost:3306                             ; DB 스키마 적으면 안 됨!
+2. DTO 구성
+3. 해당 DTO내지 그 리스트를 반환하는 mapper interface 작성
+4. main>resources>mapper에 해당 mapper class이름을 namespace로 가지는 xml 파일 작성
+   - id(함수이름), parameterType, resultType
+5. Service(Impl) 작성
+6. Controller 작성
