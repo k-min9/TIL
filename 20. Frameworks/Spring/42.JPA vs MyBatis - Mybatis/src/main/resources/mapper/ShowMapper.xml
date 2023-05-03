@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.show.mapper.ShowMapper"> 
+
+  <select id="getShowData" parameterType="String" resultType="com.example.show.dto.ShowDto">
+    select count(*) as show_count
+    , sum(show_charge) as show_charge
+    , sum(show_time) as show_time
+    , round(sum(show_charge)/1000*0.232, 1) as charge_reduction
+    from show.t_show     -- [스키마 이름].[테이블 이름]
+    where 1-1
+    and user_no=#{user_no}
+    and DATE(show_start_dt)>=#{start_dt}
+  </select>
+
+  <select id="getShowList" parameterType="String" resultType="com.example.show.dto.ShowDetailDto">
+    select a.show_no as show_no
+    , a.show_charge as show_charge
+    , a.show_time as show_time
+    , to_char(a.show_start_dt, 'YYYY-MM-DD HH24:MI:SS') as show_start_dt
+    , to_char(a.show_end_dt, 'YYYY-MM-DD HH:MI') as show_end_dt
+    , p.pay_datetime as pay_datetime
+    , case p.paymethod_code when 'C' then p.pay_cost else 0 end as card_pay
+    , case p.paymethod_code when 'P' then p.pay_cost else 0 end as point_pay
+    from show.t_show a
+    join show.t_show_pay p
+    on a.show_no = p.show_no
+    where 1=1
+    and user_no=#{user_no}
+    and DATE(show_start_dt)>=#{start_dt}
+  </select>
+
+</mapper>
