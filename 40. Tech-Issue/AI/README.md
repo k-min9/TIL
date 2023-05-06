@@ -11,6 +11,7 @@
   - 2차원 matrix, 다차원 tensor
     - 차원 = 채널 = depth
   - 유명한 이미지 인식 대회(ImageNet Large Scale Visual Recognition Competition)의 AlexNet이 CNN의 전환기
+  - 도메인 적응 문제 : 추론 환경이 다르면 AI는 제 기능을 수행하지 못함
 
 - 강인공지능 : 스스로 판단하고 결정하는 영화에서 말하는 인공지능
   - 범용성을 가지는 범인공지능
@@ -60,3 +61,23 @@
     - 문장/문서분류
     - Sequence-to-Sequence : 번역, 요약
     - 질의 응답 : IR(Information Retrieval) : 과거 유사답변, MRC : 매뉴얼 내 가능성 높은 영역을 반환
+
+- 시계열데이터 처리
+  - 순환신경망(RNN; Recurrent Neural Network) : 과거 데이터 처리 과정일부를 가져와 현 시점에 반영하는 인공신경망
+    - 벡터 형태로 정보(feature)를 넘김. 정보의 누적이 인코딩, 결과의 출력이 디코딩
+    - 장점 : 과거 정보 반영, 가변길이 데이터 처리, 다양한 구조로 구출
+    - 단점 : 느림, 불안정한 학습, 폭발적 학습량 증가(Gradient Exploding), 여러번 압축된 과거 정보의 활용(Gradient Vanishing)
+    - 성능보완(Long-Short Term Memory) : forget(잊어버림), input(현재 정보), output(나중에 얼마나 쓸지) / GRU와 유사
+
+- AI 도입 과정
+  - Offline Process : Training Pipeline. 데이터 가공, 정제, 라벨링
+    - 튜닝 : 좋은 성능이 나올때까지 반복 실험, 하이퍼파라미터 설정
+    - model : Validate&Select > Train > Publish(최종 선택)
+  - Online Process : 추론 하여 실제환경에서 운영
+  - 주의사항 : 훈련시 데이터에만 잘 작동하는 Overfitting
+    - Training, Validation, Test 추천 비율; 8:1:1, 6:2:2
+    - Regularization : 일반화 성능을 향상시켜 Overfitting 개선하는 기법
+      - 데이터 증강 : 반전, 크롭, 노이즈, 색상, 명암, 채도 등으로 데이터를 늘림
+      - Capacity : 모델 복잡 정도. 늘리면 학습을 잘하다 못해 암기해버림
+      - 조기 종료 : 학습 곡선이 어느 정도 올라가면 학습을 종료해버림
+      - 드롭 아웃 : 교육시 몇몇 인공 뉴런을 종료해버림
