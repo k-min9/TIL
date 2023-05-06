@@ -43,6 +43,7 @@ ord(문자) / chr(정수)
 
 ```python
 s[:] = ~ : 얕은 복사 하는 법
+s[::-1] : 뒤집기, 문자열 유효
 zip() : 대각선 뒤집기에 자주 쓰임
 collections.deque : append, appendleft, pop, popleft
 collections.defaultdict(<list>) : default값을 빈 list로 가져서 관리가 편한 dictionary
