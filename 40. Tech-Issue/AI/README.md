@@ -100,3 +100,21 @@
       - 모델 학습시 생긴 경계 주위의 데이터만 사용한다던가
       - Uncertainty Sampling : 애매한 데이터를 우선적으로 라벨링
       - Query by committee : 여러 AI 모델간 의견 불일치가 클 수록 라벨링
+
+- Attention mechanism : 어떤 부분이 의사결정에 중요한지 집중
+  - Attention score : 집중가중치 0~1 -> Context Vector : 문맥 정보를 반영
+  - 디코딩할때마다 과거의 데이터 특징(feature)을 고려할 수 있게 됨
+  - 기계가 어느 부분을 중요하게 판단하였는지 알 수 있게 해줌 > 설명할 수 있는 AI(XAI)
+  - Transformer : 입력 데이터간 self-attention하여 상호 정보교환하는 인공신경망
+
+- AutoML : 스스로 진화하는 인공지능
+  - Feature Engineering : 특징을 선택하고 인코딩 방식을 정함
+  - 하이퍼파라미터 자동탐색 : 그리드서치, 랜덤서치 > 메타 러너 : 하이퍼파라미터 탐색을 위한 RNN. Learn to Learn
+  - 아키텍쳐 탐색 : NAS(Neural Architecture search) : 메타러너와 러너를 조합
+  - AWS, Azure, GCP에서 AutoML 수행을 위한 서비스 제공
+
+- XAI(설명가능한 인공지능)
+  - 배경 : 딥러닝은 왜 이런 결과가 도출되었는지를 알기 힘듬. 개선에도 힘듬
+  - 방식
+    - 어텐션 메커니즘 활용
+    - 설명하는 법을 학습하는 모델을 만들기
