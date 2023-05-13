@@ -52,3 +52,47 @@
   - Docker hub : 가장 유명하고 큰 컨테이너 공유 플랫폼
   - Nexus : Private Repo에서 많이 사용하는 Repo 매니저
   - ECR, GCR : 퍼블릭 클라우드의 서비스
+
+## 설계
+
+- 배포 패턴 : 모놀릭, Service per VM, Container, Serverless
+  - 모놀릭 : Multiple Service per host
+  - Service per VM : 각 서비스가 VM 이미지로 패키징되고 VM 상에서 1개당 1개 서비스로 독립적 동작
+    - OS 포함되어 사이즈가 크고 느리지만 AutoScaling등의 기능도 충분히 기능
+  - Container : 컨테이너 이미지를 패키지화 하고 배포하고 k8s등으로 관리가능(러닝커브 발생)
+    - 가볍고 빠른 배포
+  - Serverless : 인프라 구축없이 소스만 구축. 서버, VM, 컨테이너등에 고민하지 않고 App 개발에 집중.
+    - 퍼블릭 클라우드의 사용량 비례 금액 발생. 추적이 힘듬
+- 브랜치 전략
+  - Git-Flow : Master, Release, Develop, Feature, hotfix 브랜치를 적절히 운용 배치.
+  - Github-Flow : 버그기능, 기능개발을 전부 Master에서 분기
+  - No-Flow : 1개의 브랜치로 모든 작업을 합니다.
+  - Two 브랜치 : Dev -> Master로 운용하고 Config Server나 환경변수 설정이 동반됨
+  - Three 브랜치 : 품질을 중시
+- 배포기법
+  - 롤링 업데이트 : 서버를 1대씩 구버전에서 새버전으로 교체 배포. 구성이 단순.
+  - 블루/그린 : 새로운 버전을 배포하고 혼재 없이 일제히 전환. 운영환경이나 무중단. 공존시간 없음.
+  - 카나리 : 1대 내지 특정 유저에게만 배포했다가 문제 없을 경우 서서히 배포. 난이도 높음. 무중단 가능.
+- Pipeline : 하나의 데이터 처리단계 출력이 다음 단계의 입력으로 이어지는 연결된 구조
+  - 소스/스크립트
+    - stages : 파이프라인 시작
+    - stage('이름') : 파이프라인 단계 구분
+    - step : 단계별 실행 스탭
+- Dockerfile : Docker Image를 만들기 위한 설정 파일
+  - 레이어를 적고 그걸 기준으로 이미지를 생성 (하단 단순 예시)
+
+    ```dockerfile
+      FROM ubuntu:14.04                    # 베이스 이미지 : 태그
+      RUN mkdir -p /app                    # 이미지 생성전 수행 쉘 명령어
+      WORKDIR /app                         # CMD에서 설정한 실행 파일이 실행할 디렉토리
+      ADD ./app                            # 파일을 이미지에 추가
+      RUN apt-get update
+      RUN apt-get install apache2
+      RUN service apache2 start   
+      VOLUME ["/data", "/var/log/httpd"]   # 볼륨 추가. 디렉토리 내용을 컨터에너가 아닌 호스트에 저장
+      EXPOSE                               # 외부노출 포트 정보
+      CMD ["/app/log.backup.sh"]           # 컨테이너 시작시 실행하는 파일이나 스크립트
+    ```
+
+- Kubernetes : 컨테이너화된 App을 자동으로 배포, 스케일링 및 관리해주는 오픈소스 시스템
+  - yaml 파일로 설정하고 spec을 기술하고 container 상태를 유지하게 함
