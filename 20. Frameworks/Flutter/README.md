@@ -395,6 +395,11 @@
 
 </details>
 
+### 배포
+
+1. apk 파일 만들기
+   1. Build > Flutter > Build APK
+
 ### 기타 Tip
 
 - Alt+Enter 애용하자.
