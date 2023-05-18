@@ -10,6 +10,11 @@
     - Vetur
     - Live Server
     - Thunder Client
+- 배포
+  1. 초기화 : ./gradlew.bat init
+  2. 빌드 : ./gradlew.bat clean build -x test
+  3. 실행 : cd .\build\libs로 이동후 java -jar .\파일이름.jar로 실행
+  4. 동작확인
 
 ## JPA
 
