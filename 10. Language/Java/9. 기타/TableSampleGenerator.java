@@ -140,7 +140,29 @@ public class TableSampleGenerator {
 
       conn.close(); // 혹시... 몰라서...
       System.out.println("프로그램 종료");
+    } catch (SQLException e) {
+      int errorCode = e.getErrorCode();
+      String errorMessage;
 
+      switch (errorCode) {
+        case 302:
+          errorMessage = "컬럼 조건에 맞지 않는 입력이 있습니다.";
+          break;
+        case 313:
+          errorMessage = "권한이 없습니다. 로그인 되어있으신가요?";
+          break;
+        case 420:
+          errorMessage = "타입이 일치하지 않습니다.";
+          break;
+        case 803:
+          errorMessage = "중복하는 키 값이 이미 DB에 존재합니다.";
+          break;
+        default:
+          errorMessage = "SQL오류가 발생했습니다. 오류코드 : " + errorCode;
+          break;
+      }
+      System.out.println("SQL 에러 : " + errorMessage);
+      
     } catch (Exception e) {
 
     } finally {
