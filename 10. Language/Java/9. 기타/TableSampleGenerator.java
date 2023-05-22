@@ -368,18 +368,21 @@ public class TableSampleGenerator {
 
   /**
    * HashMap List merge하기
+   * key가 아닌 후보군 수가 key수에 비해 모자랄 경우 반복 사용하여 데이터를 뻥튀기한다.
    */
   private static List<HashMap<String, Object>> mergeHashMapList(List<HashMap<String, Object>> list1, List<HashMap<String, Object>> list2) {
     List<HashMap<String, Object>> mergedList = new ArrayList<>();
 
-    int listSize = Math.min(list1.size(), list2.size());
-    for (int i = 0; i<listSize ; i++) {
+    int j = 0;
+    for (int i = 0; i<list1.size() ; i++) {
       HashMap<String, Object> mergedHashMap = new HashMap<String, Object>();
       mergedHashMap.putAll(list1.get(i));
       mergedHashMap.putAll(list2.get(i));
       mergedList.add(mergedHashMap);
+      j = (j+1)%(list2.size());
     }
 
     return mergedList;
   }
+
 }
