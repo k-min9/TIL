@@ -18,7 +18,35 @@
 
 ## 과정
 
-- 현재 체크
-  - 데이터셋 만들기 : filelists/ljs_audio_text_train_filelist.txt 및 3종 작성
-  - 전처리 : 데이터셋 txt 파일을 cleaned 파일로 변경. python preprocess.py --text_index 1 --filelists filelists/ljs_audio_text_train_filelist.txt
-    - --text_cleaners 'korean_cleaners'로 특정 클리너 지정할 수도 있음.
+- 세팅
+  1. git clone
+  2. 클론 폴더에서 venv 설정 : python -m venv venv
+  3. venv 사용 : source venv/Scripts/activate
+  4. python 버전 설정 : virtualenv venv --python=3.6.7
+      - 설치는 별도로 되어있어야 함
+  5. 라이브러리 설치 : pip install -r requirements.txt
+      - torch, torchvision을 리눅스가 아닌 윈도우 환경에서 설치하기 위해서는 <https://pytorch.org>에 직접 방문해서  
+
+        ``` shell
+        pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+        ```
+
+        등의 명령어를 받아와야한다.
+  6. espeak 설치 : 문자열을 음성으로 변조시키는 프로그램. cleaned 전처리에 필요
+      - <https://espeak.sourceforge.io/download.html>에서 설치
+      - 제어판>시스템>고급시스템설정>환경변수>시스템변수>Path를 Edit>espeak.exe가 되게 설치파일 링크
+      - 재부팅
+  7. 데이터셋 만들기 : filelists/ljs_audio_text_train_filelist.txt 및 3종 작성
+      - |
+  8. 전처리 : 데이터셋 txt 파일을 cleaned 파일로 변경.
+  예시>
+
+      ```shell
+      python preprocess.py --text_index 1 --filelists filelists/ljs_audio_text_train_filelist.txt
+      python preprocess.py --text_index 1 --filelists filelists/ljs_audio_text_val_filelist.txt
+      python preprocess.py --text_index 1 --filelists filelists/ljs_audio_text_test_filelist.txt
+
+      --text_cleaners 'korean_cleaners'로 특정 클리너 지정할 수도 있음.
+      ```
+
+  9. 학습 : python train_latest.py -c configs/ljs_mb_istft_vits.json -m ljs_mb_istft_vits
