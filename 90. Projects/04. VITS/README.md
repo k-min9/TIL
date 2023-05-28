@@ -84,6 +84,19 @@
 
   12. 학습 : python train_latest.py -c <config> -m <folder>
       - 예시 : python train_latest.py -c configs/ljs_mb_istft_vits.json -m ljs_mb_istft_vits
+  13. 출력 : log에 생성된 G_0.pth를 활용
+
+## Audio To Text
+
+- 개요 : wav 파일을 언제 하나하나 입력하고 타이핑하겠습니까. 외부 서비스 쓰면 되지
+- Google Cloud Speech API를 사용하여 wav파일을 텍스트로 바꾸고 txt 파일로 정리하자
+- 사용법
+  1. GCP에서 Speech-To-Text API/서비스를 사용하자
+  2. 사용자인증정보에서 해당 서비스계정을 만들자
+  3. 서비스계정>키>키 추가로 json파일을 받고 credential.json 등 python이 인식할 수 있는 형태로 두자
+  4. audio_to_text.py를 작성하고 sample_rate_hertz 헤르쯔와 language_code를 설정하자
+  5. 필요하면 pip install pip install google-cloud-speech 하고 사용
+  6. 한달 무료는 60분까지. 이후 분당 0.024 달러 약 한시간당 2천원의 사용료가 지불된다 조심!
 
 ## 기타
 
