@@ -22,3 +22,17 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile  
 sudo swapon /swapfile  
 후 실행
+
+## Docker 배포
+
+1. DockerFile 작성 (파일 참조)
+2. docker build -t 이미지 이름 .
+   - docker build -t vits .
+3. [Docker Hub](https://hub.docker.com/) 로그인
+4. docker login
+5. docker tag 이미지_이름 Docker_사용자명/이미지_이름:태그
+   - docker tag vits mingu4969/vits:1.0
+6. docker push Docker_사용자명/이미지_이름:태그
+   - docker push mingu4969/vits:1.0
+   - private 설정은 Docker hub에서 별도로
+7. 다른 곳이나 원하는 장치에서 pull 땡기고 사용하면 끝
