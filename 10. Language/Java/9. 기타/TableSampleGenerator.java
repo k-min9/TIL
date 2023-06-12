@@ -19,6 +19,7 @@ import java.util.Scanner;
  */
 public class TableSampleGenerator {
   
+  private static HashMap<String, HashMap<String, String>> columnInfoMap = new HashMap<String, HashMap<String, String>>();; // column 정보 중 nullable, size, type 저장
   private static HashMap<String, Object> choicesMap = new HashMap<String, Object>(); // column이 가질 수 있는 경우의 수 모음
 
   private static HashSet<String> keysSet = new HashSet<String>();  // key인 column의 set
@@ -187,6 +188,16 @@ public class TableSampleGenerator {
       String columnRemarks = rs.getString("REMARKS");  // 일반적으로 remark에 table에 대한 한글 설명이 있음
       boolean isPk = keysSet.contains(columnName);  // 이 column이 key인지
 
+      // columnInfoMap에 정보 담기
+      HashMap<String, String> columnInfo = new HashMap<String, String>();
+      columnInfo.put("type", dataType); // nullable처리용
+      columnInfo.put("size", String.valueOf(ColumnSize));
+      if (columnNullable) {
+        columnInfo.put("nullable", "Y");
+      } else {
+        columnInfo.put("nullable", "N");
+      }
+
       // keysList, choicesList 식별
       if (isPk) {
         keysList.add(columnName);
@@ -285,6 +296,12 @@ public class TableSampleGenerator {
     if (rs.next()) {
       maxPk = rs.getString(1);
     }
+
+    // CHAR이고 테이블이 비어있을때 자동채번용 기초값 변경
+    HashMap<String, String> columnInfo = columnInfoMap.get(pkColumnName);
+    String size = columnInfo.get("size");
+    if("CHAR".equals(columnInfo.get("type"))) maxPk = String.format("%1$"+size+"s", maxPk).replace(" ", "0"); 
+
     maxPk = nextStrNum(maxPk);
 
     return maxPk;
@@ -384,5 +401,4 @@ public class TableSampleGenerator {
 
     return mergedList;
   }
-
 }
