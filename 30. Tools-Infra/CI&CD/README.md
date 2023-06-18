@@ -96,3 +96,12 @@
 
 - Kubernetes : 컨테이너화된 App을 자동으로 배포, 스케일링 및 관리해주는 오픈소스 시스템
   - yaml 파일로 설정하고 spec을 기술하고 container 상태를 유지하게 함
+- Terraform : 인프라스트럭쳐를 코드로 관리하기 위한 오픈소스도구
+  - 클라우드 인프라스트럭처를 프로그래밍 언어로 정의하고 배포/vm 생성
+  - .tf 파일로 필요내용을 코드로 관리
+
+    ```shell
+    terraform init # 테라폼 실행에 앞서 필요한 파일 다운로드
+    terraform plan # apply전 변경 리소스 체크
+    terraform apply  # 변경 정보 확인 > yes 입력시 CSP 자원 생성/변경
+    ```
