@@ -78,6 +78,11 @@
     - stages : 파이프라인 시작
     - stage('이름') : 파이프라인 단계 구분
     - step : 단계별 실행 스탭
+
+## Tools
+
+- Jenkins : CI/CD 파이프라인을 구축하고 관리하기 위한 오픈 소스 자동화 도구
+  - Jenkinsfile로 관리 : groovy언어로 작성되어 pipline, agent, stages, step, environment로 구성
 - Dockerfile : Docker Image를 만들기 위한 설정 파일
   - 레이어를 적고 그걸 기준으로 이미지를 생성 (하단 단순 예시)
 
@@ -96,6 +101,8 @@
 
 - Kubernetes : 컨테이너화된 App을 자동으로 배포, 스케일링 및 관리해주는 오픈소스 시스템
   - yaml 파일로 설정하고 spec을 기술하고 container 상태를 유지하게 함
+  - kubectl : Kubernetes 클러스터를 관리하기 위한 커맨드 라인 도구 : kubectl apply -f kubectl.yml
+    - 확인은 kubectl get pod나 kubectl get svc 로
 - Terraform : 인프라스트럭쳐를 코드로 관리하기 위한 오픈소스도구
   - 클라우드 인프라스트럭처를 프로그래밍 언어로 정의하고 배포/vm 생성
   - .tf 파일로 필요내용을 코드로 관리
