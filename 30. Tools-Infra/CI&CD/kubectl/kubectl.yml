@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-deploy
+  namespace: default
+  labels:
+    app: sample
+spec:
+  replicas: 2  # 생성할 POD의 개수
+  minReadySeconds: 5  # 롤링 업데이트를 위해 최소한으로 준비되어야 하는 초 단위의 시간
+  progressDeadlineSeconds: 1800  # 롤링 업데이트의 진행 상황을 체크하는 최대 시간 (초 단위)
+  strategy:
+    type: RollingUpdate  # 롤링 업데이트 전략 : 기존 버전의 애플리케이션을 새로운 버전으로 순차적으로 교체하는 방식
+    rollingUpdate:
+      maxSurge: 1  # 롤링 업데이트 중에 동시에 생성할 POD의 최대 개수
+      maxUnavailable: 1  # 롤링 업데이트 중에 사용할 수 없는 POD의 최대 개수
+  selector:
+    matchLabels:
+      app: sample
+  template:
+    metadata:
+      labels:
+        app: sample
+    spec:
+      containers:
+        - name: pod
+          image: asia.gcr.io/PROJECT/sample/practice:1.0  # 컨테이너 이미지의 위치와 버전
+          imagePullPolicy: Always  # 이미지 풀 정책 (항상 최신 이미지를 가져옴)
+          ports:
+            - containerPort: 8080  # 컨테이너가 열어둔 포트
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+  namespace: default
+spec:
+  selector:
+    app: sample
+  type: LoadBalancer  # 서비스의 유형 (로드 밸런서)
+  ports:
+    - name: http
+      port: 80  # 서비스에 노출될 포트
+      protocol: TCP  # 프로토콜 (TCP)
+      targetPort: 8080  # 서비스가 요청을 전달할 POD의 포트
