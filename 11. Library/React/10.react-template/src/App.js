@@ -5,17 +5,58 @@ import "./res/index.css";
 const USER_NO = 'ME0001'
 
 function App() {
-  const [userName, SetUserName] = useState('')
+  const [userName, setUserName] = useState('')
+  const [tabNo, setTabNo] = useState(1)
+  const [useSummary, setUseSummary] = useState({usage_count:0, usage_minute:0, usage_meter:0, carbon_reduction:0})
+  const [useList, setUseList] = useState(null)
 
   const getUserName = () => {
     axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/`)
     .then(response => {
-      SetUserName(response.data?.name)
+      setUserName(response.data?.name)
     })
+    .catch((err)=>console.log(err))
+  }
+
+  const getUseSummary = (ptype) => {
+    axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/usage/summary?ptype=${ptype}`)
+    .then(response => {
+      setUseSummary(response.data)
+    })
+    .catch((err)=>console.log(err))
+  }
+
+  const getUseList = (ptype) => {
+    axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/usage/?ptype=${ptype}`)
+    .then(response => {
+      setUseList(response.data)
+      console.log(response.data)
+    })
+    .catch((err)=>console.log(err))
+  }
+
+  const onTabClick = (no) => {
+    setTabNo(no)
+    getUseSummary(no)
+    getUseList(no)
+  }
+
+  /**
+   * 
+   */
+  function stringToDate(d) {
+    const yy = d.substr(2, 4)
+    const mm = d.substr(5, 7)
+    const dd = d.substr(8, 10)
+    const h = d.substr(11, 13)
+    const m = d.substr(14, 16)
+    return yy+'.'+mm+'.'+dd+' '+h+':'+m
   }
 
   useEffect(() => {
-    // getUserName()
+    getUserName()
+    getUseSummary(1)
+    getUseList(1)
   }, [])
 
   return (
@@ -28,42 +69,56 @@ function App() {
 
       <div className="service-summary">
         <div className="service-summary-tab">
-          <button className="tablinks on">1주일</button>
-          <button className="tablinks">1개월</button>
-          <button className="tablinks">3개월</button>
+          <button className={"tablinks"+ (tabNo === 1 ? " on" : "")} onClick={()=>{onTabClick(1)}}>1주일</button>
+          <button className={"tablinks"+ (tabNo === 2 ? " on" : "")} onClick={()=>{onTabClick(2)}}>1개월</button>
+          <button className={"tablinks"+ (tabNo === 3 ? " on" : "")} onClick={()=>{onTabClick(3)}}>3개월</button>
         </div>
         <div className="spacer-20"></div>
         <div className="service-summary-detail-container">
           <div className="color-gray">이용건수</div>
-          <div>0건</div>
+          <div>{useSummary.usage_count}건</div>
           <div className="color-gray">이용시간</div>
-          <div>100분</div>
+          <div>{useSummary.usage_minute}분</div>
           <div className="color-gray">이동거리</div>
-          <div>69.9km</div>
+          <div>{useSummary.usage_meter}km</div>
           <div className="color-gray">탄소절감효과</div>
-          <div>8.7kg</div>
+          <div>{useSummary.carbon_reduction}kg</div>
         </div>
 
         <hr />
-
+        {useList !== null ?
+        (
         <div class="service-list-container">
-          <div class="service-list-content">
-            <div>
-              <span>30km</span>
-              <span class="color-gray ml-10">60분</span>
-            </div>
-            <div class="service-list-body">
-              <div class="color-gray">이용시간</div>
-              <div>22.01.01 08:00 ~ 22.01.31 09:00</div>
-              <div class="color-gray">결제일시</div>
-              <div>22.01.01</div>
-              <div class="color-gray">결제수단</div>
-              <div>카드 1000원</div>
-            </div>
-          </div>
-          <hr />
+          {useList.list.map(
+            (useDatail,idx) => (
+              <div>
+                  <div class="service-list-content">
+                  <div>
+                    <span>{(useDatail.use_distance)/1000}km</span>
+                    <span class="color-gray ml-10">{useDatail.use_time}분</span>
+                  </div>
+                  <div class="service-list-body">
+                    <div class="color-gray">이용시간</div>
+                    <div>{stringToDate(useDatail.use_start_dt)}~ {useDatail.use_end_dt}</div>
+                    <div class="color-gray">결제일시</div>
+                    <div>22.01.01</div>
+                    <div class="color-gray">결제수단</div>
+                    <div>
+                      {
+                          useDatail.card_pay !==0 && useDatail.point_pay !== 0 ? <div>카드 : {useDatail.card_pay}원 + 포인트 : {useDatail.point_pay}P</div> :
+                          useDatail.card_pay !==0 ? <div>카드 : {useDatail.card_pay}원 </div>: <div>포인트 : {useDatail.point_pay}P </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <hr />
+              </div>
+            )
+          )}
         </div>
-
+        )
+        :
+        (
         <div className="service-empty">
           <div className="service-empty-container">
             <div>
@@ -71,6 +126,8 @@ function App() {
             </div>
           </div>
         </div>
+        )
+      }
       </div>
     </div>
   )
