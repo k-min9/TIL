@@ -3,22 +3,23 @@ package com.example.mybatis.controller;
 import com.example.mybatis.dto.UseDataDto;
 import com.example.mybatis.dto.UseListDto;
 import com.example.mybatis.dto.UserInfoDto;
+import com.example.mybatis.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "*", allowCredentials = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "/api/v1")
 @RequiredArgsConstructor
 public class UserController {
 
+    private final UserService userService;
+
     @RequestMapping(value = "/user/{user_no}", method = RequestMethod.GET)
     public UserInfoDto getUserInfo(@PathVariable("user_no") String user_no) {
-        UserInfoDto result = new UserInfoDto();
-        result.setUser_no("ME0001");
-        result.setName("강민구");
+        UserInfoDto result = userService.getUserInfo(user_no);
         return result;
     }
 

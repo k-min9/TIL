@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mybatis.mapper.UserMapper">
+    <select id="getUserInfo" parameterType="String" resultType="com.example.mybatis.dto.UserInfoDto">
+        SELECT USER_NO AS user_no,
+               NAME as name
+        FROM sample_svc.t_user
+        WHERE user_no = #{user_no}
+    </select>
+</mapper>
