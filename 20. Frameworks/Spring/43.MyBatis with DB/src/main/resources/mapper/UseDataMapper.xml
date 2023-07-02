@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mybatis.mapper.UseDataMapper">
+
+    <select id="getUseData" parameterType="String" resultType="com.example.mybatis.dto.UseDataDto">
+        SELECT COUNT(*) AS usage_count,
+        SUM(use_time) AS usage_minute,
+        SUM(use_distance) AS usage_meter,
+        round(SUM(use_distance)/1000*0.232, 1) AS carbon_reduction
+        FROM sample_svc.t_svc_use
+        WHERE 1=1
+        AND user_no=#{user_no}
+        AND DATE(use_start_dt)>=#{start_dt}
+    </select>
+
+    <select id="getUseList" parameterType="String" resultType="com.example.mybatis.dto.UseListDto">
+        SELECT a.use_no as use_no,
+        a.use_distance as use_distance,
+        a.use_time as use_time,
+        date_format(a.use_start_dt, '%Y-%m-%d %H:%i:%S') as use_start_dt,  <!-- 24시간 -->
+        date_format(a.use_end_dt, '%Y-%m-%d %I:%i:%S') as use_end_dt,  <!-- 12시간 -->
+        p.pay_datetime as pay_datetime,
+        case p.paymethod_code when 'C' then p.pay_cost else 0 end as card_pay,
+        case p.paymethod_code when 'P' then p.pay_cost else 0 end as point_pay
+        from sample_svc.t_svc_use a
+        join sample_svc.t_svc_use_pay p
+        on a.use_no = p.use_no
+        where 1=1
+        and user_no=#{user_no}
+        and DATE(use_start_dt) >= #{start_dt}
+    </select>
+
+</mapper>
