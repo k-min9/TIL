@@ -2,13 +2,26 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import "./res/index.css";
 
-const USER_NO = 'ME0001'
+const USER_NO = 'ME00001'
+
+// 버튼 클래스
+class Button {
+  constructor(id) {
+    this.id = id;
+    this.isSelected = false;
+  }
+}
+
 
 function App() {
   const [userName, setUserName] = useState('')
   const [tabNo, setTabNo] = useState(1)
   const [useSummary, setUseSummary] = useState({usage_count:0, usage_minute:0, usage_meter:0, carbon_reduction:0})
   const [useList, setUseList] = useState(null)
+  const [buttons, setButtons] = useState([
+    new Button('카드'), 
+    new Button('포인트')
+  ])
 
   const getUserName = () => {
     axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/`)
@@ -41,15 +54,23 @@ function App() {
     getUseList(no)
   }
 
-  /**
-   * 
-   */
+  const onTabButton = (id) => {
+    const updatedButtons = buttons.map(btn => {
+      if (btn.id === id) {
+        btn.isSelected = !btn.isSelected;
+      }
+      return btn;
+    });
+    setButtons(updatedButtons);
+  }
+
+
   function stringToDate(d) {
-    const yy = d.substr(2, 4)
-    const mm = d.substr(5, 7)
-    const dd = d.substr(8, 10)
-    const h = d.substr(11, 13)
-    const m = d.substr(14, 16)
+    const yy = d.substring(2, 4)
+    const mm = d.substring(5, 7)
+    const dd = d.substring(8, 10)
+    const h = d.substring(11, 13)
+    const m = d.substring(14, 16)
     return yy+'.'+mm+'.'+dd+' '+h+':'+m
   }
 
@@ -69,6 +90,14 @@ function App() {
 
       <div className="service-summary">
         <div className="service-summary-tab">
+        {buttons.map((button) => (
+            <button
+              key={button.id}
+              className={`tablinks${button.isSelected ? " on" : ""}`}
+              onClick={() => onTabButton(button.id)}
+            >{button.id}</button>))}
+        </div>
+        <div className="service-summary-tab">
           <button className={"tablinks"+ (tabNo === 1 ? " on" : "")} onClick={()=>{onTabClick(1)}}>1주일</button>
           <button className={"tablinks"+ (tabNo === 2 ? " on" : "")} onClick={()=>{onTabClick(2)}}>1개월</button>
           <button className={"tablinks"+ (tabNo === 3 ? " on" : "")} onClick={()=>{onTabClick(3)}}>3개월</button>
@@ -81,6 +110,7 @@ function App() {
           <div>{useSummary.usage_minute}분</div>
           <div className="color-gray">이동거리</div>
           <div>{useSummary.usage_meter}km</div>
+          <div>{(useSummary.use_distance / 1000).toFixed(2)}km</div> {/* 세번째 자리에서 둘째자리까지 반올림 */}
           <div className="color-gray">탄소절감효과</div>
           <div>{useSummary.carbon_reduction}kg</div>
         </div>
