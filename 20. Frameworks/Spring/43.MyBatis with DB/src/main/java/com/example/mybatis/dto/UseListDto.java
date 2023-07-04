@@ -3,6 +3,8 @@ package com.example.mybatis.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter @Setter
 public class UseListDto {
 
@@ -14,4 +16,5 @@ public class UseListDto {
     private String pay_datetime = "2023-01-01";
     private int card_pay = 1;
     private int point_pay = 2;
+    private List<String> pay_method;
 }

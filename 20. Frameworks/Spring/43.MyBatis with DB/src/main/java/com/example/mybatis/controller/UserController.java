@@ -29,12 +29,6 @@ public class UserController {
     @RequestMapping(value = "/user/{user_no}/usage/summary", method = RequestMethod.GET)
     public UseDataDto getUseData(@PathVariable("user_no") String user_no, @RequestParam("ptype")int ptype) {
         String start_dt = getStartDt(ptype);
-//        UseDataDto result = new UseDataDto();
-
-//        result.setUsage_count(3);
-//        result.setUsage_meter(234);
-//        result.setUsage_minute(30);
-//        result.setCarbon_reduction(1.23f);
 
         UseDataDto result = useDataService.getUseData(user_no, start_dt);
 
@@ -42,21 +36,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/{user_no}/usage", method = RequestMethod.GET)
-    public Map<String, Object>  getUseList(@PathVariable("user_no") String user_no, @RequestParam("ptype")int ptype) {
+    public Map<String, Object>  getUseList(@PathVariable("user_no") String user_no,
+                                           @RequestParam(value = "ptype", required = false) Integer ptype) {
+        if (ptype == null) ptype = 1;
         String start_dt = getStartDt(ptype);
-
-//        Map<String, Object> result = new HashMap<>();
-//        List useList = new ArrayList();
-//        UseListDto useListDto1 = new UseListDto();
-//        useListDto1.setUse_no("no.1");
-//        useList.add(useListDto1);
-//        UseListDto useListDto2 = new UseListDto();
-//        useListDto2.setUse_no("no.2");
-//        useList.add(useListDto2);
-//        UseListDto useListDto3 = new UseListDto();
-//        useListDto3.setUse_no("no.3");
-//        useList.add(useListDto3);
-//        result.put("list", useList);
 
         Map<String, Object> result = useDataService.getUseList(user_no, start_dt);
         return result;
