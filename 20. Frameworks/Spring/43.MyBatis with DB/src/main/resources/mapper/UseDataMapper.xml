@@ -32,4 +32,44 @@
         and DATE(use_start_dt) >= #{start_dt}
     </select>
 
+    <select id="getUseList2" parameterType="String" resultMap="useListResultMap">
+        SELECT A.use_no as use_no,
+        A.use_distance as use_distance,
+        A.use_time as use_time,
+        DATE_FORMAT(A.use_start_dt, '%Y-%m-%d %H:%i:%S') as use_start_dt,
+        DATE_FORMAT(A.use_end_dt, '%Y-%m-%d %h:%i:%S %p') as use_end_dt,
+        B.pay_datetime as pay_datetime,
+        CASE B.paymethod_code WHEN 'C' THEN B.pay_cost ELSE 0 END as card_pay,
+        CASE B.paymethod_code WHEN 'P' THEN B.pay_cost ELSE 0 END as point_pay,
+        GROUP_CONCAT(C.paymethod_code_name) AS pay_method <!-- 콤마 조심 -->
+
+        FROM sample_svc.t_svc_use A
+
+        JOIN sample_svc.t_svc_use_pay B
+        ON A.use_no = B.use_no
+
+        LEFT JOIN sample_svc.t_svc_use_pay_method C
+        ON B.svc_use_pay_no = C.svc_use_pay_no
+
+        WHERE 1=1
+        AND A.user_no = #{user_no}
+        AND DATE(A.use_start_dt) >= #{start_dt}
+
+        GROUP BY A.use_no
+    </select>
+
+    <resultMap id="useListResultMap" type="com.example.mybatis.dto.UseListDto">
+        <id property="use_no" column="use_no"/>
+        <result property="use_distance" column="use_distance"/>
+        <result property="use_time" column="use_time"/>
+        <result property="use_start_dt" column="use_start_dt"/>
+        <result property="use_end_dt" column="use_end_dt"/>
+        <result property="pay_datetime" column="pay_datetime"/>
+        <result property="card_pay" column="card_pay"/>
+        <result property="point_pay" column="point_pay"/>
+        <collection property="pay_method" ofType="java.lang.String" javaType="java.util.ArrayList">
+            <result column="pay_method"/>
+        </collection>
+    </resultMap>
+
 </mapper>
