@@ -12,5 +12,6 @@ public interface UseDataMapper {
     UseDataDto getUseData(@Param("user_no")String user_no, @Param("start_dt")String start_dt);
 
     List<UseListDto> getUseList(@Param("user_no")String user_no, @Param("start_dt")String start_dt);
+    List<UseListDto> getUseList2(@Param("user_no")String user_no, @Param("start_dt")String start_dt);
 
 }

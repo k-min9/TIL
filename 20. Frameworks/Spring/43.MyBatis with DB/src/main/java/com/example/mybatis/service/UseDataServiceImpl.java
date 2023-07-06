@@ -27,4 +27,12 @@ public class UseDataServiceImpl implements UseDataService{
         result.put("list", lists);
         return result;
     }
+
+    @Override
+    public Map<String, Object> getUseList2(String user_no, String start_dt) {
+        Map<String, Object> result = new HashMap<>();
+        List<UseListDto> lists = useDataMapper.getUseList2(user_no, start_dt);
+        result.put("list2", lists);
+        return result;
+    }
 }

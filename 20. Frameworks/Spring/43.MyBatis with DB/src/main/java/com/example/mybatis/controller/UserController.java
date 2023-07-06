@@ -45,6 +45,16 @@ public class UserController {
         return result;
     }
 
+    @RequestMapping(value = "/user/{user_no}/usage2", method = RequestMethod.GET)
+    public Map<String, Object>  getUseList2(@PathVariable("user_no") String user_no,
+                                           @RequestParam(value = "ptype", required = false) Integer ptype) {
+        if (ptype == null) ptype = 1;
+        String start_dt = getStartDt(ptype);
+
+        Map<String, Object> result = useDataService.getUseList2(user_no, start_dt);
+        return result;
+    }
+
     // start dt 계산
     private String getStartDt(int type) {
         Calendar cur = Calendar.getInstance();
