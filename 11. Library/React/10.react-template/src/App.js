@@ -17,11 +17,12 @@ function App() {
   const [userName, setUserName] = useState('')
   const [tabNo, setTabNo] = useState(1)
   const [useSummary, setUseSummary] = useState({usage_count:0, usage_minute:0, usage_meter:0, carbon_reduction:0})
-  const [useList, setUseList] = useState(null)
+  const [useList, setUseList] = useState([])
   const [buttons, setButtons] = useState([
     new Button('카드'), 
     new Button('포인트')
   ])
+  const [apiButtons, setApiButtons] = useState([]);
 
   const getUserName = () => {
     axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/`)
@@ -43,7 +44,28 @@ function App() {
     axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/usage/?ptype=${ptype}`)
     .then(response => {
       setUseList(response.data)
-      console.log(response.data)
+    })
+    .catch((err)=>console.log(err))
+  }
+
+  // 결제방식 받아와서 버튼만들기
+  const getApiButtons = () => {
+    axios.get(`http://localhost:8080/api/v1/pay_methods`)
+    .then(response => {
+      const apiData = response.data;
+      // 방법1. 반복문
+      var tmpButtons = []
+            // 반복문을 사용하여 버튼 매핑
+            for (let i = 0; i < apiData.length; i++) {
+              const item = apiData[i];
+              const button = new Button(item.id);
+              tmpButtons.push(button);
+            }
+
+      // 방법2. map
+      // const tmpButtons = apiData.map((item) => new Button(item.id));
+
+      setApiButtons(tmpButtons)
     })
     .catch((err)=>console.log(err))
   }
@@ -64,6 +86,16 @@ function App() {
     setButtons(updatedButtons);
   }
 
+  const onTabButton2 = (id) => {
+    const updatedButtons = apiButtons.map(btn => {
+      if (btn.id === id) {
+        btn.isSelected = !btn.isSelected;
+      }
+      return btn;
+    });
+    setApiButtons(updatedButtons);
+  }
+
 
   function stringToDate(d) {
     const yy = d.substring(2, 4)
@@ -78,6 +110,7 @@ function App() {
     getUserName()
     getUseSummary(1)
     getUseList(1)
+    getApiButtons()
   }, [])
 
   return (
@@ -95,6 +128,14 @@ function App() {
               key={button.id}
               className={`tablinks${button.isSelected ? " on" : ""}`}
               onClick={() => onTabButton(button.id)}
+            >{button.id}</button>))}
+        </div>
+        <div className="service-summary-tab">
+        {apiButtons.map((button) => (
+            <button
+              key={button.id}
+              className={`tablinks${button.isSelected ? " on" : ""}`}
+              onClick={() => onTabButton2(button.id)}
             >{button.id}</button>))}
         </div>
         <div className="service-summary-tab">
@@ -116,7 +157,7 @@ function App() {
         </div>
 
         <hr />
-        {useList !== null ?
+        {useList !== null && useList.length>0 ?
         (
         <div class="service-list-container">
           {useList.list.map(
@@ -132,13 +173,15 @@ function App() {
                     <div>{stringToDate(useDatail.use_start_dt)}~ {useDatail.use_end_dt}</div>
                     <div class="color-gray">결제일시</div>
                     <div>22.01.01</div>
-                    <div class="color-gray">결제수단</div>
+                    <div class="color-gray">결제금액</div>
                     <div>
                       {
                           useDatail.card_pay !==0 && useDatail.point_pay !== 0 ? <div>카드 : {useDatail.card_pay}원 + 포인트 : {useDatail.point_pay}P</div> :
                           useDatail.card_pay !==0 ? <div>카드 : {useDatail.card_pay}원 </div>: <div>포인트 : {useDatail.point_pay}P </div>
                       }
                     </div>
+                    <div class="color-gray">결재수단</div>
+                    {/* <div>useDatail.</div> */}
                   </div>
                 </div>
                 <hr />
