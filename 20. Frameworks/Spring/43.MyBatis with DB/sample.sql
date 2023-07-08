@@ -64,3 +64,20 @@ INSERT INTO `t_svc_use_pay` (`svc_use_pay_no`, `use_no`, `pay_datetime`, `pay_co
 ('PAY0005', 'USE0004', CONCAT(DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 120 DAY), '%Y-%m-%d'), ' 16:00:00'), '4000', 'C'),
 ('PAY0006', 'USE0004', CONCAT(DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 120 DAY), '%Y-%m-%d'), ' 16:00:00'), '2000', 'P');
 
+-- 구조 4
+CREATE TABLE IF NOT EXISTS `t_svc_use_pay_method` (
+`svc_use_pay_method_no` varchar(20) not null comment '서비스이용결제방법번호',
+`svc_use_pay_no` varchar(20) not null comment '서비스이용결제번호',
+`paymethod_code_name` varchar(20) not null comment '결제수단코드이름',
+PRIMARY KEY (`svc_use_pay_method_no`),
+KEY `FK_t_svc_use_pay` (`svc_use_pay_no`),
+CONSTRAINT `FK_t_svc_use_pay` FOREIGN KEY (`svc_use_pay_no`) REFERENCES `t_svc_use_pay` (`svc_use_pay_no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)
+
+INSERT INTO `t_svc_use_pay_method` (`svc_use_pay_method_no`, `svc_use_pay_no`, `paymethod_code_name`) VALUES
+('PM0001', 'PAY0001', '카드'),
+('PM0002', 'PAY0002', '카드'),
+('PM0003', 'PAY0003', '포인트'),
+('PM0004', 'PAY0004', '포인트'),
+('PM0005', 'PAY0005', '카드'),
+('PM0006', 'PAY0006', '포인트');
