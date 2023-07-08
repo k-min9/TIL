@@ -21,8 +21,9 @@ function App() {
   const [buttons, setButtons] = useState([
     new Button('카드'), 
     new Button('포인트')
-  ])
-  const [apiButtons, setApiButtons] = useState([]);
+  ])  // 버튼 리스트 직접 입력
+  const [apiButtons, setApiButtons] = useState([]);  // api로 버튼 리스트 받기
+  const [selectedButtons, setSelectedButtons] = useState([]); // 선택 버튼 필터링
 
   const getUserName = () => {
     axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/`)
@@ -37,7 +38,7 @@ function App() {
     .then(response => {
       setUseSummary(response.data)
     })
-    .catch((err)=>console.log(err))
+    .catch((err)=>console.log(err)) 
   }
 
   const getUseList = (ptype) => {
@@ -49,7 +50,6 @@ function App() {
       // const sortedList = list.slice().sort((a, b) => a.use_no.localeCompare(b.use_no));  // 문자별로 sorted
       // const sortedList = list.slice().sort((a, b) => b.use_no.localeCompare(a.use_no));  // 문자별로 sorted (역순, 내림차순)
 
-      console.log(sortedList)
       setUseList(sortedList)
       // setUseList(response.data.list2)
     })
@@ -104,6 +104,14 @@ function App() {
     setApiButtons(updatedButtons);
   }
 
+  // 선택된 버튼 update
+  const updateSelectedButtons = () => {
+    const selectedIds = buttons
+      .filter((btn) => btn.isSelected)
+      .map((btn) => btn.id);
+    setSelectedButtons(selectedIds);
+  };
+
   // 리스트 파싱
   const parsePayMethod = (payMethod) => {
     if (payMethod && Array.isArray(payMethod) && payMethod.length > 0) {
@@ -134,6 +142,11 @@ function App() {
     getUseList(1)
     getApiButtons()
   }, [])
+
+  // apiButton은 연습용이었으니 우선 제외
+  useEffect(() => {
+    updateSelectedButtons();
+  }, [buttons]); 
 
   return (
     <div>
@@ -180,37 +193,43 @@ function App() {
         <hr />
         {useList !== null && useList.length > 0 ?
         (
+        // 필터링 포함 map 하기
         <div class="service-list-container">
-          {useList.map(
-            (useDatail,idx) => (
-              <div>
-                  <div class="service-list-content">
+          {useList
+            .filter((useDetail) => {
+              const filteredPayMethod = useDetail.pay_method.filter((method) =>
+                selectedButtons.includes(method)
+              );
+              return filteredPayMethod.length > 0 || selectedButtons.length === 0;
+            })
+            .map((useDetail, idx) => (
+              <div key={idx}>
+                <div class="service-list-content">
                   <div>
-                    <span>{(useDatail.use_distance)/1000}km</span>
-                    <span class="color-gray ml-10">{useDatail.use_time}분</span>
+                    <span>{(useDetail.use_distance)/1000}km</span>
+                    <span class="color-gray ml-10">{useDetail.use_time}분</span>
                   </div>
                   <div class="service-list-body">
                     <div class="color-gray">이용시간</div>
-                    <div>{stringToDate(useDatail.use_start_dt)}~ {useDatail.use_end_dt}</div>
+                    <div>{stringToDate(useDetail.use_start_dt)}~ {useDetail.use_end_dt}</div>
                     <div class="color-gray">결제일시</div>
                     <div>22.01.01</div>
                     <div class="color-gray">결제금액</div>
                     <div>
                       {
-                          useDatail.card_pay !==0 && useDatail.point_pay !== 0 ? <div>카드 : {useDatail.card_pay}원 + 포인트 : {useDatail.point_pay}P</div> :
-                          useDatail.card_pay !==0 ? <div>카드 : {useDatail.card_pay}원 </div>: <div>포인트 : {useDatail.point_pay}P </div>
+                          useDetail.card_pay !==0 && useDetail.point_pay !== 0 ? <div>카드 : {useDetail.card_pay}원 + 포인트 : {useDetail.point_pay}P</div> :
+                          useDetail.card_pay !==0 ? <div>카드 : {useDetail.card_pay}원 </div>: <div>포인트 : {useDetail.point_pay}P </div>
                       }
                     </div>
                     <div class="color-gray">결제수단</div>
                     <div>
-                      {parsePayMethod(useDatail.pay_method)}
+                      {parsePayMethod(useDetail.pay_method)}
                     </div>
                   </div>
                 </div>
                 <hr />
               </div>
-            )
-          )}
+            ))}
         </div>
         )
         :
