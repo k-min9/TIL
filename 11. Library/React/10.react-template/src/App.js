@@ -17,7 +17,7 @@ function App() {
   const [userName, setUserName] = useState('')
   const [tabNo, setTabNo] = useState(1)
   const [useSummary, setUseSummary] = useState({usage_count:0, usage_minute:0, usage_meter:0, carbon_reduction:0})
-  const [useList, setUseList] = useState([])
+  const [useList, setUseList] = useState(null)
   const [buttons, setButtons] = useState([
     new Button('카드'), 
     new Button('포인트')
@@ -41,9 +41,17 @@ function App() {
   }
 
   const getUseList = (ptype) => {
-    axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/usage/?ptype=${ptype}`)
+    axios.get(`http://localhost:8080/api/v1/user/${USER_NO}/usage2/?ptype=${ptype}`)
     .then(response => {
-      setUseList(response.data)
+      const list = response.data.list2
+      const sortedList = list.slice().sort((a, b) => a.use_time - b.use_time);  // 시간별로 Sorted
+      // const sortedList = list.slice().sort((a, b) => b.use_time - a.use_time);  // 시간별로 Sorted (역순, 내림차순)
+      // const sortedList = list.slice().sort((a, b) => a.use_no.localeCompare(b.use_no));  // 문자별로 sorted
+      // const sortedList = list.slice().sort((a, b) => b.use_no.localeCompare(a.use_no));  // 문자별로 sorted (역순, 내림차순)
+
+      console.log(sortedList)
+      setUseList(sortedList)
+      // setUseList(response.data.list2)
     })
     .catch((err)=>console.log(err))
   }
@@ -95,6 +103,20 @@ function App() {
     });
     setApiButtons(updatedButtons);
   }
+
+  // 리스트 파싱
+  const parsePayMethod = (payMethod) => {
+    if (payMethod && Array.isArray(payMethod) && payMethod.length > 0) {
+      const tags = payMethod.map((method, idx) => (
+        <span key={idx}>
+          {`#${method}`}
+          {idx !== payMethod.length - 1 && <span className="comma">, </span>}
+        </span>
+      ));
+      return <div className="pay-method-tags">{tags}</div>;
+    }
+    return null;
+  };
 
 
   function stringToDate(d) {
@@ -150,17 +172,16 @@ function App() {
           <div className="color-gray">이용시간</div>
           <div>{useSummary.usage_minute}분</div>
           <div className="color-gray">이동거리</div>
-          <div>{useSummary.usage_meter}km</div>
-          <div>{(useSummary.use_distance / 1000).toFixed(2)}km</div> {/* 세번째 자리에서 둘째자리까지 반올림 */}
+          <div>{useSummary.usage_meter}m / {(useSummary.usage_meter / 1000).toFixed(2)}km</div>
           <div className="color-gray">탄소절감효과</div>
           <div>{useSummary.carbon_reduction}kg</div>
         </div>
 
         <hr />
-        {useList !== null && useList.length>0 ?
+        {useList !== null && useList.length > 0 ?
         (
         <div class="service-list-container">
-          {useList.list.map(
+          {useList.map(
             (useDatail,idx) => (
               <div>
                   <div class="service-list-content">
@@ -180,8 +201,10 @@ function App() {
                           useDatail.card_pay !==0 ? <div>카드 : {useDatail.card_pay}원 </div>: <div>포인트 : {useDatail.point_pay}P </div>
                       }
                     </div>
-                    <div class="color-gray">결재수단</div>
-                    {/* <div>useDatail.</div> */}
+                    <div class="color-gray">결제수단</div>
+                    <div>
+                      {parsePayMethod(useDatail.pay_method)}
+                    </div>
                   </div>
                 </div>
                 <hr />
