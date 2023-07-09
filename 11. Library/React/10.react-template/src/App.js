@@ -50,6 +50,7 @@ function App() {
       // const sortedList = list.slice().sort((a, b) => a.use_no.localeCompare(b.use_no));  // 문자별로 sorted
       // const sortedList = list.slice().sort((a, b) => b.use_no.localeCompare(a.use_no));  // 문자별로 sorted (역순, 내림차순)
 
+      console.log(sortedList)
       setUseList(sortedList)
       // setUseList(response.data.list2)
     })
@@ -115,10 +116,11 @@ function App() {
   // 리스트 파싱
   const parsePayMethod = (payMethod) => {
     if (payMethod && Array.isArray(payMethod) && payMethod.length > 0) {
-      const tags = payMethod.map((method, idx) => (
+      const sortedMethods = payMethod.sort((a, b) => a.localeCompare(b));  // sort도 가능 (id일 경우 a.id.localeCompare(b.id))
+      const tags = sortedMethods.map((method, idx) => (
         <span key={idx}>
           {`#${method}`}
-          {idx !== payMethod.length - 1 && <span className="comma">, </span>}
+          {idx !== sortedMethods.length - 1 && <span className="comma">, </span>}
         </span>
       ));
       return <div className="pay-method-tags">{tags}</div>;
@@ -126,7 +128,27 @@ function App() {
     return null;
   };
 
+  // 금액 표시 : num번째마다 , 넣기
+  // toLocaleString 써도 됨. 아래 예시 있음
+  function numberWithCommas(x, num) {
+    let str = x.toString();
+    let result = '';
+    let count = 0;
+  
+    for (let i = str.length - 1; i >= 0; i--) {
+      result = str[i] + result;
+      count++;
+  
+      if (count % num === 0 && i !== 0) {
+        result = ',' + result;
+      }
+    }
+  
+    return result;
+  }
 
+
+  // 날짜 자르기
   function stringToDate(d) {
     const yy = d.substring(2, 4)
     const mm = d.substring(5, 7)
@@ -213,7 +235,7 @@ function App() {
                     <div class="color-gray">이용시간</div>
                     <div>{stringToDate(useDetail.use_start_dt)}~ {useDetail.use_end_dt}</div>
                     <div class="color-gray">결제일시</div>
-                    <div>22.01.01</div>
+                    <div>{useDetail.pay_datetime.substring(0,10)}</div>
                     <div class="color-gray">결제금액</div>
                     <div>
                       {
@@ -224,6 +246,30 @@ function App() {
                     <div class="color-gray">결제수단</div>
                     <div>
                       {parsePayMethod(useDetail.pay_method)}
+                    </div>
+                    <div class="color-gray">할인율</div>
+                    <div class="color-gray">
+                      {
+                        useDetail.pay_discount !== null ? <div>{(useDetail.pay_discount*100).toFixed(0)}%</div>: <div>0%</div>
+                      }
+                    </div>
+                    <div class="color-gray">최종금액</div>
+                    {/* <div>{(useDetail.card_pay + useDetail.point_pay).toLocaleString('ko-KR')}원</div> */}
+                    <div class>
+                      {
+                        useDetail.pay_discount !== null
+                        ?
+                        <div>
+                          <span style={{ textDecoration: 'line-through', marginRight: '5px', color: 'red'}}>
+                            {numberWithCommas(useDetail.card_pay + useDetail.point_pay, 3)}원
+                          </span>
+                          <span>
+                            {numberWithCommas(((useDetail.card_pay + useDetail.point_pay) * (1 - useDetail.pay_discount)).toFixed(0), 3)}원
+                          </span>
+                        </div>
+                        : 
+                        <div>{numberWithCommas(useDetail.card_pay + useDetail.point_pay, 3)}원</div>
+                      }
                     </div>
                   </div>
                 </div>
