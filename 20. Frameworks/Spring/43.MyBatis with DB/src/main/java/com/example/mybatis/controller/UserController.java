@@ -1,5 +1,6 @@
 package com.example.mybatis.controller;
 
+import com.example.mybatis.dto.PayMethodDto;
 import com.example.mybatis.dto.UseDataDto;
 import com.example.mybatis.dto.UseListDto;
 import com.example.mybatis.dto.UserInfoDto;
@@ -52,6 +53,24 @@ public class UserController {
         String start_dt = getStartDt(ptype);
 
         Map<String, Object> result = useDataService.getUseList2(user_no, start_dt);
+        return result;
+    }
+
+    @RequestMapping(value = "/pay_methods", method = RequestMethod.GET)
+    public List<PayMethodDto> getPayMethod() {
+        List<PayMethodDto> result = new ArrayList<>();
+
+        PayMethodDto pm1 = new PayMethodDto();
+        pm1.setCode("C");
+        pm1.setId("카드2");
+
+        PayMethodDto pm2 = new PayMethodDto();
+        pm2.setCode("P");
+        pm2.setId("포인트2");
+
+        result.add(pm1);
+        result.add(pm2);
+
         return result;
     }
 
