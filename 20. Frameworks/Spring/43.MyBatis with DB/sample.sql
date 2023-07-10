@@ -81,3 +81,15 @@ INSERT INTO `t_svc_use_pay_method` (`svc_use_pay_method_no`, `svc_use_pay_no`, `
 ('PM0004', 'PAY0004', '포인트'),
 ('PM0005', 'PAY0005', '카드'),
 ('PM0006', 'PAY0006', '포인트');
+
+-- 구조 5 (테스트용 반정규화)
+CREATE TABLE IF NOT EXISTS `t_svc_use_pay_discount` (
+`t_svc_use_pay_discount_no` varchar(20) not null comment '서비스할인번호',
+`use_no` varchar(20) not null comment '서비스이용번호',
+`discount_ratio` decimal(10, 2) not null comment '할인율',
+PRIMARY KEY (`t_svc_use_pay_discount_no`)
+)
+
+INSERT INTO `t_svc_use_pay_discount` (`t_svc_use_pay_discount_no`, `use_no`, `discount_ratio`) VALUES
+('PD0001', 'USE0001', '0.7'),
+('PD0002', 'USE0003', '0.5');
