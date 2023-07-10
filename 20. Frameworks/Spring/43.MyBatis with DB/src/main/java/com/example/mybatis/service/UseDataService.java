@@ -12,4 +12,6 @@ public interface UseDataService {
 
     Map<String, Object> getUseList(@Param("user_no")String user_no, @Param("start_dt")String start_dt);
     Map<String, Object> getUseList2(@Param("user_no")String user_no, @Param("start_dt")String start_dt);
+
+    Map<String, Object> getUseListByPaymethodName(@Param("paymethod")String paymethod);
 }
