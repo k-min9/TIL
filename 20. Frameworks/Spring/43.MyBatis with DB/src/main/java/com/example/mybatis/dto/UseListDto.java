@@ -3,6 +3,7 @@ package com.example.mybatis.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter @Setter
@@ -17,4 +18,6 @@ public class UseListDto {
     private int card_pay;
     private int point_pay;
     private List<String> pay_method;
+    private Double pay_discount;  // primitive이면 기본값이 0.0으로 들어가므로 null을 위해 래퍼클래스 Double!
+
 }
