@@ -41,7 +41,9 @@
         B.pay_datetime as pay_datetime,
         CASE B.paymethod_code WHEN 'C' THEN B.pay_cost ELSE 0 END as card_pay,
         CASE B.paymethod_code WHEN 'P' THEN B.pay_cost ELSE 0 END as point_pay,
-        GROUP_CONCAT(C.paymethod_code_name) AS pay_method <!-- 콤마 조심 -->
+        D.discount_ratio as pay_discount,
+        GROUP_CONCAT(C.paymethod_code_name) AS pay_method  <!--문자열 조립 예시 : service에서 분리-->
+        <!-- 콤마 조심 -->
 
         FROM sample_svc.t_svc_use A
 
@@ -51,9 +53,39 @@
         LEFT JOIN sample_svc.t_svc_use_pay_method C
         ON B.svc_use_pay_no = C.svc_use_pay_no
 
+        LEFT JOIN sample_svc.t_svc_use_pay_discount D
+        ON A.use_no = D.use_no
+
         WHERE 1=1
         AND A.user_no = #{user_no}
         AND DATE(A.use_start_dt) >= #{start_dt}
+
+        GROUP BY A.use_no
+    </select>
+
+    <select id="getAllUseList" resultMap="useListResultMap">
+        SELECT A.use_no as use_no,
+        A.use_distance as use_distance,
+        A.use_time as use_time,
+        DATE_FORMAT(A.use_start_dt, '%Y-%m-%d %H:%i:%S') as use_start_dt,
+        DATE_FORMAT(A.use_end_dt, '%Y-%m-%d %h:%i:%S %p') as use_end_dt,
+        B.pay_datetime as pay_datetime,
+        CASE B.paymethod_code WHEN 'C' THEN B.pay_cost ELSE 0 END as card_pay,
+        CASE B.paymethod_code WHEN 'P' THEN B.pay_cost ELSE 0 END as point_pay,
+        D.discount_ratio as pay_discount,
+        GROUP_CONCAT(C.paymethod_code_name) AS pay_method  <!--문자열 조립 예시 : service에서 분리-->
+        <!-- 콤마 조심 -->
+
+        FROM sample_svc.t_svc_use A
+
+        JOIN sample_svc.t_svc_use_pay B
+        ON A.use_no = B.use_no
+
+        LEFT JOIN sample_svc.t_svc_use_pay_method C
+        ON B.svc_use_pay_no = C.svc_use_pay_no
+
+        LEFT JOIN sample_svc.t_svc_use_pay_discount D
+        ON A.use_no = D.use_no
 
         GROUP BY A.use_no
     </select>
@@ -67,9 +99,17 @@
         <result property="pay_datetime" column="pay_datetime"/>
         <result property="card_pay" column="card_pay"/>
         <result property="point_pay" column="point_pay"/>
+        <result property="pay_discount" column="pay_discount"/>
+        <!-- collection들이 마지막에 와야함 -->
+<!--        <collection property="pay_method" column="pay_method" ofType="java.lang.String" javaType="java.util.ArrayList">-->
+<!--            <result property="pay_method" column="pay_method" javaType="String"/>-->
+<!--        </collection>-->
         <collection property="pay_method" ofType="java.lang.String" javaType="java.util.ArrayList">
-            <result column="pay_method"/>
+            <result property="pay_method" column="pay_method" javaType="String" jdbcType="VARCHAR"/>
         </collection>
+
     </resultMap>
+
+
 
 </mapper>
