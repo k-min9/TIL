@@ -7,4 +7,16 @@
   - 이번 소규모 프로젝트에서 많이 만날 파일은 'libil2cpp.so'
 - 준비물 : libil2cpp.so와 metadata
   - libil2cpp.so의 위치 : apk 내부
-  - metadata의 위치 : android폴더 assets 내부
+  - metadata의 위치 : android/data 폴더 내부
+
+## 기반 데이터(Assets) 확보
+
+- 코드와 구조를 파악해도, 그것이 적용될 내용물이 없으면 의미가 없음
+  - 내용물에 접근 할 수 있는지 Assets를 확인해보자
+- 대부분의 데이터는 Android의 data 폴더에 있는 경우가 많다.
+  - data 폴더 구조 예시
+    - Unity, Spine, WebGL 관련 Media 폴더
+    - 음성, 영상, 그림 관련 Assets 폴더
+    - 스크립트, 수치, 테이블 관련 Table 폴더
+    - 구조나 내용물에 대한 Metadata를 담은 hash,json식 Catalog
+- 주의사항 : 상업활동이나 공개목적이 아닌 개인의 학습, 연구에 대해서 막는 곳은 거의 없지만 문제 없는지 약관 등을 확인해보자.
