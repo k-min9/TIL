@@ -29,3 +29,11 @@
 - Export > All Assets로 저장할 폴더를 넣으면 내용물을 볼 수 있다.
 - 관련 참고 프로젝트 : <https://arca.live/b/bluearchive/40797379>
   - 이걸 WebGL이나 안드로이드 버전으로 만들 경우, 일반 App에도 해당 Asset을 사용할 수 있음
+
+## IL2CPP Dumper
+
+- 게임의 실질적인 정보를 담고 있는 libl2cpp.so를 언패킹하여 덤핑(복사)해보자.
+- 이때 사용하는 툴이 fridump 등 여럿있지만 IL2CPP Dumper를 사용하겠다.  
+<https://github.com/Perfare/Il2CppDumper/releases>
+- 실행시 각각 metadata와 libil2cpp.so의 위치를 입력해주면, DummyDll폴더를 생성해준다.
+  - 내부는 핵심 로직부터 사용 라이브러리까지 확인가능한 모든 함수 이름과 input, output을 알 수 있는 dll 파일들로 구성되어있다.
