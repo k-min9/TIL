@@ -37,3 +37,15 @@
 <https://github.com/Perfare/Il2CppDumper/releases>
 - 실행시 각각 metadata와 libil2cpp.so의 위치를 입력해주면, DummyDll폴더를 생성해준다.
   - 내부는 핵심 로직부터 사용 라이브러리까지 확인가능한 모든 함수 이름과 input, output을 알 수 있는 dll 파일들로 구성되어있다.
+
+## ILSPY, DNSPY, DOTPEEK
+
+- IL2CPP Dumper로 추출한 Dll들은 그 자체로는 읽을 수 없다.
+- 이때 형식에 맞춰 Dll들을 읽고 Decompiling 해주는 프로그램이 ILSPY, DNSPY, DOTPEEK(무려 JetBrains산) 등등이다.
+  - 툴들이 거의 다 비슷하게 dll을 읽고 export해주는 기능이 있음
+- 이번에는 그 중에서 ILSpy를 사용해보겠다. self contained는 무설치로 GUI를 제공해서 편하다.
+<https://github.com/icsharpcode/ILSpy/releases>
+
+1. ILSpy.exe 기동
+2. Open으로 dll열기
+3. 저장할 폴더를 하나 만든 후, Save Code로 해당 Dll을 디컴파일링한 내용을 저장
