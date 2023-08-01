@@ -49,3 +49,17 @@
 1. ILSpy.exe 기동
 2. Open으로 dll열기
 3. 저장할 폴더를 하나 만든 후, Save Code로 해당 Dll을 디컴파일링한 내용을 저장
+
+## IDA, Ghidra
+
+- 디컴파일링 된 파일로 확인할 수 있는 건 cs파일 이름과 구성 변수와 메소드 이름, in, out 정보 정도다.
+- cs 파일 내에 아래와 같은 내용이 가득하다고 보면 된다.
+
+  ```cs
+  [Token(Token = "0x1000001")]
+  [Address(RVA = "0x2000001", Offset = "0x2000001", VA = "0x2000001")]
+  public static string getShop(string text)
+  {
+    return null;
+  }
+  ```
