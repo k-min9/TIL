@@ -10,6 +10,7 @@ public class Dongle : MonoBehaviour
     public int level;   
     public bool isDrag;
     public bool isMerge;  // 타 동글의 개입으로 인한 오류 방지용
+    public bool isAttach;  // 충돌중
     SpriteRenderer spriteRenderer;
 
     int[] scores = new int[]{1,3,6,10,15,21,28,36,45,55};
@@ -55,6 +56,7 @@ public class Dongle : MonoBehaviour
     }
 
     public void Drop() {
+        gameManager.SfxPlay(GameManager.Sfx.Ef_drop);
         isDrag = false;
         rigid.simulated = true;  // 자연낙하 활성화
     }
@@ -94,6 +96,7 @@ public class Dongle : MonoBehaviour
         // 게임오버시 이펙트 실행
         if(targetPos == Vector3.up * 100) {
             EffectPlay();
+            gameManager.SfxPlay(GameManager.Sfx.Ef_punch);
         }
 
         StartCoroutine(HideRoutine(targetPos));
@@ -137,6 +140,7 @@ public class Dongle : MonoBehaviour
 
         anim.SetInteger("Level", level + 1);  // 애니메이션 재생
         EffectPlay();
+        gameManager.SfxPlay(GameManager.Sfx.LevelUp);
 
         yield return new WaitForSeconds(0.3f);  // 애니메이션시간 0.2초 고려 (폭업방지용)
         level++;
@@ -171,5 +175,18 @@ public class Dongle : MonoBehaviour
         effectMerge.transform.position = transform.position;
         effectMerge.transform.localScale = transform.localScale;
         effectMerge.Play();
+    }
+
+    // 접촉시 효과음
+    void OnCollisionEnter2D(Collision2D other) {
+        StartCoroutine(AttachRoutine());
+    }
+
+    IEnumerator AttachRoutine() {
+        if (isAttach) yield break;
+        isAttach = false;
+        gameManager.SfxPlay(GameManager.Sfx.Ef_Attach);
+        yield return new WaitForSeconds(0.2f);
+        isAttach = true;
     }
 }
