@@ -1,6 +1,16 @@
 # Created by https://www.toptal.com/developers/gitignore/api/flask
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask
 
+### Local
+faiss_index/
+faiss_index1/
+faiss_index2/
+faiss_index3/
+faiss_index4/
+faiss_index5/
+faiss_index6/
+faiss_index7/
+
 ### Flask ###
 instance/*
 !instance/.gitignore
