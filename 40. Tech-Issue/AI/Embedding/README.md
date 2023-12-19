@@ -1,0 +1,33 @@
+# Embedding
+
+서류를 input하고, 해당 서류를 읽은것처럼 대화해보자.
+
+## 절차
+
+1. 텍스트 입력
+2. 텍스트를 chunk로 변환
+3. chunk 단위로 embedding 수행
+4. 질문을 embedding함
+5. 유사도를 통해 관련 있는 chunk를 식별
+6. chunk와 함께 질문을 chatGPT로 보냄
+7. 완성. chatGPT는 그 책을 읽은 것 처럼 답변해 줄 것임
+
+## 01_embedding_text
+
+``` pip
+  pip install python-dotenv 
+  pip install openai==0.28.1
+  pip install langchain
+  pip install tiktoken  
+  pip install faiss-cpu
+```
+
+- 개요 : summary.txt라는 파일을 읽고 embedding함
+
+### 기타
+
+- 토큰 계산
+  - 애초에 4096토큰(3.5-turbo) 내지 16385 토큰(3.5-turbo-16k,-1106)만 입력이 가능하다
+  - 현실적인 이용을 고려할 경우, 3.5-turbo는 질문에 1000토큰당 약 1원, 출력에 약 3원의 금액이 발생함
+  - 출력은 얼마 안되니 무시하고, 질문 한번에 5원씩 발생하는 꼴이다. 제대로 활용하자.
+  - 영어가 한국어, 일본어 등에 비해 토큰이 압도적으로 작다. 문제는 유료/무료 구분 없이 기본적으로 번역 수준이 좋지 않다는거다.
