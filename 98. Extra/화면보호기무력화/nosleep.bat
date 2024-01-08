@@ -1,0 +1,1 @@
+cscript ns.vbs
