@@ -1,1 +1,1 @@
-cscript ns.vbs
+cscript nosleep.vbs
