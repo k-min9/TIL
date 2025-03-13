@@ -9,6 +9,7 @@
   - YES/NO : TF 문제
   - 3연 YES/NO : 하나의 주제에 대한 연속 YES/NO
   - DRAG-DROP : 문제가 그대로 나올 가능성이 높음.
+  - NOT be able to return : Same Scenario에 관해 연속적인 질문, 답변 하면 돌아올 수 없음.
 - 버리거나 없어진 타입
   - Simulation
 
@@ -282,6 +283,132 @@
 99. app that generate a list of tags for uploaded images. Generate tags in a user's preferred language. Support English, French, and Spanish.
     1. Computer Vision Image Analysis. 태그를 포함한 포괄적 기능제공. 비용 도외시 최소한의 노력이므로 이게 맞음
 100. 85번과 중복. 3연 YES/NO 
+101. DRAG DROP. Custom Vision model that will identify defects in packaging.
+     1. Project type : Object detection : 여러 객체 식별 및 위치 전송이기 때문에 Classification으로는 부족
+     2. Domain : General (compact) : 제한된 장치 + 로컬
+102. HOTSPOT. performance of the model
+     1. The percentage of false positives : 100 - precision = 0
+     2. The value for the number of true positives by the total number of true positives and false negatives : recall = 25
+103. one million scanned magazine articles stored as an image file. extract text from the images.
+     1. the Read API in Computer Vision : 인쇄,글쓰기 텍스트 이미지 특화     
+104. First to do to index File1.avi(20GB) by using the Azure Video Indexer website.
+     1. Upload File1.avi to Microsoft OneDrive. : 참고로 Azure Video Indexer website는 2GB까지 지원
+105. HOTSPOT. 이미지의 모든 텍스트 추출 후 profane(불경한) 언어가 없는지 analyze
+     1. Text Extraction from Images: Azure AI Computer Vision : OCR이 여기에 포함됨
+     2. Profanity Check : Content Moderator
+106. Categorize the image as either a photograph or a drawing. Generate a caption for the image.
+     1. image type detection in Azure AI Computer Vision : 전자
+     2. image descriptions in Azure AI Computer Vision : 후자 (Caption이 Description에 포함됨)
+107. train a language model to recognize industry-specific terms. file format of the industry-specific terms.
+     1. TXT. 언어모델 훈련에는 범용적인 파일형식 지원 
+108. DRAG DROP. need to add new products to the classifie
+     1. From the Custom Vision portal, open the project
+     2. Upload sample images of the new products
+     3. Label the sample images
+     4. Retrain the model
+     5. Publish the model
+109. 72번과 동일. NYY.
+110. 73번, 89번과 동일. 
+111. HOTSPOT. Azure AI Vision API. app to identify whether an image is clipart or a line drawing.
+     1. POST, imagetype
+112. HOTSPOT. need to add a custom brand and logo to the indexer and configure an exclusion for the custom brand.
+     1. enabled: false
+113. analyze the files by using Azure AI Video Indexer. Video Indexer website에 올릴 수 있는 영상목록.
+     1. File1,2,3,4 전부. WMV, AVI, MOV, MP4 전부 지원. 6시간/2GB까지 지원
+114. NOT be able to return. 연락처 목록에서 정보 검색 by using an intent named FindContact. You need to implement the phrase list in Language Understanding
+     1. Solution : You create a new pattern in the FindContact intent. 
+        1. No(의견 갈림). intent만으로 부족하고 example utterances(예시 발화)가 필요함
+115. NOT be able to return. identify species of flowers by training a Custom Vision model. receive images of new flower species and need to add the new images to the classifier.
+     1. Solution : You add the new images, and then use the Smart Labeler tool.
+        1. No. Smart Labeler은 기존 tag에만 활용할 수 있음.
+116. NOT be able to return. 115와 같은 시나리오.
+     1. Solution : You add the new images and labels to the existing model. You retrain the model, and then publish the model.
+        1. Yes. 깔끔
+117. NOT be able to return. 115와 같은 시나리오.
+     1. Solution : You create a new model, and then upload the new images and labels.
+        1. No. 기존 모델을 버리면 어떡함.
+118. HOTSPOT. 코드 완성. 영어 record Lecture을 AppendToTranscriptFile(takes translated text and a language identifier) method를 이용하여, respective language로 변환
+     1. ("fr", "de", "es")
+     2. TranslationRecognizer
+119. Custom Vision model. need to retrain model 1,000 new images that do not have any associated data.
+     1. upload all the images
+     2. Get suggested tags
+     3. Review the suggestions and confirm the tags
+120. entity to capture billing addresses.
+     1. machine learned : ML Entity with Structure
+121. PASS : Create a list of FileDTO와 QnADTO 하지 말 것.
+     1. Call the client.Knowledgebase.CreateAsync method.
+     2. Create a CreateKbDTO object.
+122. HOTSPOT. The text can be in one of many languages > translate the text to a single language. text must remain within the Americas Azure geography.
+     1. api-nam/translate : North America (NAM) region within the Americas Azure geography
+     2. ?to=en
+123. while building a conversational language understanding model how to enable active learning.
+     1. Add log=true to the prediction endpoint query. : 로깅을 해야 active 학습 가능
+124. 3연 YES/NO. docker command
+     1. Going to http://localhost:5000/status will query the Azure endpoint to verify whether the API key used to start the container is valid.
+        1. YES. 
+     2. The container logging provider will write log data.
+        1. NO. Log location is not mounted.
+     3. Going to http://localhost:5000/swagger will provide the details to access the documentation for the available endpoints.
+        1. YES.
+125. 120번과 거의 동일. machine learned
+126. How to upload speech samples to a Speech Studio project for use in training.
+     1. Upload a .zip file that contains a collection of audio files in the .wav format and a corresponding text transcript file.
+127. receive the content of a webpage, and then translate the content into Greek (el). The result will also contain a transliteration that uses the Roman alphabet.
+     1. textType=html
+     2. to=el
+     3. toScript=Latn
+128. two tools for debug the chatbot(built by Microsoft Bot Framework) endpoint remotely.
+     1. Framework Emulator 
+     2. ngrok
+129. DRAG DROP. QnA Maker service. 비슷한 질문이 같은 답변을 해야 함.
+     1. Add alternative phrasing to the QnA pair. : improve the likelihood of a match to a user query.
+     2. Retrain model.
+     3. Republish model.
+130. NOT be able to return. 114와 같은 시나리오
+     1. Solution: You create a new intent for location.
+        1. No. should add these phrases as utterances under the existing FindContact intent.
+131. NOT be able to return. 114와 같은 시나리오
+     1. Solution: You create a new entity for the domain.
+        1. No(의견 갈림). Pharase list나 pattern이어야 만족.
+132. training a Language Understanding model and create the first intent. how to decrease the likelihood of a false positive.
+     1. Add examples to the None intent. GetContactDetails로 분류하면 안되는 쿼리를 학습하여 false positive 감소에 기여.
+133. Language Understanding model for purchasing tickets. select entity type
+     1. Paris : GeographyV2 
+     2. email@domain.com : Email
+     3. 2 audit business : machine learned : preferred entity type for building Language Understanding (LUIS)
+134. deploy an Azure resource to the East US Azure region. The resource will be used to perform sentiment analysis.
+     1. B. create_resource("res1", "TextAnalytics", "S0", "eastus") : S0는 Sku에서 추론 가능
+135. Language Services portal. Weather.Historic entity
+     1. by month : 23(startPos)~30(endPos)번째 글자 읽으면 끝. 첫글자 0, 띄어쓰기도 한 글자.
+136. Text Analytics output to Text-Category-ConfidenceScore
+     1. Named Entity Recognition. 엔터티를 사람, 조직, 위치, 시간 표현, 수량, 통화 가치, 백분율 등과 같은 미리 정의된 범주로 식별하고 분류
+137. Pass. Simulation은 시험에 나오지 않음
+138. Pass. Simulation은 시험에 나오지 않음
+139. Pass. Simulation은 시험에 나오지 않음
+140. need to measure the public perception(대중의 인식) of your brand on social media by using natural language processing.
+     1. Language service : sentiment service가 여기에 포함됨.
+141. 122와 거의 유삿. HOTSPOT.
+     1. api-nam.cognitive.microsofttranslator.com
+     2. /translate?to=en
+142. DataSource가 Azure 사방에 흩어져 있음.
+     1. Export the data in Finance to Azure Data Lake Storage. : Finance만 혼자 cloud가 아니라 on-premises에 있음.
+143. Pass. Simulation은 시험에 나오지 않음
+144. Pass. Simulation은 시험에 나오지 않음
+145. Language Service에서 data가 analyzed 되면, input data의 persist를 막는 법
+     1. loggingOptOut : 입력 데이터가 Language 서비스에 의해 기록되거나 유지되지 않게 하여 privacy나 보안 유지
+146. package for App1-Model1(identifies the intent of text input)
+     1. Azure.AI.Language.Conversations : C# app을 위한 패키지로 기억하기.
+147. HOTSPOT. create narration(해설) to accompany the video content. The solution must use Custom Neural Voice.
+     1. Custom Neural Voice : Speech Studio portal
+     2. Generating Narration : Text-to-speech
+148. HOTSPOT. handling system that will receive calls from French-speaking and German-speaking callers.
+     1. Capture inbound voice messages as text : Speech-to-text
+     2. Replay messages in English on demand : Text-to-speech and Translator
+149. convert text to speech. Support messages of up to 400 characters. Provide users with multiple voice options. 음성옵션을 제공하는 API.
+     1. <https://uksouth.tts.speech.microsoft.com/cognitiveservices/voices/list>
+150. chatbot. multi-turn conversations.
+     1. Add follow-up prompts.
 
 ## AI-102 Azure AI Engineer 100% Original Practice Exam OCT'24
 
