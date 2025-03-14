@@ -9,7 +9,7 @@
   - YES/NO : TF 문제
   - 3연 YES/NO : 하나의 주제에 대한 연속 YES/NO
   - DRAG-DROP : 문제가 그대로 나올 가능성이 높음.
-  - NOT be able to return : Same Scenario에 관해 연속적인 질문, 답변 하면 돌아올 수 없음.
+  - NOT be able to return : Same Scenario에 관해 연속적인 질문, 답변 하면 돌아올 수 없음. 거의 No임...
 - 버리거나 없어진 타입
   - Simulation
 
@@ -409,6 +409,247 @@
      1. <https://uksouth.tts.speech.microsoft.com/cognitiveservices/voices/list>
 150. chatbot. multi-turn conversations.
      1. Add follow-up prompts.
+151. find references for essays. Entity linking
+     1. No. No detect language
+     2. No. No Bing search
+     3. Yes. matches
+152. evaluate the accuracy of the model before deploying it. BD 둘다 로그니 버리기
+     1. A. From the language authoring REST endpoint, retrieve the model evaluation summary.
+     2. C. From Language Studio, select Model performance.
+153. DRAG DROP. speech-to-speech translation. English to German. SpeechTranslationConfig.
+     1. SpeechRecognitionLanguage = "en-US"
+     2. AddTargetLanguage("de")
+154. identify the URL of the REST interface for the Language service.
+     1. Keys and Endpoint
+155. DRAG DROP. technical podcasts. improve the accuracy of the service.
+     1. Create Custom Speech project
+     2. Create speech-to-text model
+     3. Upload training datasets
+     4. Train model
+     5. Deploy model
+156. retail kiosk system. audio samples and consent from the voice talent. file to upload to the "profile"
+     1. a .wav or .mp3 file of the voice talent consenting to the creation of a synthetic version of their voice : "profile!"
+157. DRAG DROP. Language Understanding solution that runs in a Docker container. Export>move>run(input dir)
+     1. From portal, export solution as package file.
+     2. From host computer, move package file to Docker input directory.
+     3. From host computer, run container and specify input directory.
+158. HOTSPOT. text-to-speech SSML file
+     1. role : YoungAdultFemale : Imitates the voice of a young adult female
+     2. style : gentle : Expresses a calm tone
+159. Language Understanding solution. similar utterances. minimize the number 
+     1. list
+160. text-based chatbot. Text Moderation API of Content Moderator. [adult-racy는 함정!]
+     1. personal data
+     2. text classification
+161. 3연 Yes/No. text processing solution. get keyword.
+     1. No. No our included
+     2. Yes. 파리, 에펠, 타워.
+     3. No. entity를 추출하는거지 keyword를 추출하는게 아님.
+162. English to Spanish. REST API. data sovereignty in the United States.
+     1. api-nam.cognitive.microsofttranslator.com
+     2. translate
+163. DRAG DROP. run model1(custom speech-to-text model) on Host1. stream action. > 로깅 리트레인같은건 필요없고 순서만 잘 맞추면 되겠네.
+     1. Request approval to run container
+     2. Export model1 to Host1
+     3. Run the container
+164. NOT be able to return. 114와 같은 시나리오
+     1. Solution: You create a new utterance for each phrase in the FindContact intent.
+        1. Yes. utterance 왔다!
+165. need to move the project to a Language service instance in a different Azure region.
+     1. From original instance, export existing project.
+     2. From new instance, import the project file.
+     3. From new instance, train and publish model.
+166. DRAG DROP. customer support chatbot.
+     1. Code names for internal product development : Custom named entity recognition (NER) : 내부개발(Custom한) 코드명 등을 인식
+     2. Messages that include credit card numbers : Personally Identifiable Information (PII) : 개인식별정보, 민감한 개인정보를 텍스트에서 식별
+167. HOTSPOT. translate speech from French to German by using natural language processing.
+     1. SpeechRecognitionLanguage = "fr"
+     2. AddTargetLanguage.("de")
+168. Microsoft Word documents and PowerPoint presentations in German. translate the files to French. Glossary file(용어집) 지원.
+     1. Upload a Glossary file to the french files container
+     2. Define a document translation specification that has french target
+     3. Perform asynchronous translation by using the document specification
+169. keyPharase 분리 함수 실행 결과
+     1. quick brown fox  
+        lazy dog
+170. D. create_resource("res1", "TextAnalytics", "S0", "eastus")
+171. 153과 동일.
+172. HOTSPOT. streaming Speech to Text solution that will use the Speech SDK and MP3 encoding.
+     1. AudioStreamFormat
+     2. SpeechRecognizer
+173. chatbot. Content Moderator API to identify aggressive and sexually explicit language.
+     1. Resource Name : name of the Content Moderator resource
+     2. classify : enables the classification feature of the Content Moderator API,
+     3. ocp-Apim-Subscription-Key : subscription key required to authenticate and authorize(API requests)
+174. Decision and Language APIs. resource to ensure single endpoint and credential.
+     1. C. Azure Cognitive Services
+175. chatbot recognize the names of your company’s products and codenames. 
+     1. C. custom Named Entity Recognition (NER) 
+176. configure App1 to access CSAccount1 with minimize administrative effort.
+     1. D. the endpoint URI and subscription key
+177. building an app that will translate text and documents by using Translator1. create the REST API request for the app. Which headers should you include in the request?
+     1. D. the subscription key, the subscription region, and the content type
+178. 5,000 images of scanned invoices.
+     1. Azure AI Document Intelligence : 유형이 뚜렷(structured data)
+179. 161과 동일. NYN
+180. 3연 YES/NO. Key Phrase로 분리하는 코드
+     1. Yes. output key phrase
+     2. No. the 나 on은 keyword가 아니라 general word
+     3. No. no confidence level. print도 안했고 애초에 Named Entity Recognition 써야 가능
+181. 118과 동일.
+     1. ("fr", "de", "es")
+     2. TranslationRecognizer
+182. optimize the quality of the synthesized voice output. 변경할 Speech Synthesis Markup Language (SSML) attribute.
+     1. B. the effect attribute of the voice element : 자동차 울림효과, 실내효과 등등...
+183. content management system. reduced comprehension and learning differences(독서장해와 이해력이 떨어지는 사람)을 위한 service
+     1. A. Azure AI Immersive Reader
+184. HOTSPOT. app that will answer customer calls about the status of an order
+     1. SpeechRecognizer : converting customer calls into text queries
+     2. SpeechSynthesizer : provide customers with the order details in a spoken response, 
+185. 146과 동일. configure App1 to use Model1(identifies the intent of text input)
+     1. B. azure-ai-language-conversations
+186. 118과 동일
+     1. fr, de, es
+     2. TranslationRecognizer
+187. DRAG DROP. Azure AI Search resource that will use custom skill based on sentiment analysis. 프로비저닝 필요없네.
+     1. Create an Azure Machine Learning workspace.
+     2. Create and train the model in the Azure Machine Learning studio.
+     3. Create an endpoint for the model.
+     4. Connect the custom skill to the endpoint.
+     5. Rerun the indexer to enrich the index.
+188. HOTSPOT. pdf reading
+     1. AI Document Intelligence
+     2. AI Language : sentiment analysis
+~ 생략 ~
+232. B. Export the model as an .lu file.
+234. information required by bot1 to connect to the QnA Maker application? : C. Keys and Endpoint
+241. scope for name : A. dialog
+244. cancel in-progress transactions : C. a dialog trigger
+245. Pass. Simulation은 시험에 나오지 않음
+246. Pass. Simulation은 시험에 나오지 않음
+247. Pass. Simulation은 시험에 나오지 않음
+248. Pass. Simulation은 시험에 나오지 않음
+249. make vacation requests. : C. waterfall
+251. respond to events by using custom text responses. : B. an activity handler
+253. Solution: From Language Studio, you change the chitchat source to qna_chitchat_friendly.tsv, and then retrain and republish the model.
+     1. No.
+254. Solution: From Language Studio, you modify the question and answer pairs for the custom intents, and then retrain and republish the model
+     1. No.
+255. Solution: From Language Studio, you change the chitchat source to "qna_chitchat_professional".tsv, and then retrain and republish the model.
+     1. Yes.
+256. Pass
+257. Solution: From Language Studio, you add "alternative phrasing to the question and answer pair", and then retrain and republish the model.
+     1. Yes.
+258. Solution: From Language Studio, you enable chit-chat, and then retrain and republish the model.
+     1. No.
+259. Solution: From Language Studio, you create an entity for price, and then retrain and republish the model.
+     1. No.
+260. B. by month
+261. D. an adaptive card, E. a dialog
+262. product setup process. : C. waterfall
+263. support voice interactions. : C. Direct Line Speech
+264. bot to respond to spoken requests. : A. Deploy the bot to Azure and register the bot with a Direct Line Speech channel.
+265. Solution: From Language Studio, you remove all the chit-chat question and answer pairs, and then retrain and republish the model.
+     1. No.
+266. Content Moderator service to identify messages that contain sexually explicit language.
+     1. Classification, 1
+267. chatbot for a travel agent. : A. prompt 
+268. chatbot to query a knowledge base. A. QnAMakerDialog
+269. send_activity, clear_state
+270. incorrect responses to requests that do NOT relate : C. Add examples to the None intent.
+281. C. a content filter
+282. D. priming
+283. more deterministic and less creative. Temperature top-P
+284. A. Configure the model to include data from the travel agent's database.
+285. B. Provide grounding content. C. Add sample request/response pairs.
+286. ChatRole.Assistant, Temperature
+287. d
+288. assistant, temperature
+289. 86 토큰. No.No.No.
+290. 291과 동일
+291. api
+     1. GetCompletions
+     2. (response.Value.Choises[0].Text);
+292. protect data. : OpenAI / --encryption
+293. chatCompletionsOptions() / AzureChatExtensionConfiguration 
+294. pass
+     1. API key - a1a1a1aaa11
+     2. deployment name - embedding1
+295. Reduce the repetition, randomness > temperature, frequency penalty
+296. Return numeric vectors that represent the tokens 
+     1. embeddings 
+297. 500 prompt-completion pairs that will be used as training data to fine-tune the model.
+     1. C. JSONL
+298. Finetuning
+     1. E. File1.tsv and File4.xslx only
+299. A. Cognitive Services OpenAI Contributor
+300. The solution must use cosine similarity.
+     1. A. text-embedding-ada-002
+301. A. Cognitive Services OpenAI User
+302. ChatCompletion, AzureCognitiveSearch
+303. "you are helpful assistant" > No, Yes, Yes
+304. B. Azure AI Content Safety : checks all input and output for objectionable content.
+305. A. 0 : No violence
+306. C. Azure AI Content Safety / D. Azure AI Vision
+307. contentsafety/ text:analyze
+308. Solution: From Content Safety Studio, you use the "Protected" material detection feature to run the tests.
+     1. No.
+309. Solution: From Content Safety Studio, you use the "Moderate" text content feature to run the tests.
+     1. Yes
+310. Solution: From Content Safety Studio, you use the Monitor online activity feature to run the tests.
+     1. No.
+311. Solution: From Content Safety Studio, you use the Safety metaprompt feature to run the tests.
+     1. No.
+312. ContentSafetyClient and client.AnalyzeImage(request);
+313. create a dictionary that will contain the offensive terms. 
+     1. D. a blocklist
+314. d
+     1. ContentSafetyClient 
+     2. AnalyzeTextOptions 
+315. 우회차단. You need to ensure that questions intended to circumvent built-in safety features are blocked.
+     1. B. Jailbreak risk detection
+316. Azure Blob Storage > Computer Vision API > Translator API > Azure Files 
+317. RBAC role
+     1. Cognitive Service User (RW+Publish) 
+     2. QnA Maker Editor (RW)
+     3. QnA Maker Read (R)
+318. Pass
+319. upload images for the product creation project.
+     1. string
+     2. VisualFeatureTypes.Description
+     3. results.Description.Captions[0]
+320. custom table extractor
+     1. Create a project
+     2. Label the sample docs
+     3. Train the model
+321. Knowledgebase. jargon.
+     1. A. Create a custom language model. 
+322. Pass
+     1. api-nam.cognitive.microsofttranslator.com
+     2. /translate  
+323. Consultant-Bookkeeper group
+     1. documentResults.fields.*.confidence < 0.7. 별이 있다!
+324. PASS. ABF
+325. API endpoints to use to extract text from the financial documents
+     1. B. /formrecognizer/v2.0/custom/models/{modelId}/analyze
+     2. C. /formrecognizer/v2.0/prebuilt/receipt/analyze
+326. category, entity
+     1. ["Locations", "Person", "Organization"]
+     2. { "name": "namedEntities" }
+327. knowledgebase. wiki.
+     1. D. an indexer for Azure Cosmos DB attached to a skillset that contains the language detection skill and the text translation skill
+328. knowledgebase requirements for searching equivalent terms.
+     1. A. synonym map
+329. 331과 동일.
+330. Pass
+     1. AllUsers: QnA Maker Editor
+     2. Leadership team: Cognitive Service User
+331. Pass
+     1. name[language] - in task we app should support 3 languages
+     2. $when": "${stockLevel} != 'OK' - If item is not in the stock show
+     3) image.altText[language] - Show alt.text in different languages
+332. QnAMakerOptions.ScoreThreshold
+333. Language Understanding
 
 ## AI-102 Azure AI Engineer 100% Original Practice Exam OCT'24
 
@@ -588,3 +829,16 @@
 
 - Language Understanding
 - Embedded applications : AI 기술지식 없이 build 지원
+
+## 회고
+
+- 결과 : 합격
+- 감상
+  - 응시환경은 아주 쾌적. 시험관 볼일도 없고, 핸드폰도 처음 사진찍을때 빼고 카메라도 안쓰며, 전방의 웹캠 하나 뿐. 종이, 펜 사용 금지.
+  - 55문 중에 46문 일반문제 3문 NOT be able to return / 6문은 Case study. Simulation 안나옴!
+  - Udemy는 진짜 실력확인용 문제, 시험 응시에는 Examtopics만 하는게 오히려 좋음.
+  - Examtopics는 3시간에 100문제 푸는 느낌으로 풀면 충분함. discussion 반드시 읽을 것.
+  - Examtopics 기준으로 C# 선택할 것
+  - Examtopics 다 풀 시간이 없으면 토픽별로 조금씩은 다 봐야 함. Case study 때문이라도.
+  - Content Safety를 왜이렇게 좋아하세요...?
+  - Simulation 안나옴!
