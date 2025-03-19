@@ -1,10 +1,15 @@
 # Microsoft AI-102 실습
 
+- 결론
+  - 자격증 취득 성공
+    ![alt text](README/ai-102-certificate.png)
 - 개요
   - AI-102
     - Microsoft Certified: Azure AI Engineer Associate
     - Microsoft의 중급 자격증
   - Microsoft에서 제공된 실습을 진행하고 정리
+    - 기간 : 20250224~0228(5days)
+  - 실습파일 : DAY별로 정리
     - Q : Clone 원본
     - A : 학습 내용 정리, 코드 수정 및 테스트 결과
 
@@ -39,7 +44,7 @@
         - 이미지 분석(Image Analysis) > 이미지로 모델 사용자 지정
         - 나는 리소스 고르고 Datasets 만들고, Import COCO file for labeled data(json) 진행
 
-## Day 3 : NLPNatural Language Processing, 자연어 처리
+## Day 3 : NLP
 
 - 개요 : Natural Language Processing, 자연어 처리
 - 출처 : [Github : MicrosoftLearning/mslearn-ai-language](https://github.com/MicrosoftLearning/mslearn-ai-language)
@@ -78,4 +83,25 @@
       - 반환된 의도에 맞는 함수를 실행하는 식으로 작업
   - 04 : 음성 인식 및 합성(07-speech)
     - 흔한 STT, TTS를 Azure SDK로 구현
+    - Azure Portal의 음성 서비스 사용. 엔드포인트 대신에 key와 REGION이 필요.
     - 음성합성시 SSML로 포맷(목소리 종류, 맺음말 등의 대화포맷) 지정 가능
+
+## DAY 4 : Gen AI
+
+- 개요 : Natural Language Processing, 자연어 처리
+- 출처 : [Github : MicrosoftLearning/mslearn-ai-language](https://github.com/MicrosoftLearning/mslearn-ai-language)
+- 공통 : Azure Portal > 언어 서비스
+- 요약
+  - 01 : 앱에 Azure OpenAI 통합
+  - 02 : 앱에서 프롬프트 엔지니어링 활용
+  - 03 : Azure OpenAI로 자체 데이터 사용
+
+## DAY 5
+
+- 개요 : Natural Language Processing, 자연어 처리
+- 출처 : [Github : MicrosoftLearning/mslearn-knowledge-mining](https://github.com/MicrosoftLearning/mslearn-knowledge-mining)
+- 공통 : Azure Portal > Azure AI 서비스
+  - 리소스>개요>구독>ID,위치확인
+    - 예시 : 구독ID 2ca789d9-1760-40b4-91d9-6afc0de68cd4 / 위치 : East US
+  - 01 : Azure AI 검색을 위한 사용자 지정 기술 만들기(02-search-skill)
+  - 02 : 양식에서 데이터 추출
